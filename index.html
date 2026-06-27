@@ -2,128 +2,28 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 7</title>
-  
+  <title>Master App Platform</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
-  
-  <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 </head>
 <body>
-  <main class="wrap">
-    <h1>Master App Platform</h1>
-    <p class="subtitle">STEP 7 - 사용자 Dashboard 및 접근 제어 무결성 연동</p>
-
-    <div class="d-flex justify-content-between align-items-center mb-4 p-2 bg-white rounded shadow-sm">
-        <div id="userStatus" class="fw-bold text-secondary">로그인이 필요합니다.</div>
-        <button id="logoutBtn" class="btn btn-sm btn-danger" style="display: none;">로그아웃</button>
-    </div>
-
-    <div id="auth-section">
-        <section class="card mb-3">
-          <h2>회원가입</h2>
-          <input id=\"signupEmail\" type=\"email\" class=\"form-control mb-2\" placeholder=\"이메일\">
-          <input id=\"signupPassword\" type=\"password\" class=\"form-control mb-2\" placeholder=\"비밀번호\">
-          <button id=\"signupBtn\" class=\"btn btn-primary w-100\">회원가입</button>
-        </section>
-
-        <section class="card mb-3">
-          <h2>로그인</h2>
-          <input id=\"loginEmail\" type=\"email\" class=\"form-control mb-2\" placeholder=\"이메일\">
-          <input id=\"loginPassword\" type=\"password\" class=\"form-control mb-2\" placeholder=\"비밀번호\">
-          <button id=\"loginBtn\" class=\"btn btn-success w-100\">로그인</button>
-        </section>
-    </div>
-
-    <section id="apply-section" class="card mb-4 approval-box" style="display: none;">
-      <h2>플랫폼 이용 승인 신청</h2>
-      <p class="text-muted small">가입 후 플랫폼 서비스를 이용하시려면 승인 권한 신청이 필요합니다.</p>
-      <input id="applyReason" type="text" class="form-control mb-2" placeholder="신청 목적 사유를 입력하세요 (예: 외부 파트너 협업)">
-      <div class="d-flex gap-2">
-        <button id="applyBtn" class="btn btn-primary">승인 신청서 접수</button>
-        <button id="checkApplyBtn" class="btn btn-info text-white">실시간 신청 현황 조회</button>
-      </div>
-      <pre id="applyResult" class="mt-2 text-warning bg-dark p-2 rounded small">신청 현황이 여기에 표시됩니다.</pre>
-    </section>
-
-    <section id="user-dashboard-view" class="card mb-4 apply-box" style="display: none;">
-        <h2>나의 워크스페이스 대시보드</h2>
-        <p class="text-muted small">관리자로부터 승인되어 접근 가능한 활성화된 서브 애플리케이션 목록입니다.</p>
-        
-        <div class="row my-3">
-            <div class="col-md-4">
-                <div class="p-3 bg-light rounded border text-center">
-                    <span class="text-secondary small d-block">접근 가능 앱 수</span>
-                    <strong id="user-active-app-count" class="fs-3 text-primary">0</strong>개
-                </div>
-            </div>
-        </div>
-
-        <div id="user-subapps-grid" class="row g-3">
-            <div class="text-muted italic p-3">서브 애플리케이션 목록을 불러오는 중...</div>
-        </div>
-    </section>
-
-    <section id="adminDashboardSection" class="card mb-4 admin-box" style="display: none;">
-      <h2>Master 관리자 콘솔 전용 제어판</h2>
-      
-      <div class="p-3 bg-light rounded mb-3">
-         <h5>서브 애플리케이션 신규 라우팅 등록</h5>
-         <div class="row g-2" id="subapp-register-form">
-             <div class="col-md-2"><input id="newAppId" type="text" class="form-control form-control-sm" placeholder="앱ID (crm)"></div>
-             <div class="col-md-2"><input id="newAppName" type="text" class="form-control form-control-sm" placeholder="앱이름"></div>
-             <div class="col-md-2"><input id="newAppPath" type="text" class="form-control form-control-sm" placeholder="라우팅 경로 (/#/crm)"></div>
-             <div class="col-md-3"><input id="newAppEntry" type="text" class="form-control form-control-sm" placeholder="엔트리 URL"></div>
-             <div class="col-md-1"><input id="newAppIcon" type="text" class="form-control form-control-sm" placeholder="아이콘"></div>
-             <div class="col-md-2"><button id="registerAppBtn" class="btn btn-sm btn-primary w-100">라우팅 등록</button></div>
-         </div>
-         <input id="newAppDesc" type="text" class="form-control form-control-sm mt-2" placeholder="애플리케이션 상세 설명">
-      </div>
-
-      <div class="mb-3">
-          <button id="loadAppsBtn" class="btn btn-sm btn-secondary">등록된 서브 앱 원격 제어 상태 동기화</button>
-          <div class="table-responsive mt-2">
-              <table class="table table-sm table-hover align-middle">
-                  <thead class="table-light">
-                      <tr>
-                          <th>애플리케이션 (ID)</th>
-                          <th>라우팅 경로</th>
-                          <th>진입점 (Entry)</th>
-                          <th>상태</th>
-                          <th>제어</th>
-                      </tr>
-                  </thead>
-                  <tbody id="admin-subapp-list">
-                  </tbody>
-              </table>
-          </div>
-      </div>
-    </section>
-
-    <div class="row my-4" id="runtime-container" style="display: none;">
-        <div class="col-md-3">
-            <div class="card shadow-sm p-2">
-                <div class="fw-bold border-bottom pb-2 mb-2">Dynamic Navigation</div>
-                <ul class="nav flex-column nav-pills" id="dynamic-nav-menu">
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div id="main-runtime-view" class="p-4 border rounded bg-light shadow-sm" style="min-height: 300px;">
-                <h3>Master App Platform 메인 런타임</h3>
-                <p>좌측 메뉴에서 서브 애플리케이션을 선택하세요.</p>
-            </div>
-        </div>
+  <div class="container mt-5">
+    <div id="auth-section" class="card p-4">
+      <h2>로그인</h2>
+      <input id="loginEmail" class="form-control mb-2" placeholder="이메일">
+      <input id="loginPassword" type="password" class="form-control mb-2" placeholder="비밀번호">
+      <button id="loginBtn" class="btn btn-primary">로그인</button>
     </div>
     
-  </main>
-
-  <script type="module" src="./firebase.js"></script>
+    <div id="main-content" style="display:none;">
+      <button id="logoutBtn" class="btn btn-danger">로그아웃</button>
+      <div id="admin-section" style="display:none;">
+        <h3>관리자 패널</h3>
+        <table class="table"><tbody id="admin-subapp-list"></tbody></table>
+      </div>
+    </div>
+  </div>
   <script type="module" src="./auth.js"></script>
   <script type="module" src="./database.js"></script>
   <script type="module" src="./admin.js"></script>
-  <script type="module" src="./apply.js"></script>
-  <script type="module" src="./routing.js"></script>
 </body>
 </html>
