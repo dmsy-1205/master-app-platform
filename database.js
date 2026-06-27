@@ -1,74 +1,92 @@
-import { db, auth } from './firebase.js';
-import { ref, set, get, update, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js';
+import { db } from './firebase.js';
+import { ref, set, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// ==========================================
+// [STEP 6] 다중 서브 애플리케이션 라우팅 메타데이터 관리
+// ==========================================
 
 /**
- * [STEP 7 핵심] 일반 사용자용 대시보드 서브 애플리케이션 카드 그리드 출력 로직
+ * 서브 애플리케이션 등록 및 라우팅 메타데이터 저장
  */
-export function renderUserDashboard() {
-    const gridContainer = document.getElementById('user-sub-apps-grid');
-    const countDisplay = document.getElementById('user-app-count');
-    
-    if (!gridContainer) return;
-
-    // 실시간으로 활성화(active) 처리된 서브 애플리케이션 목록만 가져옴
-    const appsRef = ref(db, 'apps');
-    onValue(appsRef, (snapshot) => {
-        gridContainer.innerHTML = '';
-        let activeAppCount = 0;
-
-        if (!snapshot.exists()) {
-            gridContainer.innerHTML = '<div class="loading-placeholder">현재 플랫폼에 등록된 서브 애플리케이션이 존재하지 않습니다.</div>';
-            if (countDisplay) countDisplay.textContent = '0';
-            return;
-        }
-
-        snapshot.forEach((childSnapshot) => {
-            const appData = childSnapshot.val();
-            
-            // 오직 active가 true로 켜진 서브 앱만 일반 사용자에게 노출 (STEP 6 정합성 연결)
-            if (appData.active === true) {
-                activeAppCount++;
-
-                const card = document.createElement('div');
-                card.className = 'card app-card';
-                card.innerHTML = `
-                    <div class="app-card-body">
-                        <h4>${escapeHtml(appData.name)}</h4>
-                        <div class="app-card-meta">ID: ${escapeHtml(appData.id)}</div>
-                    </div>
-                    <a href="${escapeHtml(appData.url)}" target="_blank" class="btn btn-primary btn-block" style="text-decoration: none; text-align: center;">
-                        애플리케이션 진입 🚀
-                    </a>
-                `;
-                gridContainer.appendChild(card);
-            }
-        });
-
-        if (countDisplay) {
-            countDisplay.textContent = activeAppCount.toString();
-        }
-
-        if (activeAppCount === 0) {
-            gridContainer.innerHTML = '<div class="loading-placeholder">🔒 현재 접근 가능한 활성화된 서브 애플리케이션이 없습니다. 관리자 승인을 기다려주세요.</div>';
-        }
-    }, (error) => {
-        console.error("대시보드 데이터 로드 에러:", error);
-        gridContainer.innerHTML = '<div class="loading-placeholder" style="color: var(--danger-color);">데이터를 가져오는 중 오류가 발생했습니다.</div>';
+export function registerSubApp(appId, appData) {
+    const appRef = ref(db, 'apps/' + appId);
+    return set(appRef, {
+        ...appData,
+        updatedAt: new Date().toISOString()
     });
 }
 
 /**
- * XSS 공격 방지를 위한 기본 HTML 이스케이프 유틸 함수
+ * 활성화된 모든 서브 애플리케이션 라우팅 데이터 실시간 구독
  */
-function escapeHtml(str) {
-    if (!str) return '';
-    return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+export function listenSubApps(callback) {
+    const appsRef = ref(db, 'apps');
+    onValue(appsRef, (snapshot) => {
+        if (snapshot.exists()) {
+            callback(snapshot.val());
+        } else {
+            callback({});
+        }
+    });
 }
 
-// 관리자 콘솔을 위해 기존 export 유지 모듈화 확보
-export { ref, set, get, update, remove, onValue };
+/**
+ * 특정 서브 앱 활성화/비활성화 상태 수정 업데이트
+ */
+export function updateAppStatus(appId, isActive) {
+    const appRef = ref(db, `apps/${appId}`);
+    return update(appRef, { isActive: isActive });
+}
+
+// ==========================================
+// [STEP 7 핵심] 일반 사용자용 대시보드 동적 그리드 바인딩
+// ==========================================
+export function renderUserDashboard() {
+    const gridContainer = document.getElementById('user-subapps-grid');
+    const countDisplay = document.getElementById('user-active-app-count');
+    
+    if (!gridContainer) return;
+
+    listenSubApps((apps) => {
+        gridContainer.innerHTML = '';
+        let activeCount = 0;
+        const keys = Object.keys(apps);
+
+        if (keys.length === 0) {
+            gridContainer.innerHTML = '<div class="text-muted p-3">플랫폼에 등록된 애플리케이션이 아직 없습니다.</div>';
+            if(countDisplay) countDisplay.textContent = '0';
+            return;
+        }
+
+        keys.forEach(appId => {
+            const app = apps[appId];
+            
+            // 오직 관리자가 활성화(isActive === true) 처리한 서브 앱만 선별 노출
+            if (app.isActive) {
+                activeCount++;
+                
+                const col = document.createElement('div');
+                col.className = 'col-md-6';
+                col.innerHTML = `
+                    <div class="user-app-card shadow-sm">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="fs-4">${app.icon || '🌐'}</span>
+                                <h4 class="m-0 h5 fw-bold">${app.name}</h4>
+                            </div>
+                            <p class="text-muted small mb-2" style="min-height: 40px;">${app.description || '등록된 상세 설명 요약 명세가 없습니다.'}</p>
+                            <div class="mb-3"><code class="bg-light p-1 rounded small text-primary">${app.path}</code></div>
+                        </div>
+                        <a href="${app.path}" class="btn btn-sm btn-outline-primary w-100 fw-bold">앱 가상 런타임 진입 🚀</a>
+                    </div>
+                `;
+                gridContainer.appendChild(col);
+            }
+        });
+
+        if(countDisplay) countDisplay.textContent = activeCount;
+        if (activeCount === 0) {
+            gridContainer.innerHTML = '<div class="text-muted p-3">🔒 현재 사용할 수 있도록 허가된 활성 서브 앱이 존재하지 않습니다.</div>';
+        }
+    });
+}

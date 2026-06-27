@@ -1,69 +1,127 @@
 import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
-import { ref, set } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js';
-import { navigateByRole } from './routing.js';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { renderUserDashboard } from './database.js';
 
-// 1. 플랫폼 로그인 핸들러
-document.getElementById('login-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
+const signupEmail = document.getElementById('signupEmail');
+const signupPassword = document.getElementById('signupPassword');
+const signupBtn = document.getElementById('signupBtn');
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
+const loginBtn = document.getElementById('loginBtn');
+const userStatus = document.getElementById('userStatus');
+const logoutBtn = document.getElementById('logoutBtn');
+
+const authSection = document.getElementById('auth-section');
+const applySection = document.getElementById('apply-section');
+const userDashboardView = document.getElementById('user-dashboard-view');
+const adminDashboardSection = document.getElementById('adminDashboardSection');
+const runtimeContainer = document.getElementById('runtime-container');
+
+// 회원가입
+if (signupBtn) {
+  signupBtn.addEventListener('click', async () => {
+    if (!signupEmail.value.trim() || !signupPassword.value.trim()) {
+      return alert('회원가입용 이메일과 비밀번호를 모두 입력해주세요.');
+    }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value);
+      await set(ref(db, `users/${userCredential.user.uid}`), {
+        email: userCredential.user.email,
+        createdAt: new Date().toISOString(),
+        userStatus: 'registered' 
+      });
+      alert('회원가입 성공!');
+    } catch (error) { alert('회원가입 실패: ' + error.message); }
+  });
+}
+
+// 로그인
+if (loginBtn) {
+  loginBtn.addEventListener('click', async () => {
+    if (!loginEmail.value.trim() || !loginPassword.value.trim()) {
+      return alert('로그인할 이메일과 비밀번호를 채워주세요.');
+    }
+    try {
+      await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+      alert('로그인 성공!');
+    } catch (error) { alert('로그인 실패: ' + error.message); }
+  });
+}
+
+// 로그아웃
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async () => {
+    try {
+      await signOut(auth);
+      alert('로그아웃 성공!');
+      window.location.hash = '';
+      location.reload();
+    } catch (error) { alert('로그아웃 실패: ' + error.message); }
+  });
+}
+
+// 실시간 인증 가드 시스템
+onAuthStateChanged(auth, async (user) => {
+  // 모든 동적 섹션 숨김 초기화
+  if(authSection) authSection.style.display = 'none';
+  if(applySection) applySection.style.display = 'none';
+  if(userDashboardView) userDashboardView.style.display = 'none';
+  if(adminDashboardSection) adminDashboardSection.style.display = 'none';
+  if(runtimeContainer) runtimeContainer.style.display = 'none';
+  if(logoutBtn) logoutBtn.style.display = 'none';
+
+  if (user) {
+    if(userStatus) userStatus.innerText = `접속 계정: ${user.email} (조회 중...)`;
+    if(logoutBtn) logoutBtn.style.display = 'block';
 
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        alert(`${userCredential.user.email}님, 환영합니다!`);
-        navigateByRole(userCredential.user);
-    } catch (error) {
-        console.error("로그인 에러:", error);
-        alert("로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해 주세요.");
-    }
-});
+      // 1. 관리자 권한 조회
+      const adminSnapshot = await get(ref(db, `admins/${user.uid}`));
+      const isAdmin = adminSnapshot.exists() && adminSnapshot.val() === true;
 
-// 2. 플랫폼 가입 이용 신청 핸들러
-document.getElementById('register-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('reg-name').value.trim();
-    const email = document.getElementById('reg-email').value.trim();
-    const password = document.getElementById('reg-password').value;
-
-    if (password.length < 6) {
-        alert("비밀번호는 최소 6자리 이상이어야 합니다.");
+      if (isAdmin) {
+        if(userStatus) userStatus.innerText = `접속 계정: ${user.email} [시스템 최고 관리자] 👑`;
+        if(adminDashboardSection) adminDashboardSection.style.display = 'block';
+        if(runtimeContainer) runtimeContainer.style.display = 'flex'; // 관리자도 런타임 뷰 확인 가능
         return;
-    }
+      }
 
-    try {
-        // 계정 생성
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // Realtime Database 유저 메타데이터 저장 관문 (기본값: 일반유저 'user', 승인대기 'pending')
-        await set(ref(db, `users/${user.uid}`), {
-            uid: user.uid,
-            name: name,
-            email: email,
-            role: 'user', 
-            status: 'pending',
-            createdAt: Date.now()
-        });
-
-        alert("이용 신청서가 성공적으로 제출되었습니다. 관리자의 승인을 기다려주세요.");
-        navigateByRole(user);
-
-    } catch (error) {
-        console.error("가입 신청 에러:", error);
-        alert("이용 신청에 실패했습니다: " + error.message);
-    }
-});
-
-// 3. 로그아웃 핸들러
-document.getElementById('btn-logout')?.addEventListener('click', async () => {
-    if (confirm("플랫폼에서 로그아웃 하시겠습니까?")) {
-        try {
-            await signOut(auth);
-            alert("정상적으로 로그아웃 되었습니다.");
-            navigateByRole(null);
-        } catch (error) {
-            alert("로그아웃 처리 중 에러 발생: " + error.message);
+      // 2. 일반 사용자 이용 승인 현황 조회
+      const applySnapshot = await get(ref(db, `applications/${user.uid}`));
+      
+      if (applySnapshot.exists()) {
+        const applyData = applySnapshot.val();
+        
+        if (applyData.status === 'approved') {
+          // 승인 완료된 유저 -> 대시보드 가드 해제 및 마이크로 런타임 활성화
+          if(userStatus) userStatus.innerText = `접속 계정: ${user.email} [플랫폼 정회원] ✅`;
+          if(userDashboardView) userDashboardView.style.display = 'block';
+          if(runtimeContainer) runtimeContainer.style.display = 'flex';
+          
+          // STEP 7 사용자 대시보드 렌더링 호출
+          renderUserDashboard();
+        } else if (applyData.status === 'rejected') {
+          if(userStatus) userStatus.innerText = `접속 계정: ${user.email} [승인 거절됨] ❌`;
+          if(applySection) applySection.style.display = 'block';
+        } else {
+          // pending 상태
+          if(userStatus) userStatus.innerText = `접속 계정: ${user.email} [승인 검토 대기 중] ⏳`;
+          if(applySection) applySection.style.display = 'block';
         }
+      } else {
+        // 가입은 했으나 신청서를 아직 제출하지 않은 상태
+        if(userStatus) userStatus.innerText = `접속 계정: ${user.email} [권한 미신청 회원]`;
+        if(applySection) applySection.style.display = 'block';
+      }
+
+    } catch (e) {
+      console.error(e);
+      if(userStatus) userStatus.innerText = "사용자 세션 상태 검증 중 오류 발생";
     }
+  } else {
+    // 로그아웃 상태
+    if(userStatus) userStatus.innerText = "로그인이 필요합니다.";
+    if(authSection) authSection.style.display = 'block';
+  }
 });
