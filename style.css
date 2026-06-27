@@ -1,100 +1,11 @@
-body {
-  background-color: #f4f6f9;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  margin: 0;
-  padding: 20px;
+:root {
+    --primary: #4f46e5; --bg: #f8fafc; --glass: rgba(255, 255, 255, 0.8);
+    --shadow: 0 10px 25px rgba(0,0,0,0.1); --radius: 16px;
 }
-/* 대시보드가 수평으로 예쁘게 배치되도록 가로폭을 950px로 확장 */
-.wrap { max-width: 950px; margin: 0 auto; }
-h1 { color: #1a1a1a; text-align: center; margin-bottom: 5px; }
-.subtitle { text-align: center; color: #666; margin-bottom: 30px; }
-.card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-h2 { font-size: 1.2rem; margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; margin-bottom: 5px; }
-button:hover { background-color: #0056b3; }
-pre { background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 0.9rem; }
-.admin-box { border-left: 5px solid #ffc107; }
-.apply-box { border-left: 5px solid #28a745; }
-.approval-box { border-left: 5px solid #e83e8c; }
-.apps-list-container { background: #fafafa; border: 1px solid #e3e3e3; border-radius: 8px; padding: 15px; margin-top: 15px; }
-.app-dashboard-card { background: #fff; border: 1px solid #dcdcdc; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
-.small-uid { font-size: 0.75rem; color: #888; }
-.badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
-.status-pending { background: #ffeeba; color: #856404; }
-.status-approved { background: #d4edda; color: #155724; }
-.status-rejected { background: #f8d7da; color: #721c24; }
-.app-control-btns { margin-top: 10px; }
-.btn-approve { background: #28a745; }
-.btn-approve:hover { background: #218838; }
-.btn-reject { background: #dc3545; }
-.btn-reject:hover { background: #c82333; }
-.info-text { color: #e83e8c; font-weight: bold; font-size: 0.9rem; }
-.app-loading-fallback { color: #007bff; font-weight: 500; }
-/* STEP 7 사용자 Dashboard */
-.user-dashboard-box { border-left: 5px solid #0d6efd; }
-.dashboard-title-row { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
-.dashboard-help { color: #666; margin: 0; font-size: 0.95rem; }
-.dashboard-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-.dashboard-actions button:disabled { background: #adb5bd; cursor: not-allowed; }
-.dashboard-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0; }
-.dashboard-summary-card { background: #f8fbff; border: 1px solid #d9e8ff; border-radius: 10px; padding: 14px; }
-.dashboard-summary-card span { display: block; color: #5f6b7a; font-size: 0.85rem; margin-bottom: 5px; }
-.dashboard-summary-card strong { color: #0d47a1; font-size: 1.05rem; }
-.dashboard-profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; background: #fafafa; border: 1px solid #e9ecef; border-radius: 10px; padding: 14px; margin-bottom: 18px; }
-.dashboard-profile-grid p { margin: 0; word-break: break-all; }
-.dashboard-profile-grid span { color: #495057; }
-.dashboard-app-title { font-size: 1.05rem; margin: 12px 0; color: #333; }
-.user-app-grid { display: grid; gap: 12px; }
-.user-app-card { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; background: #fff; border: 1px solid #dee2e6; border-radius: 12px; padding: 14px; }
-.user-app-icon { font-size: 1.7rem; text-align: center; }
-.user-app-body h4 { margin: 0 0 4px; font-size: 1rem; color: #212529; }
-.user-app-body p { margin: 0 0 6px; color: #666; font-size: 0.9rem; }
-.user-app-path { display: inline-block; background: #f1f3f5; color: #495057; border-radius: 999px; padding: 3px 9px; font-size: 0.78rem; }
-.user-app-open { background: #198754; color: #fff; text-decoration: none; border-radius: 8px; padding: 9px 12px; font-weight: 700; }
-.user-app-open:hover { background: #146c43; color: #fff; }
-.dashboard-empty { color: #6c757d; background: #f8f9fa; border: 1px dashed #ced4da; border-radius: 10px; padding: 16px; text-align: center; }
-
-@media (max-width: 720px) {
-  .dashboard-summary-grid, .dashboard-profile-grid { grid-template-columns: 1fr; }
-  .user-app-card { grid-template-columns: 40px 1fr; }
-  .user-app-open { grid-column: 1 / -1; text-align: center; }
-}
-
-/* STEP 8 앱 연결 카드 확장 */
-.step8-app-card { grid-template-columns: 52px 1fr auto; align-items: stretch; }
-.user-app-headline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.user-app-status { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 0.74rem; font-weight: 700; }
-.user-app-status.active { background: #d1e7dd; color: #0f5132; }
-.user-app-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.user-app-meta span { display: inline-block; background: #f1f3f5; color: #495057; border-radius: 999px; padding: 3px 9px; font-size: 0.78rem; }
-.user-app-run-info { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; color: #6c757d; font-size: 0.82rem; }
-.launch-app-btn { align-self: center; margin: 0; min-width: 72px; }
-
-@media (max-width: 720px) {
-  .step8-app-card { grid-template-columns: 40px 1fr; }
-  .launch-app-btn { grid-column: 1 / -1; width: 100%; }
-}
-
-/* STEP 8 v2 구조 안정화 */
-.app-shell { max-width: 1040px; }
-.platform-header { margin-bottom: 18px; }
-.shell-card h3 { font-size: 1rem; margin: 0 0 12px; color: #333; }
-.auth-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-.muted-text { color: #666; font-size: 0.92rem; margin: 6px 0 0; }
-.section-title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-.btn-danger-soft { background: #dc3545; }
-.btn-danger-soft:hover { background: #b02a37; }
-.runtime-grid { display: grid; grid-template-columns: 260px 1fr; gap: 16px; margin: 20px 0; }
-.runtime-nav-card { margin-bottom: 0; padding: 0; overflow: hidden; }
-.runtime-view { min-height: 300px; background: #fff; }
-.dev-tools-card { border-left: 5px solid #6c757d; }
-.dev-tools-card summary { cursor: pointer; font-weight: 700; color: #333; }
-.dev-tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 16px; }
-.dev-tools-grid section { background: #fafafa; border: 1px solid #e9ecef; border-radius: 10px; padding: 14px; }
-[data-auth="private"], [data-auth="admin"] { transition: opacity 0.15s ease-in-out; }
-
-@media (max-width: 760px) {
-  .auth-grid, .runtime-grid, .dev-tools-grid { grid-template-columns: 1fr; }
-  .section-title-row { flex-direction: column; }
-}
+body { background: #f0f2f5; margin: 0; font-family: 'Segoe UI', sans-serif; }
+/* Glass UI 레이아웃 */
+.platform-container { display: flex; min-height: 100vh; }
+.sidebar { width: 260px; background: white; border-right: 1px solid #e5e7eb; padding: 20px; }
+.main-content { flex: 1; padding: 40px; }
+.app-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); transition: 0.3s; }
+.app-card:hover { transform: translateY(-5px); }
