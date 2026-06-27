@@ -18,45 +18,37 @@ const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const userStatus = document.getElementById("userStatus");
 
-signupBtn.addEventListener("click", async () => {
+signupBtn.onclick = async () => {
   try {
-    const email = signupEmail.value;
-    const password = signupPassword.value;
-
-    await createUserWithEmailAndPassword(auth, email, password);
-
+    await createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value);
     alert("회원가입 성공");
   } catch (error) {
-    alert("회원가입 실패: " + error.message);
+    alert("회원가입 실패\n" + error.message);
   }
-});
+};
 
-loginBtn.addEventListener("click", async () => {
+loginBtn.onclick = async () => {
   try {
-    const email = loginEmail.value;
-    const password = loginPassword.value;
-
-    await signInWithEmailAndPassword(auth, email, password);
-
+    await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
     alert("로그인 성공");
   } catch (error) {
-    alert("로그인 실패: " + error.message);
+    alert("로그인 실패\n" + error.message);
   }
-});
+};
 
-logoutBtn.addEventListener("click", async () => {
+logoutBtn.onclick = async () => {
   try {
     await signOut(auth);
     alert("로그아웃 성공");
   } catch (error) {
-    alert("로그아웃 실패: " + error.message);
+    alert("로그아웃 실패\n" + error.message);
   }
-});
+};
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
     userStatus.textContent = "로그인 중: " + user.email;
   } else {
-    userStatus.textContent = "로그인 안 됨";
+    userStatus.textContent = "로그인 안됨";
   }
 });

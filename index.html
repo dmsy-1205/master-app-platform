@@ -3,26 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform</title>
+  <title>Master App Platform - STEP 2</title>
 </head>
 <body>
-<h1>Master App Platform</h1>
+  <h1>Master App Platform</h1>
+  <p>STEP 2 - Realtime Database 연결 테스트</p>
 
-<h2>회원가입</h2>
-<input id="signupEmail" type="email" placeholder="이메일">
-<input id="signupPassword" type="password" placeholder="비밀번호">
-<button id="signupBtn">회원가입</button>
+  <hr>
 
-<h2>로그인</h2>
-<input id="loginEmail" type="email" placeholder="이메일">
-<input id="loginPassword" type="password" placeholder="비밀번호">
-<button id="loginBtn">로그인</button>
+  <h2>회원가입</h2>
+  <input id="signupEmail" type="email" placeholder="이메일">
+  <input id="signupPassword" type="password" placeholder="비밀번호">
+  <button id="signupBtn">회원가입</button>
 
-<h2>로그인 상태</h2>
-<p id="userStatus">확인 중...</p>
-<button id="logoutBtn">로그아웃</button>
+  <h2>로그인</h2>
+  <input id="loginEmail" type="email" placeholder="이메일">
+  <input id="loginPassword" type="password" placeholder="비밀번호">
+  <button id="loginBtn">로그인</button>
 
-<script type="module" src="./firebase.js"></script>
-<script type="module" src="./auth.js"></script>
+  <h2>로그인 상태</h2>
+  <p id="userStatus">확인 중...</p>
+  <button id="logoutBtn">로그아웃</button>
+
+  <hr>
+
+  <h2>Realtime Database 테스트</h2>
+  <p>로그인한 상태에서 아래 버튼을 순서대로 테스트하세요.</p>
+
+  <button id="writeTestBtn">쓰기 테스트</button>
+  <button id="readTestBtn">읽기 테스트</button>
+  <button id="deleteTestBtn">삭제 테스트</button>
+
+  <h3>DB 테스트 결과</h3>
+  <pre id="dbResult">아직 실행 전입니다.</pre>
+
+  <script type="module" src="./firebase.js"></script>
+  <script type="module" src="./auth.js"></script>
+  <script type="module" src="./database.js"></script>
 </body>
 </html>
