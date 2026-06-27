@@ -31,3 +31,32 @@ pre { background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px; ov
 .btn-reject:hover { background: #c82333; }
 .info-text { color: #e83e8c; font-weight: bold; font-size: 0.9rem; }
 .app-loading-fallback { color: #007bff; font-weight: 500; }
+/* STEP 7 사용자 Dashboard */
+.user-dashboard-box { border-left: 5px solid #0d6efd; }
+.dashboard-title-row { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.dashboard-help { color: #666; margin: 0; font-size: 0.95rem; }
+.dashboard-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.dashboard-actions button:disabled { background: #adb5bd; cursor: not-allowed; }
+.dashboard-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0; }
+.dashboard-summary-card { background: #f8fbff; border: 1px solid #d9e8ff; border-radius: 10px; padding: 14px; }
+.dashboard-summary-card span { display: block; color: #5f6b7a; font-size: 0.85rem; margin-bottom: 5px; }
+.dashboard-summary-card strong { color: #0d47a1; font-size: 1.05rem; }
+.dashboard-profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; background: #fafafa; border: 1px solid #e9ecef; border-radius: 10px; padding: 14px; margin-bottom: 18px; }
+.dashboard-profile-grid p { margin: 0; word-break: break-all; }
+.dashboard-profile-grid span { color: #495057; }
+.dashboard-app-title { font-size: 1.05rem; margin: 12px 0; color: #333; }
+.user-app-grid { display: grid; gap: 12px; }
+.user-app-card { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; background: #fff; border: 1px solid #dee2e6; border-radius: 12px; padding: 14px; }
+.user-app-icon { font-size: 1.7rem; text-align: center; }
+.user-app-body h4 { margin: 0 0 4px; font-size: 1rem; color: #212529; }
+.user-app-body p { margin: 0 0 6px; color: #666; font-size: 0.9rem; }
+.user-app-path { display: inline-block; background: #f1f3f5; color: #495057; border-radius: 999px; padding: 3px 9px; font-size: 0.78rem; }
+.user-app-open { background: #198754; color: #fff; text-decoration: none; border-radius: 8px; padding: 9px 12px; font-weight: 700; }
+.user-app-open:hover { background: #146c43; color: #fff; }
+.dashboard-empty { color: #6c757d; background: #f8f9fa; border: 1px dashed #ced4da; border-radius: 10px; padding: 16px; text-align: center; }
+
+@media (max-width: 720px) {
+  .dashboard-summary-grid, .dashboard-profile-grid { grid-template-columns: 1fr; }
+  .user-app-card { grid-template-columns: 40px 1fr; }
+  .user-app-open { grid-column: 1 / -1; text-align: center; }
+}

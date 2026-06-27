@@ -1,36 +1,43 @@
-\# # Project Status - Master App Platform
+# Project Status - Master App Platform
 
+## 대시보드 요약
 
+- 현재 진행 완료 단계: STEP 7 사용자 Dashboard 완료
+- 프로젝트 타깃 버전 명칭: master-app-platform-step07-v1
+- 다음 개발 예정 단계: STEP 8 앱 연결
 
-\## 대시보드 요약
+## 단계별 세부 마일스톤 현황
 
-\- 현재 진행 완료 단계: STEP 6 다중 서브 애플리케이션 등록 및 라우팅 메타데이터 관리 완료\[cite: 2]
+- [x] STEP 1: 이메일 기반 회원가입 / 로그인 / 로그아웃 / 세션 자동로그인 유지 완료
+- [x] STEP 2: Realtime Database 테스트 엔드포인트 연동 완료
+- [x] STEP 3: 테스트 계정 전용 관리자 수동 할당 및 데이터베이스 분리 완료
+- [x] STEP 4: 회원 승인 신청 트래킹을 위한 applications/ 테이블 연동 완료
+- [x] STEP 5: 관리자 전용 대시보드 기반 회원 승인/거절 처리 시스템 완료
+- [x] STEP 6: 다중 서브 애플리케이션 등록 및 라우팅 메타데이터 관리 완료
+- [x] STEP 7: 사용자 Dashboard 완료
+- [ ] STEP 8: 앱 연결 대기
+- [ ] STEP 9: Firebase Rules 보안 적용 대기
+- [ ] STEP 10: Netlify 최종 배포 및 API Key 제한 대기
 
-\- 프로젝트 타깃 버전 명칭: master-app-platform-step06-v1\[cite: 2]
+## STEP 7 구현 내용
 
-\- 다음 개발 예정 단계: STEP 7 사용자 Dashboard\[cite: 2]
+- 로그인 사용자의 이메일 UID 세션 상태 표시
+- 관리자 여부 확인 및 권한 구분 표시
+- 회원 신청 상태 조회 및 승인 상태 표시
+- 신청 일시 처리 일시 표시
+- 승인 완료 사용자에게 활성화된 서브 애플리케이션 목록 제공
+- 앱 실행 버튼을 통한 기존 STEP6 MasterRouter 연동
+- 승인 전 사용자에게 앱 제한 안내 표시
 
+## 기존 기능 보존 점검
 
+- Firebase 설정 파일은 변경하지 않음
+- 기존 Authentication 로직은 변경하지 않음
+- 기존 Database 테스트 로직은 변경하지 않음
+- 기존 관리자 등록 승인 거절 로직은 변경하지 않음
+- 기존 STEP6 동적 라우팅 엔진은 변경하지 않음
+- 사용자 Dashboard만 신규 파일과 UI로 추가함
 
-\## 단계별 세부 마일스톤 현황
+## 다음 작업
 
-\- \[x] STEP 1: 이메일 기반 회원가입 / 로그인 / 로그아웃 / 세션 자동로그인 유지 (완료)\[cite: 2]
-
-\- \[x] STEP 2: Realtime Database 테스트 엔드포인트 연동 (완료)\[cite: 2]
-
-\- \[x] STEP 3: 테스트 계정 전용 관리자 수동 할당 및 데이터베이스 분리 (완료)\[cite: 2]
-
-\- \[x] STEP 4: 회원 승인 신청 트래킹을 위한 applications/ 테이블 연동 (완료)\[cite: 2]
-
-\- \[x] STEP 5: 관리자 전용 대시보드 기반 회원 승인/거절 처리 시스템 (완료)\[cite: 2]
-
-\- \[x] STEP 6: 다중 서브 애플리케이션 등록 및 라우팅 메타데이터 관리 (완료)\[cite: 2]
-
-\- \[ ] STEP 7: 사용자 Dashboard (대기 - 다음 진행 예정)\[cite: 2]
-
-\- \[ ] STEP 8: 앱 연결 (대기)\[cite: 2]
-
-\- \[ ] STEP 9: Firebase Rules 보안 적용 (대기)\[cite: 2]
-
-\- \[ ] STEP 10: Netlify 최종 배포 및 API Key 제한 (대기)\[cite: 2]
-
+STEP 8에서는 앱 연결 단계로 이동하여 사용자별 앱 접근 권한과 실제 서브 애플리케이션 접근 제어를 연결합니다.
