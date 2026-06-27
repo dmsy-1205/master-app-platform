@@ -2,7 +2,7 @@
  * Master App Platform - STEP 6 핵심 동적 라우팅 엔진
  * Firebase 메타데이터를 기반으로 클라이언트 사이드 라우팅 및 샌드박스 렌더링을 제어합니다.
  */
-import { listenSubApps } from './database.js';
+import { listenSubApps, normalizeActiveStatus } from './database.js';
 
 class MasterRouter {
     constructor() {
@@ -20,7 +20,7 @@ class MasterRouter {
             
             Object.keys(apps).forEach(appId => {
                 const app = apps[appId];
-                if (app.isActive) {
+                if (normalizeActiveStatus(app.isActive)) {
                     this.routes[app.path] = app;
                     this.renderNavigationItem(app);
                 }

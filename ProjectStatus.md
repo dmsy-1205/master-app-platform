@@ -2,8 +2,8 @@
 
 ## 대시보드 요약
 
-- 현재 진행 완료 단계: STEP 7 사용자 Dashboard 완료
-- 프로젝트 타깃 버전 명칭: master-app-platform-step07-v1
+- 현재 진행 완료 단계: STEP 7 사용자 Dashboard 완료 및 STEP6 라우팅 상태 버튼 안정화
+- 프로젝트 타깃 버전 명칭: master-app-platform-step07-v2
 - 다음 개발 예정 단계: STEP 8 앱 연결
 
 ## 단계별 세부 마일스톤 현황
@@ -37,6 +37,16 @@
 - 기존 관리자 등록 승인 거절 로직은 변경하지 않음
 - 기존 STEP6 동적 라우팅 엔진은 변경하지 않음
 - 사용자 Dashboard만 신규 파일과 UI로 추가함
+
+
+## STEP 7 안정화 v2 수정 내역
+
+- 실시간 등재 서브 애플리케이션 라우팅 테이블의 활성화/비활성화 버튼 클릭 이벤트를 이벤트 위임 방식으로 보강
+- `apps/{appId}/isActive` 갱신 시 Boolean 값으로 저장되도록 수정
+- 상태 변경 시 `updatedAt` 기록 추가
+- 기존 문자열 상태값과 Boolean 상태값을 함께 처리하는 `normalizeActiveStatus` 함수 추가
+- 관리자 테이블 MasterRouter 사용자 Dashboard가 같은 활성 상태 판정 기준을 사용하도록 수정
+- Firebase 권한 오류 또는 네트워크 오류 발생 시 관리자에게 alert로 원인 표시
 
 ## 다음 작업
 

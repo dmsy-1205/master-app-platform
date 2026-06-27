@@ -68,7 +68,18 @@ export function listenSubApps(callback) {
 /**
  * 서브 앱 활성화/비활성화 상태 변경
  */
+export function normalizeActiveStatus(value) {
+    return value === true || value === 'true';
+}
+
 export function updateAppStatus(appId, isActive) {
+    if (!appId) {
+        return Promise.reject(new Error('앱 ID가 비어 있어 상태를 변경할 수 없습니다.'));
+    }
+
     const appRef = ref(db, 'apps/' + appId);
-    return update(appRef, { isActive });
+    return update(appRef, {
+        isActive: Boolean(isActive),
+        updatedAt: new Date().toISOString()
+    });
 }

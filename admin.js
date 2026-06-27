@@ -1,6 +1,6 @@
 import { db, auth } from './firebase.js';
 import { ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { registerSubApp, listenSubApps, updateAppStatus } from './database.js';
+import { registerSubApp, listenSubApps, updateAppStatus, normalizeActiveStatus } from './database.js';
 
 const makeAdminBtn = document.getElementById('makeAdminBtn');
 const checkAdminBtn = document.getElementById('checkAdminBtn');
@@ -99,6 +99,29 @@ export function initAdminSubAppManager() {
     const registerForm = document.getElementById('subapp-register-form');
     const appListContainer = document.getElementById('admin-subapp-list');
 
+    if (appListContainer && !appListContainer.dataset.toggleBound) {
+        appListContainer.dataset.toggleBound = 'true';
+        appListContainer.addEventListener('click', async (e) => {
+            const target = e.target.closest('.toggle-status-btn');
+            if (!target) return;
+
+            const id = target.dataset.id;
+            const currentStatus = target.dataset.status === 'true';
+            target.disabled = true;
+            target.textContent = '처리 중...';
+
+            try {
+                await updateAppStatus(id, !currentStatus);
+                console.log(`서브 앱 상태 변경 완료: ${id} -> ${!currentStatus}`);
+            } catch (error) {
+                console.error('서브 앱 상태 변경 실패:', error);
+                alert('활성화/비활성화 처리 오류: ' + error.message);
+                target.disabled = false;
+                target.textContent = currentStatus ? '비활성화' : '활성화';
+            }
+        });
+    }
+
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -136,32 +159,24 @@ export function initAdminSubAppManager() {
 
         keys.forEach(appId => {
             const app = apps[appId];
+            const isActive = normalizeActiveStatus(app.isActive);
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${app.icon} <strong>${app.name}</strong> (${appId})</td>
-                <td><code>${app.path}</code></td>
-                <td><small>${app.entryUrl}</small></td>
+                <td>${app.icon || '📦'} <strong>${app.name || '이름 없음'}</strong> (${appId})</td>
+                <td><code>${app.path || '-'}</code></td>
+                <td><small>${app.entryUrl || '-'}</small></td>
                 <td>
-                    <span class="badge ${app.isActive ? 'bg-success' : 'bg-secondary'}">
-                        ${app.isActive ? '활성화' : '비활성화'}
+                    <span class="badge ${isActive ? 'bg-success' : 'bg-secondary'}">
+                        ${isActive ? '활성화' : '비활성화'}
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-sm ${app.isActive ? 'btn-warning' : 'btn-success'} toggle-status-btn" data-id="${appId}" data-status="${app.isActive}">
-                        ${app.isActive ? '비활성화' : '활성화'}
+                    <button type="button" class="btn btn-sm ${isActive ? 'btn-warning' : 'btn-success'} toggle-status-btn" data-id="${appId}" data-status="${isActive}">
+                        ${isActive ? '비활성화' : '활성화'}
                     </button>
                 </td>
             `;
             appListContainer.appendChild(tr);
-        });
-
-        // 상태 토글 이벤트 바인딩
-        document.querySelectorAll('.toggle-status-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.target.getAttribute('data-id');
-                const currentStatus = e.target.getAttribute('data-status') === 'true';
-                updateAppStatus(id, !currentStatus);
-            });
         });
     });
 }

@@ -1,6 +1,7 @@
 import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { ref, get, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { normalizeActiveStatus } from './database.js';
 
 const dashboardLoginState = document.getElementById('dashboardLoginState');
 const dashboardEmail = document.getElementById('dashboardEmail');
@@ -109,7 +110,7 @@ async function loadUserDashboard(user) {
       const appsData = snapshot.val() || {};
       const activeApps = Object.keys(appsData)
         .map(appId => ({ id: appId, ...appsData[appId] }))
-        .filter(app => app.isActive === true)
+        .filter(app => normalizeActiveStatus(app.isActive))
         .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
       renderApps(activeApps, approvalStatus);
     });
