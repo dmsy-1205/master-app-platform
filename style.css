@@ -30,3 +30,4 @@ pre { background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px; ov
 .btn-reject { background: #dc3545; }
 .btn-reject:hover { background: #c82333; }
 .info-text { color: #e83e8c; font-weight: bold; font-size: 0.9rem; }
+.app-loading-fallback { color: #007bff; font-weight: 500; }

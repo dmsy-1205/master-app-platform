@@ -6,32 +6,38 @@ const readTestBtn = document.getElementById('readTestBtn');
 const deleteTestBtn = document.getElementById('deleteTestBtn');
 const dbResult = document.getElementById('dbResult');
 
-writeTestBtn.addEventListener('click', async () => {
-  const user = auth.currentUser;
-  if (!user) return alert('로그인이 필요합니다.');
-  try {
-    await set(ref(db, `tests/${user.uid}`), { message: "STEP 2 테스트 성공", timestamp: new Date().toISOString() });
-    dbResult.innerText = "데이터 쓰기 완료!";
-  } catch (e) { dbResult.innerText = "에러: " + e.message; }
-});
+if (writeTestBtn) {
+  writeTestBtn.addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) return alert('로그인이 필요합니다.');
+    try {
+      await set(ref(db, `tests/${user.uid}`), { message: "STEP 2 테스트 성공", timestamp: new Date().toISOString() });
+      dbResult.innerText = "데이터 쓰기 완료!";
+    } catch (e) { dbResult.innerText = "에러: " + e.message; }
+  });
+}
 
-readTestBtn.addEventListener('click', async () => {
-  const user = auth.currentUser;
-  if (!user) return alert('로그인이 필요합니다.');
-  try {
-    const snapshot = await get(ref(db, `tests/${user.uid}`));
-    dbResult.innerText = snapshot.exists() ? JSON.stringify(snapshot.val(), null, 2) : "데이터가 없습니다.";
-  } catch (e) { dbResult.innerText = "에러: " + e.message; }
-});
+if (readTestBtn) {
+  readTestBtn.addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) return alert('로그인이 필요합니다.');
+    try {
+      const snapshot = await get(ref(db, `tests/${user.uid}`));
+      dbResult.innerText = snapshot.exists() ? JSON.stringify(snapshot.val(), null, 2) : "데이터가 없습니다.";
+    } catch (e) { dbResult.innerText = "에러: " + e.message; }
+  });
+}
 
-deleteTestBtn.addEventListener('click', async () => {
-  const user = auth.currentUser;
-  if (!user) return alert('로그인이 필요합니다.');
-  try {
-    await remove(ref(db, `tests/${user.uid}`));
-    dbResult.innerText = "데이터 삭제 완료!";
-  } catch (e) { dbResult.innerText = "에러: " + e.message; }
-});
+if (deleteTestBtn) {
+  deleteTestBtn.addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) return alert('로그인이 필요합니다.');
+    try {
+      await remove(ref(db, `tests/${user.uid}`));
+      dbResult.innerText = "데이터 삭제 완료!";
+    } catch (e) { dbResult.innerText = "에러: " + e.message; }
+  });
+}
 
 // ==========================================
 // [STEP 6] 다중 서브 애플리케이션 라우팅 메타데이터 관리

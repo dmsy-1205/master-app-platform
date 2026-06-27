@@ -16,7 +16,7 @@ class MasterRouter {
         // Firebase 등재 라우팅 메타데이터 실시간 감지 및 라우팅 테이블 맵핑
         listenSubApps((apps) => {
             this.routes = {};
-            if(this.navContainer) this.navContainer.innerHTML = '';
+            if (this.navContainer) this.navContainer.innerHTML = '';
             
             Object.keys(apps).forEach(appId => {
                 const app = apps[appId];
@@ -51,13 +51,13 @@ class MasterRouter {
 
         if (targetApp) {
             this.viewContainer.innerHTML = `
-                <div class="app-loading-fallback">
-                    <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2">Sub Application [${targetApp.name}] 로딩 중...</p>
+                <div class="app-loading-fallback d-flex align-items-center gap-2">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                    <span>Sub Application [${targetApp.name}] 로딩 중...</span>
                 </div>
             `;
             try {
-                // 마이크로 앱 진입점 엔트리 원격/로컬 페칭 및 마운트 연동 (샌드박스프레임화 기초)
+                // 마이크로 앱 진입점 엔트리 원격/로컬 페칭 및 마운트 연동
                 const response = await fetch(targetApp.entryUrl);
                 if (!response.ok) throw new Error("애플리케이션 소스를 불러올 수 없습니다.");
                 const htmlContent = await response.text();
@@ -69,14 +69,13 @@ class MasterRouter {
                 this.executeInjectedScripts(this.viewContainer);
             } catch (error) {
                 this.viewContainer.innerHTML = `
-                    <div class="alert alert-danger">
-                        <h5>⚠️ Sub-App 로딩 실패</h5>
-                        <p>${error.message}</p>
+                    <div class="alert alert-danger py-2">
+                        <strong>⚠️ Sub-App 로딩 실패:</strong> ${error.message}
                     </div>
                 `;
             }
         } else {
-            if(path === '/' || path === '') {
+            if (path === '/' || path === '') {
                 this.viewContainer.innerHTML = '<h3>Master App Platform 메인 대시보드</h3><p>좌측 메뉴에서 서브 애플리케이션을 선택하세요.</p>';
             } else {
                 this.viewContainer.innerHTML = '<h3>404 Not Found</h3><p>존재하지 않거나 비활성화된 서브 애플리케이션 라우팅입니다.</p>';
