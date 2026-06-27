@@ -38,22 +38,26 @@ signupBtn.onclick = async () => {
       uid: user.uid,
       email: user.email,
       role: "user",
-      status: "active",
+      status: "new",
       createdAt: new Date().toISOString()
     });
 
-    alert("회원가입 성공\n기본 권한은 일반 사용자입니다.");
+    alert("회원가입 성공
+기본 권한은 일반 사용자이며 상태는 new 입니다.");
   } catch (error) {
-    alert("회원가입 실패\n" + error.message);
+    alert("회원가입 실패
+" + error.message);
   }
 };
 
 loginBtn.onclick = async () => {
   try {
     await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
-    alert("로그인 성공");
+    alert("로그인 성공
+회원 상태를 확인합니다.");
   } catch (error) {
-    alert("로그인 실패\n" + error.message);
+    alert("로그인 실패
+" + error.message);
   }
 };
 
@@ -62,9 +66,37 @@ logoutBtn.onclick = async () => {
     await signOut(auth);
     alert("로그아웃 성공");
   } catch (error) {
-    alert("로그아웃 실패\n" + error.message);
+    alert("로그아웃 실패
+" + error.message);
   }
 };
+
+async function moveByUserStatus(user, userData) {
+  if (!userData) return;
+
+  if (userData.role === "admin") {
+    return;
+  }
+
+  if (userData.status === "new") {
+    window.location.href = "./pages/apply.html";
+    return;
+  }
+
+  if (userData.status === "pending") {
+    window.location.href = "./pages/pending.html";
+    return;
+  }
+
+  if (userData.status === "approved") {
+    window.location.href = "./pages/dashboard.html";
+    return;
+  }
+
+  if (userData.status === "rejected") {
+    window.location.href = "./pages/apply.html";
+  }
+}
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -78,7 +110,9 @@ onAuthStateChanged(auth, async (user) => {
   if (snapshot.exists()) {
     const userData = snapshot.val();
     userStatus.textContent =
-      "로그인 중: " + user.email + " / 권한: " + userData.role;
+      "로그인 중: " + user.email + " / 권한: " + userData.role + " / 상태: " + userData.status;
+
+    await moveByUserStatus(user, userData);
   } else {
     userStatus.textContent =
       "로그인 중: " + user.email + " / 사용자 정보 없음";

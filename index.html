@@ -3,19 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 3</title>
+  <title>Master App Platform - STEP 4</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <main class="wrap">
     <h1>Master App Platform</h1>
-    <p class="subtitle">STEP 3 - 관리자 권한 시스템 테스트</p>
+    <p class="subtitle">STEP 4 - 회원 신청 시스템</p>
+
+    <section class="card notice-card">
+      <h2>서비스 흐름</h2>
+      <p>회원가입 후 로그인하면 회원 상태를 확인합니다.</p>
+      <p>신청하지 않은 회원은 신청 페이지로 이동하고 신청 완료 후 승인 대기 상태가 됩니다.</p>
+    </section>
 
     <section class="card">
       <h2>회원가입</h2>
       <input id="signupEmail" type="email" placeholder="이메일">
       <input id="signupPassword" type="password" placeholder="비밀번호">
       <button id="signupBtn">회원가입</button>
+      <p class="hint">회원가입 후 기본 상태는 new 입니다.</p>
     </section>
 
     <section class="card">
@@ -41,14 +48,9 @@
 
     <section class="card admin-box">
       <h2>STEP 3 관리자 권한 테스트</h2>
-      <p>
-        현재 로그인한 사용자를 테스트용 관리자 계정으로 등록하고
-        관리자 권한을 확인합니다.
-      </p>
-
+      <p>현재 로그인한 사용자를 테스트용 관리자 계정으로 등록하고 관리자 권한을 확인합니다.</p>
       <button id="makeAdminBtn">현재 계정을 관리자 등록</button>
       <button id="checkAdminBtn">관리자 권한 확인</button>
-
       <h3>관리자 상태</h3>
       <pre id="adminResult">아직 확인 전입니다.</pre>
     </section>
