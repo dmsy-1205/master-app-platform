@@ -1,22 +1,58 @@
-import { auth } from './firebase.js';
-import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { auth, db } from './firebase.js';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+const signupEmail = document.getElementById('signupEmail');
+const signupPassword = document.getElementById('signupPassword');
+const signupBtn = document.getElementById('signupBtn');
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
 const loginBtn = document.getElementById('loginBtn');
-const content = document.getElementById('main-content');
-const authSection = document.getElementById('auth-section');
+const userStatus = document.getElementById('userStatus');
+const logoutBtn = document.getElementById('logoutBtn');
+const adminDashboardSection = document.getElementById('adminDashboardSection');
+
+signupBtn.addEventListener('click', async () => {
+  // 빈 값 입력 방지 필터링
+  if (!signupEmail.value.trim() || !signupPassword.value.trim()) {
+    return alert('회원가입용 이메일과 비밀번호를 모두 입력해주세요.');
+  }
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value);
+    await set(ref(db, `users/${userCredential.user.uid}`), {
+      email: userCredential.user.email,
+      createdAt: new Date().toISOString(),
+      userStatus: 'registered' 
+    });
+    alert('회원가입 성공!');
+  } catch (error) { alert('회원가입 실패: ' + error.message); }
+});
 
 loginBtn.addEventListener('click', async () => {
-    try {
-        await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
-        location.reload();
-    } catch (e) { alert(e.message); }
+  // 빈 값 로그인 시도 차단 (서버 400 에러 제거)
+  if (!loginEmail.value.trim() || !loginPassword.value.trim()) {
+    return alert('로그인할 이메일과 비밀번호를 채워주세요.');
+  }
+  try {
+    await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+    alert('로그인 성공!');
+  } catch (error) { alert('로그인 실패: ' + error.message); }
 });
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        authSection.style.display = 'none';
-        content.style.display = 'block';
-    }
+logoutBtn.addEventListener('click', async () => {
+  try {
+    await signOut(auth);
+    alert('로그아웃 성공!');
+  } catch (error) { alert('로그아웃 실패: ' + error.message); }
 });
 
-document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => location.reload()));
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    userStatus.innerText = `로그인 상태: ${user.email} (${user.uid})`;
+    const adminSnap = await get(ref(db, `admins/${user.uid}`));
+    adminDashboardSection.style.display = (adminSnap.exists() && adminSnap.val() === true) ? 'block' : 'none';
+  } else {
+    userStatus.innerText = '로그아웃됨 (인증 세션 없음)';
+    adminDashboardSection.style.display = 'none';
+  }
+});

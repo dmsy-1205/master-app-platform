@@ -4,30 +4,30 @@ body {
   margin: 0;
   padding: 20px;
 }
-.wrap { max-width: 1000px; margin: 0 auto; }
+/* 대시보드가 수평으로 예쁘게 배치되도록 가로폭을 950px로 확장 */
+.wrap { max-width: 950px; margin: 0 auto; }
 h1 { color: #1a1a1a; text-align: center; margin-bottom: 5px; }
 .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
-.card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e3e3e3; }
-h2 { font-size: 1.2rem; margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-bottom: 15px; }
+.card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+h2 { font-size: 1.2rem; margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; margin-bottom: 5px; }
+button:hover { background-color: #0056b3; }
 pre { background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 0.9rem; }
 .admin-box { border-left: 5px solid #ffc107; }
 .apply-box { border-left: 5px solid #28a745; }
 .approval-box { border-left: 5px solid #e83e8c; }
-.table-responsive { background: #fff; border-radius: 8px; }
-
-/* 대시보드 카드 내부 스타일 */
-.user-app-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 1.25rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.user-app-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
+.apps-list-container { background: #fafafa; border: 1px solid #e3e3e3; border-radius: 8px; padding: 15px; margin-top: 15px; }
+.app-dashboard-card { background: #fff; border: 1px solid #dcdcdc; border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+.small-uid { font-size: 0.75rem; color: #888; }
+.badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+.status-pending { background: #ffeeba; color: #856404; }
+.status-approved { background: #d4edda; color: #155724; }
+.status-rejected { background: #f8d7da; color: #721c24; }
+.app-control-btns { margin-top: 10px; }
+.btn-approve { background: #28a745; }
+.btn-approve:hover { background: #218838; }
+.btn-reject { background: #dc3545; }
+.btn-reject:hover { background: #c82333; }
+.info-text { color: #e83e8c; font-weight: bold; font-size: 0.9rem; }
+.app-loading-fallback { color: #007bff; font-weight: 500; }
