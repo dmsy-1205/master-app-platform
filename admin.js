@@ -1,174 +1,177 @@
-import { db, auth } from './firebase.js';
-import { ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { registerSubApp, listenSubApps, updateAppStatus } from './database.js';
+import { db } from './firebase.js';
+import { ref, get, update, remove, onValue, set } from './database.js';
 
-const makeAdminBtn = document.getElementById('makeAdminBtn');
-const checkAdminBtn = document.getElementById('checkAdminBtn');
-const adminResult = document.getElementById('adminResult');
-const adminDashboardSection = document.getElementById('adminDashboardSection');
-const loadAppsBtn = document.getElementById('loadAppsBtn');
-const appsDashboardList = document.getElementById('appsDashboardList');
+// 관리자 탭 제어 로직 인터랙션 구현
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active-content'));
 
-if (makeAdminBtn) {
-  makeAdminBtn.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return alert('로그인이 필요합니다.');
-    try {
-      await set(ref(db, `admins/${user.uid}`), true);
-      adminResult.innerText = `현재 계정(${user.email})을 시스템 관리자로 임시 등록 완료!`;
-      if (adminDashboardSection) adminDashboardSection.style.display = 'block';
-    } catch (e) { adminResult.innerText = "에러: " + e.message; }
-  });
-}
-
-if (checkAdminBtn) {
-  checkAdminBtn.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return alert('로그인이 필요합니다.');
-    try {
-      const snapshot = await get(ref(db, `admins/${user.uid}`));
-      if (snapshot.exists() && snapshot.val() === true) {
-        adminResult.innerText = "권한 검증 결과: [최고 관리자 권한 확인됨]";
-        if (adminDashboardSection) adminDashboardSection.style.display = 'block';
-      } else {
-        adminResult.innerText = "권한 검증 결과: [일반 사용자 계정 - 권한 없음]";
-        if (adminDashboardSection) adminDashboardSection.style.display = 'none';
-      }
-    } catch (e) { adminResult.innerText = "검증 에러: " + e.message; }
-  });
-}
-
-if (loadAppsBtn) {
-  loadAppsBtn.addEventListener('click', () => {
-    const user = auth.currentUser;
-    if (!user) return alert('관리자 세션이 만료되었습니다.');
-
-    onValue(ref(db, 'applications'), (snapshot) => {
-      if (!appsDashboardList) return;
-      appsDashboardList.innerHTML = '';
-      const data = snapshot.val();
-      if (!data) {
-        appsDashboardList.innerHTML = '<p class="placeholder-text">현재 대기 중인 승인 신청 데이터가 존재하지 않습니다.</p>';
-        return;
-      }
-
-      Object.keys(data).forEach(uid => {
-        const item = data[uid];
-        const appCard = document.createElement('div');
-        appCard.className = 'app-dashboard-card';
-        appCard.innerHTML = `
-          <div class="app-info">
-            <p><strong>신청자 이메일:</strong> ${item.email || '알 수 없음'}</p>
-            <p><strong>사유:</strong> ${item.reason || '입력 누락'}</p>
-            <p><strong>현재 상태:</strong> <span class="badge status-${item.status}">${item.status}</span></p>
-            <p class="small-uid">UID: ${uid}</p>
-          </div>
-          <div class="app-control-btns">
-            <button class="btn-approve" data-uid="${uid}">승인 처리</button>
-            <button class="btn-reject" data-uid="${uid}">거절 처리</button>
-          </div>`;
-        appsDashboardList.appendChild(appCard);
-      });
-
-      document.querySelectorAll('.btn-approve').forEach(btn => {
-        btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'approved'));
-      });
-      document.querySelectorAll('.btn-reject').forEach(btn => {
-        btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'rejected'));
-      });
+        btn.classList.add('active');
+        const target = btn.getAttribute('data-target');
+        document.getElementById(target)?.classList.add('active-content');
     });
-  });
-}
+});
 
-async function processApplication(targetUid, statusAction) {
-  try {
-    const updates = {};
-    updates[`applications/${targetUid}/status`] = statusAction;
-    updates[`applications/${targetUid}/reviewedAt`] = new Date().toISOString();
-    updates[`users/${targetUid}/userStatus`] = statusAction;
+/**
+ * 탭 1: 사용자 가입 신청 목록 실시간 렌더링 및 제어 로직
+ */
+export function renderUserList() {
+    const userListContainer = document.getElementById('admin-user-list');
+    if (!userListContainer) return;
 
-    await update(ref(db), updates);
-    alert(`정상적으로 해당 유저의 신청 내역을 [${statusAction}] 처리하였습니다.`);
-  } catch (error) { alert('상태 제어 처리 오류: ' + error.message); }
-}
-
-// ==========================================
-// [STEP 6] 서브 앱 등록 및 메타데이터 UI 제어
-// ==========================================
-export function initAdminSubAppManager() {
-    const registerForm = document.getElementById('subapp-register-form');
-    const appListContainer = document.getElementById('admin-subapp-list');
-
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const appId = document.getElementById('app-id').value.trim();
-            const appData = {
-                name: document.getElementById('app-name').value.trim(),
-                path: document.getElementById('app-path').value.trim(),
-                entryUrl: document.getElementById('app-entry').value.trim(),
-                icon: document.getElementById('app-icon').value.trim() || '📦',
-                description: document.getElementById('app-desc').value.trim(),
-                isActive: true
-            };
-
-            try {
-                await registerSubApp(appId, appData);
-                alert(`서브 앱 [${appData.name}] 등록 및 라우팅 메타데이터 동기화 완료`);
-                registerForm.reset();
-            } catch (error) {
-                console.error("서브 앱 등록 실패:", error);
-                alert("등록 실패: " + error.message);
-            }
-        });
-    }
-
-    // 실시간 라우팅 메타데이터 목록 렌더링
-    listenSubApps((apps) => {
-        if (!appListContainer) return;
-        appListContainer.innerHTML = '';
-
-        const keys = Object.keys(apps);
-        if (keys.length === 0) {
-            appListContainer.innerHTML = '<tr><td colspan="5" class="text-center text-muted">등록된 서브 애플리케이션이 없습니다.</td></tr>';
+    const usersRef = ref(db, 'users');
+    onValue(usersRef, (snapshot) => {
+        userListContainer.innerHTML = '';
+        
+        if (!snapshot.exists()) {
+            userListContainer.innerHTML = '<tr><td colspan="5" class="text-center">가입 신청된 유저가 없습니다.</td></tr>';
             return;
         }
 
-        keys.forEach(appId => {
-            const app = apps[appId];
+        snapshot.forEach((childSnapshot) => {
+            const userId = childSnapshot.key;
+            const user = childSnapshot.val();
+
+            // 관리자 계정 본인은 목록에서 제어 제외
+            if (user.role === 'admin') return;
+
+            let statusBadgeClass = 'badge-pending';
+            if (user.status === 'approved') statusBadgeClass = 'badge-approved';
+            if (user.status === 'rejected') statusBadgeClass = 'badge-rejected';
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${app.icon} <strong>${app.name}</strong> (${appId})</td>
-                <td><code>${app.path}</code></td>
-                <td><small>${app.entryUrl}</small></td>
+                <td><strong>${escapeHtml(user.name)}</strong></td>
+                <td>${escapeHtml(user.email)}</td>
+                <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</td>
+                <td><span class="badge-status ${statusBadgeClass}">${user.status.toUpperCase()}</span></td>
                 <td>
-                    <span class="badge ${app.isActive ? 'bg-success' : 'bg-secondary'}">
-                        ${app.isActive ? '활성화' : '비활성화'}
-                    </span>
+                    <button class="btn btn-success btn-sm btn-approve" data-id="${userId}" style="padding: 0.2rem 0.5rem; font-size: 0.8rem; margin-right: 0.25rem;">승인</button>
+                    <button class="btn btn-danger btn-sm btn-reject" data-id="${userId}" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">거절</button>
+                </td>
+            `;
+            userListContainer.appendChild(tr);
+        });
+
+        // 가입 승인 / 거절 이벤트 리스너 바인딩 일괄 처리
+        document.querySelectorAll('.btn-approve').forEach(b => {
+            b.addEventListener('click', (e) => updateUserStatus(e.target.getAttribute('data-id'), 'approved'));
+        });
+        document.querySelectorAll('.btn-reject').forEach(b => {
+            b.addEventListener('click', (e) => updateUserStatus(e.target.getAttribute('data-id'), 'rejected'));
+        });
+    });
+}
+
+/**
+ * 사용자 상태 업데이트 유틸 함수
+ */
+async function updateUserStatus(userId, newStatus) {
+    try {
+        await update(ref(db, `users/${userId}`), { status: newStatus });
+        alert(`사용자 상태가 성공적으로 [${newStatus}] 변경되었습니다.`);
+    } catch (error) {
+        alert("상태 변경 중 오류 발생: " + error.message);
+    }
+}
+
+/**
+ * 탭 2: 다중 서브 애플리케이션 등록 관리 리스트 구현 (STEP 6 완벽 준수)
+ */
+export function renderAppList() {
+    const appListContainer = document.getElementById('admin-app-list');
+    if (!appListContainer) return;
+
+    const appsRef = ref(db, 'apps');
+    onValue(appsRef, (snapshot) => {
+        appListContainer.innerHTML = '';
+
+        if (!snapshot.exists()) {
+            appListContainer.innerHTML = '<tr><td colspan="6" class="text-center">등록된 서브 애플리케이션 라우팅이 없습니다.</td></tr>';
+            return;
+        }
+
+        snapshot.forEach((childSnapshot) => {
+            const appKey = childSnapshot.key;
+            const app = childSnapshot.val();
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><code>${escapeHtml(app.id)}</code></td>
+                <td>${escapeHtml(app.name)}</td>
+                <td><a href="${escapeHtml(app.url)}" target="_blank">${escapeHtml(app.url)}</a></td>
+                <td>${app.createdAt ? new Date(app.createdAt).toLocaleDateString() : '-'}</td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" class="toggle-app-status" data-id="${appKey}" ${app.active ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
                 </td>
                 <td>
-                    <button class="btn btn-sm ${app.isActive ? 'btn-warning' : 'btn-success'} toggle-status-btn" data-id="${appId}" data-status="${app.isActive}">
-                        ${app.isActive ? '비활성화' : '활성화'}
-                    </button>
+                    <button class="btn btn-danger btn-delete-app" data-id="${appKey}" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">삭제</button>
                 </td>
             `;
             appListContainer.appendChild(tr);
         });
 
-        // 상태 토글 이벤트 바인딩
-        document.querySelectorAll('.toggle-status-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.target.getAttribute('data-id');
-                const currentStatus = e.target.getAttribute('data-status') === 'true';
-                updateAppStatus(id, !currentStatus);
+        // 토글 제어 활성화 바인딩 (STEP 6)
+        document.querySelectorAll('.toggle-app-status').forEach(checkbox => {
+            checkbox.addEventListener('change', async (e) => {
+                const appKey = e.target.getAttribute('data-id');
+                const isChecked = e.target.checked;
+                await update(ref(db, `apps/${appKey}`), { active: isChecked });
+            });
+        });
+
+        // 서브 앱 라우팅 제거 바인딩 (STEP 6)
+        document.querySelectorAll('.btn-delete-app').forEach(b => {
+            b.addEventListener('click', async (e) => {
+                if (confirm("해당 서브 애플리케이션 라우팅 메타데이터를 삭제하시겠습니까?")) {
+                    const appKey = e.target.getAttribute('data-id');
+                    await remove(ref(db, `apps/${appKey}`));
+                }
             });
         });
     });
 }
 
-// DOM 준비 완료 시 구동
-document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('subapp-register-form')) {
-        initAdminSubAppManager();
+// 신규 서브 애플리케이션 메타데이터 등록 폼 제출 리스너 (STEP 6 정합성 유지)
+document.getElementById('app-register-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('app-id').value.trim();
+    const name = document.getElementById('app-name').value.trim();
+    const url = document.getElementById('app-url').value.trim();
+
+    if (!id || !name || !url) return;
+
+    try {
+        // 중복 체크 검증 로직
+        const checkRef = ref(db, `apps/${id}`);
+        const snapshot = await get(checkRef);
+        if (snapshot.exists()) {
+            alert("이미 존재하는 애플리케이션 ID입니다. 다른 ID를 입력하세요.");
+            return;
+        }
+
+        // 초기값 active: true로 세팅하여 완벽 등록 완료
+        await set(ref(db, `apps/${id}`), {
+            id,
+            name,
+            url,
+            active: true,
+            createdAt: Date.now()
+        });
+
+        alert(`[${name}] 서브 애플리케이션 라우팅 메타데이터 등록 완료!`);
+        document.getElementById('app-register-form').reset();
+
+    } catch (error) {
+        alert("서브 앱 등록 실패: " + error.message);
     }
 });
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}

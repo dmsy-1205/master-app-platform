@@ -1,74 +1,74 @@
 import { db, auth } from './firebase.js';
-import { ref, set, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-const writeTestBtn = document.getElementById('writeTestBtn');
-const readTestBtn = document.getElementById('readTestBtn');
-const deleteTestBtn = document.getElementById('deleteTestBtn');
-const dbResult = document.getElementById('dbResult');
-
-if (writeTestBtn) {
-  writeTestBtn.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return alert('로그인이 필요합니다.');
-    try {
-      await set(ref(db, `tests/${user.uid}`), { message: "STEP 2 테스트 성공", timestamp: new Date().toISOString() });
-      dbResult.innerText = "데이터 쓰기 완료!";
-    } catch (e) { dbResult.innerText = "에러: " + e.message; }
-  });
-}
-
-if (readTestBtn) {
-  readTestBtn.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return alert('로그인이 필요합니다.');
-    try {
-      const snapshot = await get(ref(db, `tests/${user.uid}`));
-      dbResult.innerText = snapshot.exists() ? JSON.stringify(snapshot.val(), null, 2) : "데이터가 없습니다.";
-    } catch (e) { dbResult.innerText = "에러: " + e.message; }
-  });
-}
-
-if (deleteTestBtn) {
-  deleteTestBtn.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return alert('로그인이 필요합니다.');
-    try {
-      await remove(ref(db, `tests/${user.uid}`));
-      dbResult.innerText = "데이터 삭제 완료!";
-    } catch (e) { dbResult.innerText = "에러: " + e.message; }
-  });
-}
-
-// ==========================================
-// [STEP 6] 다중 서브 애플리케이션 라우팅 메타데이터 관리
-// ==========================================
+import { ref, set, get, update, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js';
 
 /**
- * 서브 애플리케이션 등록 및 라우팅 메타데이터 저장
+ * [STEP 7 핵심] 일반 사용자용 대시보드 서브 애플리케이션 카드 그리드 출력 로직
  */
-export function registerSubApp(appId, appData) {
-    const appRef = ref(db, 'apps/' + appId);
-    return set(appRef, {
-        ...appData,
-        updatedAt: new Date().toISOString()
-    });
-}
+export function renderUserDashboard() {
+    const gridContainer = document.getElementById('user-sub-apps-grid');
+    const countDisplay = document.getElementById('user-app-count');
+    
+    if (!gridContainer) return;
 
-/**
- * 활성화된 모든 서브 애플리케이션 라우팅 데이터 실시간 구독
- */
-export function listenSubApps(callback) {
+    // 실시간으로 활성화(active) 처리된 서브 애플리케이션 목록만 가져옴
     const appsRef = ref(db, 'apps');
     onValue(appsRef, (snapshot) => {
-        const data = snapshot.val();
-        callback(data || {});
+        gridContainer.innerHTML = '';
+        let activeAppCount = 0;
+
+        if (!snapshot.exists()) {
+            gridContainer.innerHTML = '<div class="loading-placeholder">현재 플랫폼에 등록된 서브 애플리케이션이 존재하지 않습니다.</div>';
+            if (countDisplay) countDisplay.textContent = '0';
+            return;
+        }
+
+        snapshot.forEach((childSnapshot) => {
+            const appData = childSnapshot.val();
+            
+            // 오직 active가 true로 켜진 서브 앱만 일반 사용자에게 노출 (STEP 6 정합성 연결)
+            if (appData.active === true) {
+                activeAppCount++;
+
+                const card = document.createElement('div');
+                card.className = 'card app-card';
+                card.innerHTML = `
+                    <div class="app-card-body">
+                        <h4>${escapeHtml(appData.name)}</h4>
+                        <div class="app-card-meta">ID: ${escapeHtml(appData.id)}</div>
+                    </div>
+                    <a href="${escapeHtml(appData.url)}" target="_blank" class="btn btn-primary btn-block" style="text-decoration: none; text-align: center;">
+                        애플리케이션 진입 🚀
+                    </a>
+                `;
+                gridContainer.appendChild(card);
+            }
+        });
+
+        if (countDisplay) {
+            countDisplay.textContent = activeAppCount.toString();
+        }
+
+        if (activeAppCount === 0) {
+            gridContainer.innerHTML = '<div class="loading-placeholder">🔒 현재 접근 가능한 활성화된 서브 애플리케이션이 없습니다. 관리자 승인을 기다려주세요.</div>';
+        }
+    }, (error) => {
+        console.error("대시보드 데이터 로드 에러:", error);
+        gridContainer.innerHTML = '<div class="loading-placeholder" style="color: var(--danger-color);">데이터를 가져오는 중 오류가 발생했습니다.</div>';
     });
 }
 
 /**
- * 서브 앱 활성화/비활성화 상태 변경
+ * XSS 공격 방지를 위한 기본 HTML 이스케이프 유틸 함수
  */
-export function updateAppStatus(appId, isActive) {
-    const appRef = ref(db, 'apps/' + appId);
-    return update(appRef, { isActive });
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
+
+// 관리자 콘솔을 위해 기존 export 유지 모듈화 확보
+export { ref, set, get, update, remove, onValue };

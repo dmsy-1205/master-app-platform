@@ -1,151 +1,180 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 6</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
-  
-  <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master App Platform - STEP 7</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="wrap">
-    <h1>Master App Platform</h1>
-    <p class="subtitle">STEP 6 - 다중 서브 애플리케이션 플랫폼</p>
+    <div id="app">
+        <header class="main-header">
+            <div class="logo">MasterPlatform <span class="badge">STEP 7</span></div>
+            <nav class="nav-links">
+                <span id="user-info-display" class="user-info"></span>
+                <button id="btn-logout" class="btn btn-secondary hide">로그아웃</button>
+            </nav>
+        </header>
 
-    <section class="card">
-      <h2>회원가입</h2>
-      <input id="signupEmail" type="email" placeholder="이메일">
-      <input id="signupPassword" type="password" placeholder="비밀번호">
-      <button id="signupBtn">회원가입</button>
-    </section>
-
-    <section class="card">
-      <h2>로그인</h2>
-      <input id="loginEmail" type="email" placeholder="이메일">
-      <input id="loginPassword" type="password" placeholder="비밀번호">
-      <button id="loginBtn">로그인</button>
-    </section>
-
-    <section class="card">
-      <h2>로그인 상태</h2>
-      <p id="userStatus">확인 중...</p>
-      <button id="logoutBtn">로그아웃</button>
-    </section>
-
-    <section class="card">
-      <h2>STEP 2 DB 테스트</h2>
-      <button id="writeTestBtn">쓰기 테스트</button>
-      <button id="readTestBtn">읽기 테스트</button>
-      <button id="deleteTestBtn">삭제 테스트</button>
-      <pre id="dbResult">아직 실행 전입니다.</pre>
-    </section>
-
-    <section class="card admin-box">
-      <h2>STEP 3 관리자 권한 테스트</h2>
-      <p>현재 로그인한 사용자를 테스트용 관리자 계정으로 등록하고 관리자 권한을 확인합니다.</p>
-      <button id="makeAdminBtn">현재 계정을 관리자 등록</button>
-      <button id="checkAdminBtn">관리자 권한 확인</button>
-      <pre id="adminResult">아직 실행 전입니다.</pre>
-    </section>
-
-    <section class="card apply-box">
-      <h2>STEP 4 회원 신청 시스템</h2>
-      <p>플랫폼 이용 권한 또는 특정 웹앱 사용을 위한 승인 신청을 진행합니다.</p>
-      <input id="applyReason" type="text" placeholder="신청 사유 또는 목적을 입력하세요">
-      <button id="applyBtn">신청하기</button>
-      <button id="checkApplyBtn">내 신청 현황 조회</button>
-      <pre id="applyResult">아직 신청 전입니다.</pre>
-    </section>
-
-    <section class="card approval-box" id="adminDashboardSection" style="display: none;">
-      <h2>STEP 5 관리자 전용 승인 대시보드</h2>
-      <p class="info-text">현재 관리자 권한이 확인되어 승인 시스템 활성화 상태입니다.</p>
-      <button id="loadAppsBtn">전체 신청 내역 실시간 동기화</button>
-      <div id="appsDashboardList" class="apps-list-container">
-        <p class="placeholder-text">동기화 버튼을 누르거나 내역을 기다려주세요.</p>
-      </div>
-    </section>
-  
-    <section id="step6-app-manager" class="card my-4 shadow-sm">
-        <div class="card-header bg-dark text-white">
-            <h4 class="mb-0">⚙️ STEP 6: 다중 서브 애플리케이션 라우팅 메타데이터 등록</h4>
-        </div>
-        <div class="card-body">
-            <form id="subapp-register-form" class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">애플리케이션 고유 ID</label>
-                    <input type="text" id="app-id" class="form-control" placeholder="example-app" required>
+        <main class="container">
+            
+            <section id="login-page" class="page-section hide">
+                <div class="card auth-card">
+                    <h2>플랫폼 로그인</h2>
+                    <p class="subtitle">서비스를 이용하시려면 로그인이 필요합니다.</p>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">이메일 주소</label>
+                            <input type="email" id="login-email" required placeholder="example@domain.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">비밀번호</label>
+                            <input type="password" id="login-password" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                    </form>
+                    <div class="auth-footer">
+                        <span>계정이 없으신가요?</span>
+                        <button id="go-to-register" class="btn-link">회원가입 신청</button>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">앱 이름</label>
-                    <input type="text" id="app-name" class="form-control" placeholder="회계 관리 도구" required>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">라우팅 경로 (Path)</label>
-                    <input type="text" id="app-path" class="form-control" placeholder="/finance" required>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Entry URL (진입 HTML 주소)</label>
-                    <input type="text" id="app-entry" class="form-control" placeholder="./apps/finance.html" required>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">아이콘 (Emoji)</label>
-                    <input type="text" id="app-icon" class="form-control" placeholder="💰">
-                </div>
-                <div class="col-md-10">
-                    <label class="form-label">애플리케이션 설명</label>
-                    <input type="text" id="app-desc" class="form-control" placeholder="서브 모듈 핵심 요약 설명 기입">
-                </div>
-                <div class="col-12 text-end">
-                    <button type="submit" class="btn btn-primary">라우팅 메타데이터 등록/동기화</button>
-                </div>
-            </form>
-            <hr>
-            <h5>실시간 등재 서브 애플리케이션 라우팅 테이블</h5>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>애플리케이션 (ID)</th>
-                            <th>라우팅 경로</th>
-                            <th>진입점 (Entry)</th>
-                            <th>상태</th>
-                            <th>제어</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-subapp-list">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <div class="row my-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-header bg-secondary text-white">Dynamic Navigation</div>
-                <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu">
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div id="main-runtime-view" class="p-4 border rounded bg-light shadow-sm" style="min-height: 300px;">
-                <h3>Master App Platform 메인 대시보드</h3>
-                <p>좌측 메뉴에서 서브 애플리케이션을 선택하세요.</p>
-            </div>
-        </div>
+            <section id="register-page" class="page-section hide">
+                <div class="card auth-card">
+                    <h2>플랫폼 이용 신청</h2>
+                    <p class="subtitle">정보를 입력하시면 관리자 승인 후 이용이 가능합니다.</p>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="reg-name">이름</label>
+                            <input type="text" id="reg-name" required placeholder="홍길동">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">이메일 주소</label>
+                            <input type="email" id="reg-email" required placeholder="example@domain.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">비밀번호</label>
+                            <input type="password" id="reg-password" required placeholder="최소 6자리 이상">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">이용 신청서 제출</button>
+                    </form>
+                    <div class="auth-footer">
+                        <span>이미 신청하셨나요?</span>
+                        <button id="go-to-login" class="btn-link">로그인으로 돌아가기</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="status-page" class="page-section hide">
+                <div class="card status-card text-center">
+                    <div id="status-icon" class="status-icon">⏳</div>
+                    <h2 id="status-title">이용 승인 대기 중</h2>
+                    <p id="status-message">관리자의 승인이 완료될 때까지 잠시만 기다려 주세요.</p>
+                    <div class="status-actions">
+                        <button id="btn-refresh-status" class="btn btn-primary">상태 새로고침</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="user-dashboard-page" class="page-section hide">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>나의 워크스페이스 Dashboard</h2>
+                        <p class="subtitle">배정받은 서브 애플리케이션에 안전하게 접근할 수 있습니다.</p>
+                    </div>
+                    <div class="dashboard-stats">
+                        <span class="stat-tag">접근 가능 앱: <strong id="user-app-count">0</strong>개</span>
+                    </div>
+                </div>
+                
+                <div id="user-sub-apps-grid" class="apps-grid">
+                    <div class="loading-placeholder">서브 애플리케이션 구동 메타데이터를 로드하는 중...</div>
+                </div>
+            </section>
+
+            <section id="admin-page" class="page-section hide">
+                <div class="admin-header">
+                    <h2>Master 관리자 콘솔</h2>
+                    <p class="subtitle">사용자 승인 관리 및 다중 서브 애플리케이션 라우팅 메타데이터 제어</p>
+                </div>
+
+                <div class="tab-menu">
+                    <button class="tab-btn active" data-target="tab-users">사용자 가입/승인 제어</button>
+                    <button class="tab-btn" data-target="tab-apps">서브 애플리케이션 라우팅 등록</button>
+                </div>
+
+                <div id="tab-users" class="tab-content active-content">
+                    <div class="card">
+                        <h3>가입 신청 및 권한 관리 명세</h3>
+                        <div class="table-responsive">
+                            <table class="table">
+                               <thead>
+                                   <tr>
+                                       <th>이름</th>
+                                       <th>이메일</th>
+                                       <th>가입일</th>
+                                       <th>현재 상태</th>
+                                       <th>권한 제어 액션</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="admin-user-list">
+                                   </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-apps" class="tab-content">
+                    <div class="card form-card">
+                        <h3>신규 서브 애플리케이션 메타데이터 등록</h3>
+                        <form id="app-register-form" class="horizontal-form">
+                            <div class="form-group">
+                                <label for="app-id">앱 식별 ID</label>
+                                <input type="text" id="app-id" required placeholder="crm-system">
+                            </div>
+                            <div class="form-group">
+                                <label for="app-name">애플리케이션 명</label>
+                                <input type="text" id="app-name" required placeholder="고객 관리 시스템">
+                            </div>
+                            <div class="form-group">
+                                <label for="app-url">엔드포인트 URL</label>
+                                <input type="url" id="app-url" required placeholder="https://crm.example.com">
+                            </div>
+                            <button type="submit" class="btn btn-primary">서브 앱 라우팅 등록</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>등록된 다중 서브 애플리케이션 및 실시간 제어 상태</h3>
+                        <div class="table-responsive">
+                            <table class="table">
+                               <thead>
+                                   <tr>
+                                       <th>앱 ID</th>
+                                       <th>애플리케이션 명</th>
+                                       <th>라우팅 엔드포인트 URL</th>
+                                       <th>등록일</th>
+                                       <th>활성화 제어</th>
+                                       <th>삭제</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="admin-app-list">
+                                   </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
-    
-</main>
 
-  <script type="module" src="./firebase.js"></script>
-  <script type="module" src="./auth.js"></script>
-  <script type="module" src="./database.js"></script>
-  <script type="module" src="./admin.js"></script>
-  <script type="module" src="./apply.js"></script>
-  <script type="module" src="./routing.js"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="database.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="apply.js"></script>
+    <script type="module" src="admin.js"></script>
+    <script type="module" src="routing.js"></script>
 </body>
 </html>
