@@ -18,6 +18,7 @@ let appsUnsubscribeRef = null;
 let cachedApps = [];
 let currentUser = null;
 let currentApprovalStatus = 'none';
+let currentIsAdmin = false;
 
 function setText(el, value) {
   if (el) el.textContent = value;
@@ -69,8 +70,8 @@ function renderApps(apps, approvalStatus) {
   cachedApps = apps;
   currentApprovalStatus = approvalStatus;
 
-  if (approvalStatus !== 'approved') {
-    renderEmptyApps('승인 완료 후 사용 가능한 앱 목록이 표시됩니다.');
+  if (approvalStatus !== 'approved' && !currentIsAdmin) {
+    renderEmptyApps('승인 완료 후 사용 가능한 앱 목록이 표시됩니다. 관리자는 테스트 목적으로 앱 목록을 확인할 수 있습니다.');
     if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = true;
     return;
   }
@@ -139,7 +140,7 @@ async function recordAppLaunch(app) {
 
 async function launchApp(app) {
   if (!app) return;
-  if (currentApprovalStatus !== 'approved') {
+  if (currentApprovalStatus !== 'approved' && !currentIsAdmin) {
     alert('승인 완료 사용자만 앱을 실행할 수 있습니다.');
     return;
   }
@@ -180,6 +181,7 @@ async function loadUserDashboard(user) {
     setText(dashboardSubmitted, '-');
     setText(dashboardReviewed, '-');
     currentApprovalStatus = 'none';
+    currentIsAdmin = false;
     renderEmptyApps('로그인이 필요합니다.');
     if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = true;
     return;
@@ -196,8 +198,9 @@ async function loadUserDashboard(user) {
       get(ref(db, `applications/${user.uid}`))
     ]);
 
-    const isAdmin = adminSnap.exists() && adminSnap.val() === true;
     const userData = userSnap.exists() ? userSnap.val() : {};
+    const isAdmin = (adminSnap.exists() && adminSnap.val() === true) || userData.role === 'admin';
+    currentIsAdmin = isAdmin;
     const applicationData = applicationSnap.exists() ? applicationSnap.val() : null;
     const approvalStatus = applicationData?.status || userData.userStatus || 'none';
     currentApprovalStatus = approvalStatus;

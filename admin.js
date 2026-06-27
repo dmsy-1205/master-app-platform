@@ -15,8 +15,11 @@ if (makeAdminBtn) {
     if (!user) return alert('로그인이 필요합니다.');
     try {
       await set(ref(db, `admins/${user.uid}`), true);
-      adminResult.innerText = `현재 계정(${user.email})을 시스템 관리자로 임시 등록 완료!`;
-      if (adminDashboardSection) adminDashboardSection.style.display = 'block';
+      await update(ref(db, `users/${user.uid}`), { role: 'admin', updatedAt: new Date().toISOString() });
+      adminResult.innerText = `현재 계정(${user.email})을 시스템 관리자로 등록 완료! 로그아웃 후 재로그인해도 관리자 권한이 유지됩니다.`;
+      document.querySelectorAll('[data-auth="admin"]').forEach(el => { el.style.display = ''; });
+      if (adminDashboardSection) adminDashboardSection.style.display = '';
+      window.dispatchEvent(new CustomEvent('master-auth-role-refresh-request'));
     } catch (e) { adminResult.innerText = "에러: " + e.message; }
   });
 }
@@ -26,12 +29,19 @@ if (checkAdminBtn) {
     const user = auth.currentUser;
     if (!user) return alert('로그인이 필요합니다.');
     try {
-      const snapshot = await get(ref(db, `admins/${user.uid}`));
-      if (snapshot.exists() && snapshot.val() === true) {
+      const [adminSnap, userSnap] = await Promise.all([
+        get(ref(db, `admins/${user.uid}`)),
+        get(ref(db, `users/${user.uid}`))
+      ]);
+      const userData = userSnap.exists() ? userSnap.val() : {};
+      const isAdmin = (adminSnap.exists() && adminSnap.val() === true) || userData.role === 'admin';
+      if (isAdmin) {
         adminResult.innerText = "권한 검증 결과: [최고 관리자 권한 확인됨]";
-        if (adminDashboardSection) adminDashboardSection.style.display = 'block';
+        document.querySelectorAll('[data-auth="admin"]').forEach(el => { el.style.display = ''; });
+        if (adminDashboardSection) adminDashboardSection.style.display = '';
       } else {
         adminResult.innerText = "권한 검증 결과: [일반 사용자 계정 - 권한 없음]";
+        document.querySelectorAll('[data-auth="admin"]').forEach(el => { el.style.display = 'none'; });
         if (adminDashboardSection) adminDashboardSection.style.display = 'none';
       }
     } catch (e) { adminResult.innerText = "검증 에러: " + e.message; }
