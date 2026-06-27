@@ -1,6 +1,6 @@
 =========================================
 Master App Platform
-Project Status v1.1
+Project Status v1.2
 =========================================
 
 프로젝트명
@@ -52,7 +52,7 @@ role 저장 완료
 로그인 상태에 admin 권한 표시 완료
 
 STEP4
-회원 신청 시스템 1차 구현 완료
+회원 신청 시스템 완료
 회원가입 시 status new 저장
 로그인 후 status 확인
 신청 페이지 추가
@@ -62,9 +62,22 @@ STEP4
 사용자 대시보드 기본 화면 추가
 
 STEP4.1 FIX
-/auth.js:45 SyntaxError 수정 완료
+/auth.js SyntaxError 수정 완료
 pages/application.js 문자열 줄바꿈 문법 오류 수정 완료
 로그인 확인 중 멈춤 현상 수정 완료
+
+STEP5
+관리자 승인 시스템 완료
+관리자 전용 승인 관리 페이지 추가
+applications 목록 확인 완료
+신청자 상세 정보 표시 완료
+승인 버튼 완료
+거절 버튼 완료
+승인 시 applications/{uid}/status approved 변경 완료
+승인 시 users/{uid}/status approved 변경 완료
+거절 시 applications/{uid}/status rejected 변경 완료
+거절 시 users/{uid}/status rejected 변경 완료
+reviewedBy / reviewedAt 저장 완료
 
 -----------------------------------------
 
@@ -94,6 +107,9 @@ applications
         memo
         status
         createdAt
+        updatedAt
+        reviewedAt
+        reviewedBy
 
 step2Test
     uid
@@ -118,19 +134,20 @@ pages/application.js
 pages/apply.html
 pages/pending.html
 pages/dashboard.html
+pages/admin-approvals.html
+pages/admin-approvals.js
 
 -----------------------------------------
 
 다음 개발 목표
 
-STEP5
-관리자 승인 시스템
-관리자가 applications 목록 확인
-신청자 상세 확인
-승인 버튼
-거절 버튼
-승인 시 users/{uid}/status approved 변경
-거절 시 users/{uid}/status rejected 변경
+STEP6
+앱 관리
+관리자가 앱 목록 생성
+앱 이름 저장
+앱 URL 저장
+앱 활성/비활성 상태 관리
+사용자 대시보드와 연결 준비
 
 -----------------------------------------
 

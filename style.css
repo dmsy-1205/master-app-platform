@@ -78,3 +78,28 @@ textarea {
 .notice-card {
   border-left: 6px solid #222;
 }
+
+.application-list {
+  margin-top: 12px;
+}
+
+.application-item {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 14px;
+  margin: 12px 0;
+  background: #fafafa;
+}
+
+.application-item h3 {
+  margin-top: 0;
+}
+
+.action-row {
+  margin-top: 10px;
+}
+
+.memo-box {
+  background: #f1f1f1;
+  color: #222;
+}

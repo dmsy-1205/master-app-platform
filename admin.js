@@ -10,6 +10,7 @@ import {
 const makeAdminBtn = document.getElementById("makeAdminBtn");
 const checkAdminBtn = document.getElementById("checkAdminBtn");
 const adminResult = document.getElementById("adminResult");
+const adminApprovalsBtn = document.getElementById("adminApprovalsBtn");
 
 function requireLogin() {
   const user = auth.currentUser;
@@ -71,3 +72,10 @@ checkAdminBtn.onclick = async () => {
     adminResult.textContent = "관리자 확인 실패\n" + error.message;
   }
 };
+
+
+if (adminApprovalsBtn) {
+  adminApprovalsBtn.onclick = () => {
+    window.location.href = "./pages/admin-approvals.html";
+  };
+}
