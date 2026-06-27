@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 4</title>
+  <title>Master App Platform - STEP 5</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <main class="wrap">
     <h1>Master App Platform</h1>
-    <p class="subtitle">STEP 4 - 회원 신청 시스템 테스트</p>
+    <p class="subtitle">STEP 5 - 승인 시스템 (관리자 대시보드)</p>
 
     <section class="card">
       <h2>회원가입</h2>
@@ -54,6 +54,15 @@
       <button id="applyBtn">신청하기</button>
       <button id="checkApplyBtn">내 신청 현황 조회</button>
       <pre id="applyResult">아직 신청 전입니다.</pre>
+    </section>
+
+    <section class="card approval-box" id="adminDashboardSection" style="display: none;">
+      <h2>STEP 5 관리자 전용 승인 대시보드</h2>
+      <p class="info-text">현재 관리자 권한이 확인되어 승인 시스템 활성화 상태입니다.</p>
+      <button id="loadAppsBtn">전체 신청 내역 실시간 동기화</button>
+      <div id="appsDashboardList" class="apps-list-container">
+        <p class="placeholder-text">동기화 버튼을 누르거나 내역을 기다려주세요.</p>
+      </div>
     </section>
   </main>
 
