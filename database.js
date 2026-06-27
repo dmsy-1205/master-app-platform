@@ -1,7 +1,5 @@
-import { ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
-import { db, auth } from './firebase.js';
-import { ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+import { ref, set, onValue, update, db, auth } from './firebase.js';
+import { ref, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 const writeTestBtn = document.getElementById('writeTestBtn');
 const readTestBtn = document.getElementById('readTestBtn');
 const deleteTestBtn = document.getElementById('deleteTestBtn');
