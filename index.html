@@ -64,12 +64,84 @@
         <p class="placeholder-text">동기화 버튼을 누르거나 내역을 기다려주세요.</p>
       </div>
     </section>
-  </main>
+  
+    <section id="step6-app-manager" class="card my-4 shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">⚙️ STEP 6: 다중 서브 애플리케이션 라우팅 메타데이터 등록</h4>
+        </div>
+        <div class="card-body">
+            <form id="subapp-register-form" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">애플리케이션 고유 ID</label>
+                    <input type="text" id="app-id" class="form-control" placeholder="example-app" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">앱 이름</label>
+                    <input type="text" id="app-name" class="form-control" placeholder="회계 관리 도구" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">라우팅 경로 (Path)</label>
+                    <input type="text" id="app-path" class="form-control" placeholder="/finance" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Entry URL (진입 HTML 주소)</label>
+                    <input type="text" id="app-entry" class="form-control" placeholder="./apps/finance.html" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">아이콘 (Emoji)</label>
+                    <input type="text" id="app-icon" class="form-control" placeholder="💰">
+                </div>
+                <div class="col-md-10">
+                    <label class="form-label">애플리케이션 설명</label>
+                    <input type="text" id="app-desc" class="form-control" placeholder="서브 모듈 핵심 요약 설명 기입">
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">라우팅 메타데이터 등록/동기화</button>
+                </div>
+            </form>
+            <hr>
+            <h5>실시간 등재 서브 애플리케이션 라우팅 테이블</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>애플리케이션 (ID)</th>
+                            <th>라우팅 경로</th>
+                            <th>진입점 (Entry)</th>
+                            <th>상태</th>
+                            <th>제어</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-subapp-list">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div class="row my-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">Dynamic Navigation</div>
+                <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu">
+                    </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="main-runtime-view" class="p-4 border rounded bg-light shadow-sm" style="min-height: 300px;">
+                <h3>Master App Platform 메인 대시보드</h3>
+                <p>좌측 메뉴에서 서브 애플리케이션을 선택하세요.</p>
+            </div>
+        </div>
+    </div>
+    
+</main>
 
   <script type="module" src="./firebase.js"></script>
   <script type="module" src="./auth.js"></script>
   <script type="module" src="./database.js"></script>
   <script type="module" src="./admin.js"></script>
   <script type="module" src="./apply.js"></script>
+<script type="module" src="./routing.js"></script>
 </body>
 </html>

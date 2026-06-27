@@ -32,3 +32,37 @@ deleteTestBtn.addEventListener('click', async () => {
     dbResult.innerText = "데이터 삭제 완료!";
   } catch (e) { dbResult.innerText = "에러: " + e.message; }
 });
+// ==========================================
+// [STEP 6] 다중 서브 애플리케이션 라우팅 메타데이터 관리
+// ==========================================
+import { ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+/**
+ * 서브 애플리케이션 등록 및 라우팅 메타데이터 저장
+ */
+export function registerSubApp(appId, appData) {
+    const appRef = ref(db, 'apps/' + appId);
+    return set(appRef, {
+        ...appData,
+        updatedAt: new Date().toISOString()
+    });
+}
+
+/**
+ * 활성화된 모든 서브 애플리케이션 라우팅 데이터 실시간 구독
+ */
+export function listenSubApps(callback) {
+    const appsRef = ref(db, 'apps');
+    onValue(appsRef, (snapshot) => {
+        const data = snapshot.val();
+        callback(data || {});
+    });
+}
+
+/**
+ * 서브 앱 활성화/비활성화 상태 변경
+ */
+export function updateAppStatus(appId, isActive) {
+    const appRef = ref(db, 'apps/' + appId);
+    return update(appRef, { isActive });
+}
