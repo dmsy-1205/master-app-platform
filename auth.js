@@ -1,4 +1,4 @@
-import { auth } from "./firebase.js";
+import { auth, database } from "./firebase.js";
 
 import {
   createUserWithEmailAndPassword,
@@ -6,6 +6,12 @@ import {
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  ref,
+  set,
+  get
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const signupEmail = document.getElementById("signupEmail");
 const signupPassword = document.getElementById("signupPassword");
@@ -20,8 +26,23 @@ const userStatus = document.getElementById("userStatus");
 
 signupBtn.onclick = async () => {
   try {
-    await createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value);
-    alert("회원가입 성공");
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      signupEmail.value,
+      signupPassword.value
+    );
+
+    const user = userCredential.user;
+
+    await set(ref(database, "users/" + user.uid), {
+      uid: user.uid,
+      email: user.email,
+      role: "user",
+      status: "active",
+      createdAt: new Date().toISOString()
+    });
+
+    alert("회원가입 성공\n기본 권한은 일반 사용자입니다.");
   } catch (error) {
     alert("회원가입 실패\n" + error.message);
   }
@@ -45,10 +66,21 @@ logoutBtn.onclick = async () => {
   }
 };
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    userStatus.textContent = "로그인 중: " + user.email;
-  } else {
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
     userStatus.textContent = "로그인 안됨";
+    return;
+  }
+
+  const userRef = ref(database, "users/" + user.uid);
+  const snapshot = await get(userRef);
+
+  if (snapshot.exists()) {
+    const userData = snapshot.val();
+    userStatus.textContent =
+      "로그인 중: " + user.email + " / 권한: " + userData.role;
+  } else {
+    userStatus.textContent =
+      "로그인 중: " + user.email + " / 사용자 정보 없음";
   }
 });
