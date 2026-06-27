@@ -12,7 +12,7 @@
 - STEP8-v3 App Store형 UI 구조 개편
 
 ## 다음 후보
-- STEP8-v4 App Store 검색/카테고리/즐겨찾기
+- STEP8-v5 App Store 검색/카테고리/즐겨찾기
 - STEP9 Firebase Rules
 - STEP10 최종 배포 및 보안 점검
 - STEP11 관리자 Dashboard 고도화

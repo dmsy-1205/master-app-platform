@@ -26,9 +26,18 @@
 - 앱 실행 및 실행 로그 유지
 
 
-## master-app-platform-step08-v4
+## master-app-platform-step08-v5
 - 로그인 랜딩 화면 SaaS 스타일 개선
 - 사이드바 Workspace 디자인 개선
 - App Store 카드 Hover Focus 반응 개선
 - 관리자 센터 테이블 시각 개선
 - 문서 버전 갱신
+
+
+## master-app-platform-step08-v5
+- 다크 프리미엄 SaaS UI 적용
+- 로그인/회원가입 화면 시각 고급화
+- 로그인 후 Workspace 콘솔 디자인 개선
+- App Store 카드 Hover 및 컬러 시스템 개선
+- 관리자 센터 테이블 및 카드 다크 테마 보강
+- 기존 Firebase 기능과 DOM ID 유지
