@@ -13,6 +13,10 @@ const logoutBtn = document.getElementById('logoutBtn');
 const adminDashboardSection = document.getElementById('adminDashboardSection');
 
 signupBtn.addEventListener('click', async () => {
+  // 빈 값 입력 방지 필터링
+  if (!signupEmail.value.trim() || !signupPassword.value.trim()) {
+    return alert('회원가입용 이메일과 비밀번호를 모두 입력해주세요.');
+  }
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value);
     await set(ref(db, `users/${userCredential.user.uid}`), {
@@ -25,6 +29,10 @@ signupBtn.addEventListener('click', async () => {
 });
 
 loginBtn.addEventListener('click', async () => {
+  // 빈 값 로그인 시도 차단 (서버 400 에러 제거)
+  if (!loginEmail.value.trim() || !loginPassword.value.trim()) {
+    return alert('로그인할 이메일과 비밀번호를 채워주세요.');
+  }
   try {
     await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
     alert('로그인 성공!');
