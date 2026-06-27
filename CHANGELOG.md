@@ -24,3 +24,11 @@
 - 앱 등록 유지
 - 활성/비활성 유지
 - 앱 실행 및 실행 로그 유지
+
+
+## master-app-platform-step08-v4
+- 로그인 랜딩 화면 SaaS 스타일 개선
+- 사이드바 Workspace 디자인 개선
+- App Store 카드 Hover Focus 반응 개선
+- 관리자 센터 테이블 시각 개선
+- 문서 버전 갱신
