@@ -1,3 +1,4 @@
+import { ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 import { db, auth } from './firebase.js';
 import { ref, set, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -35,7 +36,7 @@ deleteTestBtn.addEventListener('click', async () => {
 // ==========================================
 // [STEP 6] 다중 서브 애플리케이션 라우팅 메타데이터 관리
 // ==========================================
-import { ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
 
 /**
  * 서브 애플리케이션 등록 및 라우팅 메타데이터 저장
