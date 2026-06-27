@@ -1,40 +1,26 @@
-# CHANGELOG
+# CHANGELOG.md
 
-## master-app-platform-step08-v2
+## master-app-platform-step08-v3
 
 ### Added
-
-- 화면 표시 제어용 `data-auth` 구조 추가
-- 로그인 전용 화면과 로그인 후 화면 분리
-- 관리자 전용 화면 분리
-- 개발 테스트 도구 접기/펼치기 영역 추가
-- 관리자 권한 이중 확인 구조 추가
-- 브라우저 세션 기반 로그인 유지 방식 추가
-- 개발 보고서 문서 추가
-- KnownIssues 문서 추가
+- 전문 SaaS 스타일 로그인 전 랜딩 페이지
+- 사용자 Workspace 사이드바 구조
+- App Store형 앱 카드 섹션
+- 관리자 센터 분리 구조
+- ProjectRoadmap.md 추가
+- UI-Guidelines.md 추가
+- Architecture.md 추가
 
 ### Changed
-
-- `index.html` 전체 화면 구조 정리
-- `auth.js` 로그인 상태별 화면 표시 로직 보강
-- `auth.js` 관리자 권한 확인 로직 보강
-- `admin.js` 관리자 등록 시 `admins/{uid}`와 `users/{uid}/role` 동시 저장
-- `dashboard.js` 관리자 계정은 앱 실행 테스트 가능하도록 보강
-- `style.css` 구조 안정화 UI 스타일 추가
-- `README.md` STEP8 v2 기준으로 갱신
-- `ProjectStatus.md` STEP8 v2 기준으로 갱신
-
-### Fixed
-
-- 모든 기능이 한 페이지에 무조건 표시되던 문제 완화
-- 관리자 계정이 재로그인 후 일반 계정처럼 보일 수 있던 문제 개선
-- 로그인 유지가 개발 단계에서 지나치게 오래 남는 문제 개선
+- 기존 단순 카드형 화면을 Glass UI 기반 플랫폼 레이아웃으로 개편
+- 회원가입/로그인 UI를 프리미엄 인증 화면으로 개선
+- 사용자 Dashboard App Store Runtime 신청 관리 Admin Center 순서로 화면 흐름 정리
 
 ### Preserved
-
-- 기존 Firebase 설정 유지
-- 기존 회원가입 로그인 로그아웃 유지
-- 기존 DB 테스트 유지
-- 기존 회원 신청 승인 거절 유지
-- 기존 앱 등록 라우팅 활성화 비활성화 유지
-- 기존 사용자 Dashboard 앱 실행 기록 저장 유지
+- Firebase 설정 유지
+- 로그인/회원가입 유지
+- 관리자 권한 유지
+- 승인/거절 유지
+- 앱 등록 유지
+- 활성/비활성 유지
+- 앱 실행 및 실행 로그 유지

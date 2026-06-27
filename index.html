@@ -3,154 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 8 v2</title>
+  <title>Master App Platform - STEP 8 v3</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 </head>
 <body>
-  <main class="wrap app-shell">
-    <header class="platform-header">
-      <h1>Master App Platform</h1>
-      <p class="subtitle">STEP 8 v2 - 구조 안정화 및 앱 실행 연결 보완</p>
-    </header>
-
-    <section class="card shell-card" data-auth="public">
-      <h2>로그인 전용 화면</h2>
-      <p class="muted-text">로그인 전에는 회원가입과 로그인만 표시됩니다.</p>
-      <div class="auth-grid">
-        <div>
-          <h3>회원가입</h3>
-          <input id="signupEmail" type="email" placeholder="이메일">
-          <input id="signupPassword" type="password" placeholder="비밀번호">
-          <button id="signupBtn">회원가입</button>
+  <main class="platform-root">
+    <section class="auth-landing" data-auth="public">
+      <div class="auth-brand-panel">
+        <div class="brand-badge">🔐 Master App Platform</div>
+        <h1>모든 앱을 하나의 플랫폼에서</h1>
+        <p>회원 승인 권한 관리 앱 등록 실행 기록까지 한 곳에서 관리하는 통합 SaaS 플랫폼입니다.</p>
+        <div class="feature-stack">
+          <div><span>⚡</span><strong>빠른 앱 실행</strong><small>등록된 서브 앱을 카드에서 바로 실행</small></div>
+          <div><span>🛡️</span><strong>권한 기반 관리</strong><small>사용자 관리자 화면 자동 분리</small></div>
+          <div><span>📊</span><strong>실행 로그 추적</strong><small>실행 횟수와 최근 실행 시간 저장</small></div>
         </div>
-        <div>
-          <h3>로그인</h3>
-          <input id="loginEmail" type="email" placeholder="이메일">
-          <input id="loginPassword" type="password" placeholder="비밀번호">
-          <button id="loginBtn">로그인</button>
+        <div class="brand-visual">
+          <div class="cube">MAP</div>
+          <span class="orb orb-a"></span><span class="orb orb-b"></span><span class="orb orb-c"></span>
         </div>
       </div>
-    </section>
-
-    <section class="card status-card" data-auth="private" style="display:none;">
-      <div class="section-title-row">
-        <div>
-          <h2>로그인 상태</h2>
-          <p id="userStatus">확인 중...</p>
+      <div class="auth-card-panel">
+        <div class="auth-card login-card">
+          <h2>로그인</h2>
+          <p>계정에 로그인하여 플랫폼을 시작하세요.</p>
+          <label>이메일</label>
+          <input id="loginEmail" type="email" placeholder="이메일을 입력하세요">
+          <label>비밀번호</label>
+          <input id="loginPassword" type="password" placeholder="비밀번호를 입력하세요">
+          <button id="loginBtn" class="primary-action">로그인</button>
         </div>
-        <button id="logoutBtn" class="btn-danger-soft">로그아웃</button>
-      </div>
-      <p class="muted-text">STEP8 v2부터 로그인 세션은 브라우저 세션 기준으로 동작합니다. 창을 완전히 닫은 뒤 새로 접속하면 다시 로그인이 필요합니다.</p>
-    </section>
-
-    <section class="card user-dashboard-box" id="userDashboardSection" data-auth="private" style="display:none;">
-      <div class="dashboard-title-row">
-        <div>
-          <h2>사용자 Dashboard</h2>
-          <p class="dashboard-help">승인 상태와 사용 가능한 서브 애플리케이션을 확인하고 실행합니다.</p>
-        </div>
-        <div class="dashboard-actions">
-          <button id="dashboardRefreshBtn" type="button">Dashboard 새로고침</button>
-          <button id="dashboardOpenFirstAppBtn" type="button" disabled>첫 번째 앱 실행</button>
-        </div>
-      </div>
-
-      <div class="dashboard-summary-grid">
-        <div class="dashboard-summary-card"><span>세션 상태</span><strong id="dashboardLoginState">확인 중...</strong></div>
-        <div class="dashboard-summary-card"><span>권한 구분</span><strong id="dashboardRole">-</strong></div>
-        <div class="dashboard-summary-card"><span>승인 상태</span><strong id="dashboardApproval">-</strong></div>
-      </div>
-
-      <div class="dashboard-profile-grid">
-        <p><strong>이메일</strong><br><span id="dashboardEmail">-</span></p>
-        <p><strong>UID</strong><br><span id="dashboardUid">-</span></p>
-        <p><strong>신청 일시</strong><br><span id="dashboardSubmitted">-</span></p>
-        <p><strong>처리 일시</strong><br><span id="dashboardReviewed">-</span></p>
-      </div>
-
-      <h3 class="dashboard-app-title">사용 가능한 애플리케이션</h3>
-      <div id="dashboardApps" class="user-app-grid">
-        <div class="dashboard-empty">Dashboard 데이터를 불러오는 중입니다.</div>
-      </div>
-    </section>
-
-    <section class="card apply-box" data-auth="private" style="display:none;">
-      <h2>회원 신청 시스템</h2>
-      <p>플랫폼 이용 권한 또는 특정 웹앱 사용을 위한 승인 신청을 진행합니다.</p>
-      <input id="applyReason" type="text" placeholder="신청 사유 또는 목적을 입력하세요">
-      <button id="applyBtn">신청하기</button>
-      <button id="checkApplyBtn">내 신청 현황 조회</button>
-      <pre id="applyResult">아직 신청 전입니다.</pre>
-    </section>
-
-    <section class="card approval-box" id="adminDashboardSection" data-auth="admin" style="display:none;">
-      <h2>관리자 전용 승인 대시보드</h2>
-      <p class="info-text">관리자 권한이 확인된 계정에만 표시됩니다.</p>
-      <button id="loadAppsBtn">전체 신청 내역 실시간 동기화</button>
-      <div id="appsDashboardList" class="apps-list-container">
-        <p class="placeholder-text">동기화 버튼을 누르거나 내역을 기다려주세요.</p>
-      </div>
-    </section>
-
-    <section id="step6-app-manager" class="card my-4 shadow-sm" data-auth="admin" style="display:none;">
-      <div class="card-header bg-dark text-white">
-        <h4 class="mb-0">⚙️ 관리자 앱 등록 및 실행 연결</h4>
-      </div>
-      <div class="card-body">
-        <form id="subapp-register-form" class="row g-3">
-          <div class="col-md-3"><label class="form-label">애플리케이션 고유 ID</label><input type="text" id="app-id" class="form-control" placeholder="example-app" required></div>
-          <div class="col-md-3"><label class="form-label">앱 이름</label><input type="text" id="app-name" class="form-control" placeholder="회계 관리 도구" required></div>
-          <div class="col-md-2"><label class="form-label">라우팅 경로</label><input type="text" id="app-path" class="form-control" placeholder="/finance" required></div>
-          <div class="col-md-4"><label class="form-label">Entry URL</label><input type="text" id="app-entry" class="form-control" placeholder="./apps/finance.html" required></div>
-          <div class="col-md-2"><label class="form-label">아이콘</label><input type="text" id="app-icon" class="form-control" placeholder="💰"></div>
-          <div class="col-md-2"><label class="form-label">앱 버전</label><input type="text" id="app-version" class="form-control" placeholder="v1.0"></div>
-          <div class="col-md-3"><label class="form-label">실행 방식</label><select id="app-launch-mode" class="form-control"><option value="router">플랫폼 내부 실행</option><option value="newTab">새 탭 실행</option><option value="sameTab">현재 창 이동</option></select></div>
-          <div class="col-md-7"><label class="form-label">애플리케이션 설명</label><input type="text" id="app-desc" class="form-control" placeholder="서브 모듈 핵심 요약 설명 기입"></div>
-          <div class="col-12 text-end"><button type="submit" class="btn btn-primary">라우팅 메타데이터 등록/동기화</button></div>
-        </form>
-        <hr>
-        <h5>실시간 등재 서브 애플리케이션 라우팅 테이블</h5>
-        <div class="table-responsive">
-          <table class="table table-hover align-middle">
-            <thead class="table-light"><tr><th>애플리케이션</th><th>라우팅 경로</th><th>진입점</th><th>상태</th><th>제어</th></tr></thead>
-            <tbody id="admin-subapp-list"></tbody>
-          </table>
+        <div class="auth-card signup-card">
+          <h2>회원가입</h2>
+          <p>새 계정을 생성하고 승인 신청을 진행하세요.</p>
+          <label>이메일</label>
+          <input id="signupEmail" type="email" placeholder="이메일을 입력하세요">
+          <label>비밀번호</label>
+          <input id="signupPassword" type="password" placeholder="비밀번호를 입력하세요">
+          <button id="signupBtn" class="secondary-action">회원가입</button>
         </div>
       </div>
     </section>
 
-    <section class="runtime-grid" data-auth="private" style="display:none;">
-      <div class="card shadow-sm runtime-nav-card">
-        <div class="card-header bg-secondary text-white">Dynamic Navigation</div>
-        <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu"></ul>
-      </div>
-      <div id="main-runtime-view" class="p-4 border rounded bg-light shadow-sm runtime-view">
-        <h3>Master App Platform 메인 대시보드</h3>
-        <p>좌측 메뉴 또는 사용자 Dashboard의 실행 버튼에서 서브 애플리케이션을 선택하세요.</p>
-      </div>
-    </section>
+    <section class="workspace-shell" data-auth="private" style="display:none;">
+      <aside class="side-nav">
+        <div class="side-logo"><span>▣</span><strong>Master App</strong></div>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#appstore">App Store</a>
+        <a href="#runtime">Runtime</a>
+        <a href="#request">신청 관리</a>
+        <a href="#admin" data-auth="admin" style="display:none;">Admin Center</a>
+      </aside>
 
-    <details class="card dev-tools-card" data-auth="private" style="display:none;">
-      <summary>개발 테스트 도구 열기</summary>
-      <div class="dev-tools-grid">
-        <section>
-          <h2>STEP 2 DB 테스트</h2>
-          <button id="writeTestBtn">쓰기 테스트</button>
-          <button id="readTestBtn">읽기 테스트</button>
-          <button id="deleteTestBtn">삭제 테스트</button>
-          <pre id="dbResult">아직 실행 전입니다.</pre>
+      <div class="workspace-main">
+        <header class="topbar glass-card">
+          <div>
+            <p class="eyebrow">STEP 8 v3</p>
+            <h1>Master App Platform</h1>
+            <p id="userStatus">확인 중...</p>
+          </div>
+          <button id="logoutBtn" class="logout-action">로그아웃</button>
+        </header>
+
+        <section class="hero-strip glass-card" id="dashboard">
+          <div>
+            <p class="eyebrow">Professional SaaS Workspace</p>
+            <h2>앱을 등록하고 승인하고 실행하는 통합 플랫폼</h2>
+            <p>사용자 화면과 관리자 화면을 분리하고 App Store형 카드 UI를 적용했습니다.</p>
+          </div>
+          <div class="hero-metrics">
+            <div><strong id="dashboardRole">-</strong><span>권한</span></div>
+            <div><strong id="dashboardApproval">-</strong><span>승인</span></div>
+            <div><strong id="dashboardLoginState">-</strong><span>세션</span></div>
+          </div>
         </section>
-        <section class="admin-box">
-          <h2>STEP 3 관리자 권한 테스트</h2>
-          <p>개발 단계에서만 사용하는 수동 관리자 등록 도구입니다.</p>
-          <button id="makeAdminBtn">현재 계정을 관리자 등록</button>
-          <button id="checkAdminBtn">관리자 권한 확인</button>
-          <pre id="adminResult">아직 실행 전입니다.</pre>
+
+        <section class="user-dashboard-box glass-card" id="userDashboardSection">
+          <div class="dashboard-title-row">
+            <div>
+              <p class="eyebrow">User Dashboard</p>
+              <h2>내 플랫폼 현황</h2>
+              <p class="dashboard-help">승인 상태와 사용 가능한 앱을 확인하고 실행합니다.</p>
+            </div>
+            <div class="dashboard-actions">
+              <button id="dashboardRefreshBtn" type="button">새로고침</button>
+              <button id="dashboardOpenFirstAppBtn" type="button" disabled>첫 번째 앱 실행</button>
+            </div>
+          </div>
+          <div class="dashboard-profile-grid">
+            <p><strong>이메일</strong><br><span id="dashboardEmail">-</span></p>
+            <p><strong>UID</strong><br><span id="dashboardUid">-</span></p>
+            <p><strong>신청 일시</strong><br><span id="dashboardSubmitted">-</span></p>
+            <p><strong>처리 일시</strong><br><span id="dashboardReviewed">-</span></p>
+          </div>
+        </section>
+
+        <section class="appstore-section glass-card" id="appstore">
+          <div class="store-headline">
+            <div>
+              <p class="eyebrow">App Store</p>
+              <h2>사용 가능한 애플리케이션</h2>
+              <p>활성화된 서브 앱만 표시되며 승인 완료 후 실행할 수 있습니다.</p>
+            </div>
+            <div class="store-tools"><input type="search" placeholder="앱 검색 기능 예정" disabled><button disabled>카테고리</button></div>
+          </div>
+          <div id="dashboardApps" class="user-app-grid appstore-grid">
+            <div class="dashboard-empty">Dashboard 데이터를 불러오는 중입니다.</div>
+          </div>
+        </section>
+
+        <section class="runtime-grid" id="runtime">
+          <div class="glass-card runtime-nav-card">
+            <div class="runtime-title">Dynamic Navigation</div>
+            <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu"></ul>
+          </div>
+          <div id="main-runtime-view" class="glass-card runtime-view">
+            <h3>Master App Platform Runtime</h3>
+            <p>좌측 메뉴 또는 App Store의 실행 버튼에서 서브 애플리케이션을 선택하세요.</p>
+          </div>
+        </section>
+
+        <section class="apply-box glass-card" id="request">
+          <p class="eyebrow">Access Request</p>
+          <h2>회원 신청 시스템</h2>
+          <p>플랫폼 이용 권한 또는 특정 웹앱 사용을 위한 승인 신청을 진행합니다.</p>
+          <input id="applyReason" type="text" placeholder="신청 사유 또는 목적을 입력하세요">
+          <button id="applyBtn">신청하기</button>
+          <button id="checkApplyBtn">내 신청 현황 조회</button>
+          <pre id="applyResult">아직 신청 전입니다.</pre>
+        </section>
+
+        <section class="admin-center" id="admin" data-auth="admin" style="display:none;">
+          <div class="admin-center-head glass-card">
+            <p class="eyebrow">Admin Center</p>
+            <h2>관리자 센터</h2>
+            <p>승인 관리 앱 등록 라우팅 개발 도구를 관리자 전용 화면으로 분리했습니다.</p>
+          </div>
+
+          <section class="approval-box glass-card" id="adminDashboardSection">
+            <h2>승인 대시보드</h2>
+            <p class="info-text">관리자 권한이 확인된 계정에만 표시됩니다.</p>
+            <button id="loadAppsBtn">전체 신청 내역 실시간 동기화</button>
+            <div id="appsDashboardList" class="apps-list-container">
+              <p class="placeholder-text">동기화 버튼을 누르거나 내역을 기다려주세요.</p>
+            </div>
+          </section>
+
+          <section id="step6-app-manager" class="glass-card app-manager-card">
+            <div class="admin-card-title"><h2>관리자 앱 등록 및 실행 연결</h2><span>Routing Manager</span></div>
+            <form id="subapp-register-form" class="row g-3">
+              <div class="col-md-3"><label class="form-label">애플리케이션 고유 ID</label><input type="text" id="app-id" class="form-control" placeholder="example-app" required></div>
+              <div class="col-md-3"><label class="form-label">앱 이름</label><input type="text" id="app-name" class="form-control" placeholder="회계 관리 도구" required></div>
+              <div class="col-md-2"><label class="form-label">라우팅 경로</label><input type="text" id="app-path" class="form-control" placeholder="/finance" required></div>
+              <div class="col-md-4"><label class="form-label">Entry URL</label><input type="text" id="app-entry" class="form-control" placeholder="./apps/finance.html" required></div>
+              <div class="col-md-2"><label class="form-label">아이콘</label><input type="text" id="app-icon" class="form-control" placeholder="💰"></div>
+              <div class="col-md-2"><label class="form-label">앱 버전</label><input type="text" id="app-version" class="form-control" placeholder="v1.0"></div>
+              <div class="col-md-3"><label class="form-label">실행 방식</label><select id="app-launch-mode" class="form-control"><option value="router">플랫폼 내부 실행</option><option value="newTab">새 탭 실행</option><option value="sameTab">현재 창 이동</option></select></div>
+              <div class="col-md-5"><label class="form-label">애플리케이션 설명</label><input type="text" id="app-desc" class="form-control" placeholder="서브 모듈 핵심 요약 설명 기입"></div>
+              <div class="col-12 text-end"><button type="submit">라우팅 메타데이터 등록/동기화</button></div>
+            </form>
+            <hr>
+            <h3>실시간 등재 서브 애플리케이션 라우팅 테이블</h3>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-light"><tr><th>애플리케이션</th><th>라우팅 경로</th><th>진입점</th><th>상태</th><th>제어</th></tr></thead>
+                <tbody id="admin-subapp-list"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <details class="glass-card dev-tools-card">
+            <summary>개발 테스트 도구 열기</summary>
+            <div class="dev-tools-grid">
+              <section>
+                <h2>STEP 2 DB 테스트</h2>
+                <button id="writeTestBtn">쓰기 테스트</button>
+                <button id="readTestBtn">읽기 테스트</button>
+                <button id="deleteTestBtn">삭제 테스트</button>
+                <pre id="dbResult">아직 실행 전입니다.</pre>
+              </section>
+              <section class="admin-box">
+                <h2>STEP 3 관리자 권한 테스트</h2>
+                <p>개발 단계에서만 사용하는 수동 관리자 등록 도구입니다.</p>
+                <button id="makeAdminBtn">현재 계정을 관리자 등록</button>
+                <button id="checkAdminBtn">관리자 권한 확인</button>
+                <pre id="adminResult">아직 실행 전입니다.</pre>
+              </section>
+            </div>
+          </details>
         </section>
       </div>
-    </details>
+    </section>
   </main>
 
   <script type="module" src="./firebase.js"></script>
