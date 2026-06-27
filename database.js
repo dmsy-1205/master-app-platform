@@ -1,5 +1,6 @@
-import { ref, set, onValue, update, db, auth } from './firebase.js';
-import { ref, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { db, auth } from './firebase.js';
+import { ref, set, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
 const writeTestBtn = document.getElementById('writeTestBtn');
 const readTestBtn = document.getElementById('readTestBtn');
 const deleteTestBtn = document.getElementById('deleteTestBtn');
@@ -31,10 +32,10 @@ deleteTestBtn.addEventListener('click', async () => {
     dbResult.innerText = "데이터 삭제 완료!";
   } catch (e) { dbResult.innerText = "에러: " + e.message; }
 });
+
 // ==========================================
 // [STEP 6] 다중 서브 애플리케이션 라우팅 메타데이터 관리
 // ==========================================
-
 
 /**
  * 서브 애플리케이션 등록 및 라우팅 메타데이터 저장
