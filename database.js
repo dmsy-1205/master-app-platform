@@ -46,10 +46,17 @@ if (deleteTestBtn) {
 /**
  * 서브 애플리케이션 등록 및 라우팅 메타데이터 저장
  */
-export function registerSubApp(appId, appData) {
+export async function registerSubApp(appId, appData) {
     const appRef = ref(db, 'apps/' + appId);
+    const existingSnap = await get(appRef);
+    const existingData = existingSnap.exists() ? existingSnap.val() : {};
+
     return set(appRef, {
+        ...existingData,
         ...appData,
+        runCount: Number(existingData.runCount || appData.runCount || 0),
+        lastRunAt: existingData.lastRunAt || appData.lastRunAt || '',
+        createdAt: existingData.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
     });
 }

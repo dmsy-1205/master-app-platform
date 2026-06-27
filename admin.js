@@ -131,7 +131,11 @@ export function initAdminSubAppManager() {
                 path: document.getElementById('app-path').value.trim(),
                 entryUrl: document.getElementById('app-entry').value.trim(),
                 icon: document.getElementById('app-icon').value.trim() || '📦',
+                version: document.getElementById('app-version')?.value.trim() || 'v1.0',
+                launchMode: document.getElementById('app-launch-mode')?.value || 'router',
                 description: document.getElementById('app-desc').value.trim(),
+                runCount: 0,
+                lastRunAt: '',
                 isActive: true
             };
 
@@ -164,7 +168,7 @@ export function initAdminSubAppManager() {
             tr.innerHTML = `
                 <td>${app.icon || '📦'} <strong>${app.name || '이름 없음'}</strong> (${appId})</td>
                 <td><code>${app.path || '-'}</code></td>
-                <td><small>${app.entryUrl || '-'}</small></td>
+                <td><small>${app.entryUrl || '-'}</small><br><span class="text-muted">${app.version || 'v1.0'} · ${app.launchMode || 'router'}</span></td>
                 <td>
                     <span class="badge ${isActive ? 'bg-success' : 'bg-secondary'}">
                         ${isActive ? '활성화' : '비활성화'}

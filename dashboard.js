@@ -1,6 +1,6 @@
 import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { ref, get, onValue, off } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, get, onValue, off, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { normalizeActiveStatus } from './database.js';
 
 const dashboardLoginState = document.getElementById('dashboardLoginState');
@@ -17,9 +17,19 @@ const dashboardOpenFirstAppBtn = document.getElementById('dashboardOpenFirstAppB
 let appsUnsubscribeRef = null;
 let cachedApps = [];
 let currentUser = null;
+let currentApprovalStatus = 'none';
 
 function setText(el, value) {
   if (el) el.textContent = value;
+}
+
+function escapeHtml(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
 function statusLabel(status) {
@@ -33,14 +43,31 @@ function statusLabel(status) {
   return map[status] || status || '확인 불가';
 }
 
+function formatDate(value) {
+  if (!value) return '-';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '-';
+  return date.toLocaleString('ko-KR');
+}
+
+function isExternalUrl(url = '') {
+  return /^https?:\/\//i.test(url);
+}
+
+function resolveLaunchMode(app) {
+  if (app.launchMode) return app.launchMode;
+  return isExternalUrl(app.entryUrl) ? 'newTab' : 'router';
+}
+
 function renderEmptyApps(message) {
   if (!dashboardApps) return;
-  dashboardApps.innerHTML = `<div class="dashboard-empty">${message}</div>`;
+  dashboardApps.innerHTML = `<div class="dashboard-empty">${escapeHtml(message)}</div>`;
 }
 
 function renderApps(apps, approvalStatus) {
   if (!dashboardApps) return;
   cachedApps = apps;
+  currentApprovalStatus = approvalStatus;
 
   if (approvalStatus !== 'approved') {
     renderEmptyApps('승인 완료 후 사용 가능한 앱 목록이 표시됩니다.');
@@ -54,19 +81,93 @@ function renderApps(apps, approvalStatus) {
     return;
   }
 
-  dashboardApps.innerHTML = apps.map(app => `
-    <article class="user-app-card">
-      <div class="user-app-icon">${app.icon || '📦'}</div>
-      <div class="user-app-body">
-        <h4>${app.name || '이름 없는 앱'}</h4>
-        <p>${app.description || '앱 설명이 등록되지 않았습니다.'}</p>
-        <span class="user-app-path">${app.path}</span>
-      </div>
-      <a class="user-app-open" href="#${app.path}">실행</a>
-    </article>
-  `).join('');
+  dashboardApps.innerHTML = apps.map(app => {
+    const launchMode = resolveLaunchMode(app);
+    const runCount = Number(app.runCount || 0);
+    const lastRunText = formatDate(app.lastRunAt);
+    return `
+      <article class="user-app-card step8-app-card">
+        <div class="user-app-icon">${escapeHtml(app.icon || '📦')}</div>
+        <div class="user-app-body">
+          <div class="user-app-headline">
+            <h4>${escapeHtml(app.name || '이름 없는 앱')}</h4>
+            <span class="user-app-status active">활성</span>
+          </div>
+          <p>${escapeHtml(app.description || '앱 설명이 등록되지 않았습니다.')}</p>
+          <div class="user-app-meta">
+            <span>${escapeHtml(app.version || 'version 미등록')}</span>
+            <span>${escapeHtml(app.path || '-')}</span>
+            <span>${launchMode === 'router' ? '플랫폼 내부 실행' : launchMode === 'sameTab' ? '현재 창 이동' : '새 탭 실행'}</span>
+          </div>
+          <div class="user-app-run-info">
+            <span>실행 ${runCount}회</span>
+            <span>최근 실행 ${lastRunText}</span>
+          </div>
+        </div>
+        <button type="button" class="user-app-open launch-app-btn" data-app-id="${escapeHtml(app.id)}">실행</button>
+      </article>
+    `;
+  }).join('');
 
   if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = false;
+}
+
+async function recordAppLaunch(app) {
+  if (!currentUser || !app?.id) return;
+
+  const launchedAt = new Date().toISOString();
+  const currentRunCount = Number(app.runCount || 0);
+  const updates = {};
+  updates[`apps/${app.id}/runCount`] = currentRunCount + 1;
+  updates[`apps/${app.id}/lastRunAt`] = launchedAt;
+  updates[`apps/${app.id}/lastRunBy`] = currentUser.uid;
+  updates[`users/${currentUser.uid}/lastAppLaunch`] = {
+    appId: app.id,
+    appName: app.name || '',
+    launchedAt
+  };
+
+  await update(ref(db), updates);
+  await push(ref(db, `appRunLogs/${currentUser.uid}/${app.id}`), {
+    appId: app.id,
+    appName: app.name || '',
+    entryUrl: app.entryUrl || '',
+    launchMode: resolveLaunchMode(app),
+    launchedAt
+  });
+}
+
+async function launchApp(app) {
+  if (!app) return;
+  if (currentApprovalStatus !== 'approved') {
+    alert('승인 완료 사용자만 앱을 실행할 수 있습니다.');
+    return;
+  }
+  if (!normalizeActiveStatus(app.isActive)) {
+    alert('현재 비활성화된 앱입니다.');
+    return;
+  }
+  if (!app.entryUrl && !app.path) {
+    alert('앱 진입 URL 또는 라우팅 경로가 등록되지 않았습니다.');
+    return;
+  }
+
+  try {
+    await recordAppLaunch(app);
+  } catch (error) {
+    console.warn('앱 실행 기록 저장 실패:', error);
+  }
+
+  const launchMode = resolveLaunchMode(app);
+  if (launchMode === 'newTab') {
+    window.open(app.entryUrl, '_blank', 'noopener,noreferrer');
+    return;
+  }
+  if (launchMode === 'sameTab') {
+    window.location.href = app.entryUrl;
+    return;
+  }
+  window.location.hash = app.path || '/';
 }
 
 async function loadUserDashboard(user) {
@@ -78,6 +179,7 @@ async function loadUserDashboard(user) {
     setText(dashboardApproval, '-');
     setText(dashboardSubmitted, '-');
     setText(dashboardReviewed, '-');
+    currentApprovalStatus = 'none';
     renderEmptyApps('로그인이 필요합니다.');
     if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = true;
     return;
@@ -98,11 +200,12 @@ async function loadUserDashboard(user) {
     const userData = userSnap.exists() ? userSnap.val() : {};
     const applicationData = applicationSnap.exists() ? applicationSnap.val() : null;
     const approvalStatus = applicationData?.status || userData.userStatus || 'none';
+    currentApprovalStatus = approvalStatus;
 
     setText(dashboardRole, isAdmin ? '관리자' : '일반 사용자');
     setText(dashboardApproval, statusLabel(approvalStatus));
-    setText(dashboardSubmitted, applicationData?.submittedAt ? new Date(applicationData.submittedAt).toLocaleString('ko-KR') : '-');
-    setText(dashboardReviewed, applicationData?.reviewedAt ? new Date(applicationData.reviewedAt).toLocaleString('ko-KR') : '심사 대기 또는 미처리');
+    setText(dashboardSubmitted, formatDate(applicationData?.submittedAt));
+    setText(dashboardReviewed, applicationData?.reviewedAt ? formatDate(applicationData.reviewedAt) : '심사 대기 또는 미처리');
 
     if (appsUnsubscribeRef) off(appsUnsubscribeRef);
     appsUnsubscribeRef = ref(db, 'apps');
@@ -127,7 +230,16 @@ if (dashboardRefreshBtn) {
 if (dashboardOpenFirstAppBtn) {
   dashboardOpenFirstAppBtn.addEventListener('click', () => {
     if (!cachedApps.length) return;
-    window.location.hash = cachedApps[0].path;
+    launchApp(cachedApps[0]);
+  });
+}
+
+if (dashboardApps) {
+  dashboardApps.addEventListener('click', (event) => {
+    const button = event.target.closest('.launch-app-btn');
+    if (!button) return;
+    const app = cachedApps.find(item => item.id === button.dataset.appId);
+    launchApp(app);
   });
 }
 

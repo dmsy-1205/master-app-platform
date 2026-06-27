@@ -1,5 +1,5 @@
 /**
- * Master App Platform - STEP 6 핵심 동적 라우팅 엔진
+ * Master App Platform - STEP 8 앱 연결 동적 라우팅 엔진
  * Firebase 메타데이터를 기반으로 클라이언트 사이드 라우팅 및 샌드박스 렌더링을 제어합니다.
  */
 import { listenSubApps, normalizeActiveStatus } from './database.js';
@@ -21,7 +21,7 @@ class MasterRouter {
             Object.keys(apps).forEach(appId => {
                 const app = apps[appId];
                 if (normalizeActiveStatus(app.isActive)) {
-                    this.routes[app.path] = app;
+                    this.routes[app.path] = { id: appId, ...app };
                     this.renderNavigationItem(app);
                 }
             });
@@ -39,8 +39,17 @@ class MasterRouter {
         if (!this.navContainer) return;
         const li = document.createElement('li');
         li.className = 'nav-item';
-        li.innerHTML = `<a class="nav-link" href="#${app.path}">${app.icon} ${app.name}</a>`;
+        li.innerHTML = `<a class="nav-link" href="#${app.path}">${app.icon || '📦'} ${app.name}</a>`;
         this.navContainer.appendChild(li);
+    }
+
+    isExternalUrl(url = '') {
+        return /^https?:\/\//i.test(url);
+    }
+
+    resolveLaunchMode(app) {
+        if (app.launchMode) return app.launchMode;
+        return this.isExternalUrl(app.entryUrl) ? 'newTab' : 'router';
     }
 
     async resolveRoute(hash) {
@@ -50,6 +59,23 @@ class MasterRouter {
         if (!this.viewContainer) return;
 
         if (targetApp) {
+            const launchMode = this.resolveLaunchMode(targetApp);
+
+            if (launchMode === 'newTab') {
+                this.viewContainer.innerHTML = `
+                    <div class="alert alert-info py-2">
+                        <strong>${targetApp.name}</strong> 앱을 새 탭으로 실행합니다.
+                    </div>
+                `;
+                window.open(targetApp.entryUrl, '_blank', 'noopener,noreferrer');
+                return;
+            }
+
+            if (launchMode === 'sameTab') {
+                window.location.href = targetApp.entryUrl;
+                return;
+            }
+
             this.viewContainer.innerHTML = `
                 <div class="app-loading-fallback d-flex align-items-center gap-2">
                     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
@@ -57,7 +83,7 @@ class MasterRouter {
                 </div>
             `;
             try {
-                // 마이크로 앱 진입점 엔트리 원격/로컬 페칭 및 마운트 연동
+                // 마이크로 앱 진입점 엔트리 로컬 페칭 및 플랫폼 내부 마운트 연동
                 const response = await fetch(targetApp.entryUrl);
                 if (!response.ok) throw new Error("애플리케이션 소스를 불러올 수 없습니다.");
                 const htmlContent = await response.text();

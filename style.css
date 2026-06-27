@@ -60,3 +60,18 @@ pre { background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px; ov
   .user-app-card { grid-template-columns: 40px 1fr; }
   .user-app-open { grid-column: 1 / -1; text-align: center; }
 }
+
+/* STEP 8 앱 연결 카드 확장 */
+.step8-app-card { grid-template-columns: 52px 1fr auto; align-items: stretch; }
+.user-app-headline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.user-app-status { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 0.74rem; font-weight: 700; }
+.user-app-status.active { background: #d1e7dd; color: #0f5132; }
+.user-app-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.user-app-meta span { display: inline-block; background: #f1f3f5; color: #495057; border-radius: 999px; padding: 3px 9px; font-size: 0.78rem; }
+.user-app-run-info { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; color: #6c757d; font-size: 0.82rem; }
+.launch-app-btn { align-self: center; margin: 0; min-width: 72px; }
+
+@media (max-width: 720px) {
+  .step8-app-card { grid-template-columns: 40px 1fr; }
+  .launch-app-btn { grid-column: 1 / -1; width: 100%; }
+}
