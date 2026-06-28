@@ -1,31 +1,35 @@
-# ProjectStatus.md
+# ProjectStatus
 
 ## 프로젝트명
+
 Master App Platform
 
 ## 현재 버전
-master-app-platform-step08-v5
 
-## 상태
-STEP8-v5 다크 프리미엄 SaaS UI 리뉴얼 완료
+master-app-platform-step09-v1
 
-## 완료 기능
-- STEP1 Firebase Authentication
-- STEP2 Realtime Database CRUD
-- STEP3 관리자 권한 시스템
-- STEP4 회원 신청 시스템
-- STEP5 회원 승인 시스템
-- STEP6 다중 서브 애플리케이션 등록 및 라우팅
-- STEP7 사용자 Dashboard
-- STEP8 앱 실행 연결
-- STEP8-v5 전문 플랫폼 UI 개선
+## 완료 상태
 
-## 이번 버전 핵심 변경
-- 로그인/회원가입 화면 고급화
-- 로그인 후 Workspace 다크 콘솔 UI 적용
-- App Store 카드 디자인 개선
-- 관리자 센터 시각 개선
-- 기존 기능 및 Firebase 구조 유지
+STEP1 ~ STEP8-v5 완료 후 STEP9-v1 관리자 SPA 구조 개편 완료
 
-## 다음 후보 작업
-STEP8-v6 사용자/관리자 페이지 완전 분리 또는 STEP9 Firebase Rules
+## 이번 버전 핵심
+
+- 관리자 콘솔 SPA 메뉴 분리
+- 사용자 화면과 관리자 화면의 정보 노출 구조 개선
+- Admin Center 내부 기능 탭 분리
+- 기존 기능 ID와 Firebase 경로 유지
+
+## 유지된 기능
+
+- Firebase Authentication
+- Realtime Database CRUD
+- 관리자 권한 시스템
+- 회원 신청 시스템
+- 회원 승인 시스템
+- 앱 등록 및 라우팅
+- 사용자 Dashboard
+- 앱 실행 및 실행 로그
+
+## 다음 권장 작업
+
+STEP9-v2 사용자 Dashboard 및 App Store 2.0 고도화

@@ -1,28 +1,33 @@
 # Master App Platform
 
-현재 버전: `master-app-platform-step08-v5`
+## 현재 버전
 
-## 개요
-여러 웹 애플리케이션을 하나의 플랫폼에서 등록 관리 실행하는 통합 SaaS 플랫폼입니다.
+master-app-platform-step09-v1
 
-## 현재 완료
+## 목적
+
+여러 웹 애플리케이션을 하나의 플랫폼에서 회원 승인 권한 관리 앱 등록 앱 실행 로그까지 통합 운영하는 SaaS형 플랫폼입니다.
+
+## STEP9-v1 변경점
+
+- 관리자 콘솔 SPA 메뉴 구조 적용
+- 좌측 사이드바 메뉴 전환 방식 적용
+- Dashboard App Store Runtime 신청 관리 Admin Center 화면 분리
+- 관리자 센터 내부 Overview 승인 관리 앱 관리 개발 도구 탭 분리
+- 기존 Firebase Auth Database 관리자 권한 앱 실행 기능 유지
+- STEP8-v5 다크 프리미엄 UI 유지
+
+## 테스트 항목
+
 - 회원가입 로그인 로그아웃
-- Firebase Realtime Database CRUD
-- 관리자 권한 시스템
-- 회원 신청 및 승인 시스템
-- 다중 서브 애플리케이션 등록
-- 동적 라우팅
-- 사용자 Dashboard
-- 앱 실행 연결
-- App Store형 UI
-- 다크 프리미엄 SaaS UI
-
-## STEP8-v5 변경점
-- 로그인/회원가입 화면 고급화
-- 로그인 후 Workspace 콘솔 디자인 개선
-- App Store 앱 카드 다크 프리미엄 스타일 적용
-- 관리자 센터 테이블 및 카드 시각 개선
-- 기존 기능 DOM ID 및 Firebase 구조 유지
+- 관리자 권한 유지
+- 사용자 Dashboard 표시
+- App Store 앱 실행
+- Runtime 내부 라우팅
+- 회원 신청 및 신청 조회
+- 관리자 승인 대시보드
+- 관리자 앱 등록 활성 비활성
 
 ## 배포 방식
-ZIP 압축 해제 후 GitHub에 덮어쓰기 업로드하면 Netlify 자동 배포로 테스트합니다.
+
+GitHub에 ZIP 내용을 덮어쓰기 업로드한 뒤 Netlify 자동 배포로 테스트합니다.

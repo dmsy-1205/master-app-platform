@@ -1,0 +1,68 @@
+const workspaceRoutes = {
+  dashboard: ['.hero-strip', '#userDashboardSection'],
+  appstore: ['.appstore-section'],
+  runtime: ['#runtime'],
+  request: ['#request'],
+  admin: ['#admin']
+};
+
+const adminRoutes = {
+  overview: '[data-admin-panel="overview"]',
+  approval: '[data-admin-panel="approval"]',
+  apps: '[data-admin-panel="apps"]',
+  tools: '[data-admin-panel="tools"]'
+};
+
+function setActiveLink(route) {
+  document.querySelectorAll('[data-workspace-route]').forEach((link) => {
+    link.classList.toggle('active', link.dataset.workspaceRoute === route);
+  });
+}
+
+function showWorkspaceRoute(route = 'dashboard') {
+  const selected = workspaceRoutes[route] ? route : 'dashboard';
+  Object.values(workspaceRoutes).flat().forEach((selector) => {
+    document.querySelectorAll(selector).forEach((el) => el.classList.add('workspace-hidden'));
+  });
+  workspaceRoutes[selected].forEach((selector) => {
+    document.querySelectorAll(selector).forEach((el) => el.classList.remove('workspace-hidden'));
+  });
+  setActiveLink(selected);
+  if (selected === 'admin') showAdminRoute('overview');
+}
+
+function showAdminRoute(route = 'overview') {
+  const selected = adminRoutes[route] ? route : 'overview';
+  Object.values(adminRoutes).forEach((selector) => {
+    document.querySelectorAll(selector).forEach((el) => el.classList.add('admin-panel-hidden'));
+  });
+  document.querySelectorAll(adminRoutes[selected]).forEach((el) => el.classList.remove('admin-panel-hidden'));
+  document.querySelectorAll('[data-admin-route]').forEach((button) => {
+    button.classList.toggle('active', button.dataset.adminRoute === selected);
+  });
+}
+
+document.addEventListener('click', (event) => {
+  const workspaceLink = event.target.closest('[data-workspace-route]');
+  if (workspaceLink) {
+    event.preventDefault();
+    showWorkspaceRoute(workspaceLink.dataset.workspaceRoute);
+    return;
+  }
+
+  const adminButton = event.target.closest('[data-admin-route]');
+  if (adminButton) {
+    event.preventDefault();
+    showAdminRoute(adminButton.dataset.adminRoute);
+  }
+});
+
+window.addEventListener('master-auth-role-changed', (event) => {
+  const isAdmin = Boolean(event.detail?.isAdmin);
+  if (!isAdmin && document.querySelector('[data-workspace-route="admin"]')?.classList.contains('active')) {
+    showWorkspaceRoute('dashboard');
+  }
+});
+
+showWorkspaceRoute('dashboard');
+showAdminRoute('overview');

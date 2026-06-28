@@ -10,7 +10,7 @@ Master App Platform
 
 현재 버전
 
-master-app-platform-step06-v1
+master-app-platform-step09-v1
 
 ---
 
@@ -131,7 +131,7 @@ STEP8
 
 STEP9
 
-Firebase Rules
+관리자 SPA 구조 및 사용자 경험 고도화
 
 STEP10
 
@@ -271,7 +271,7 @@ Netlify 다시 만들기
 
 현재 프로젝트는
 
-master-app-platform-step06-v1
+master-app-platform-step09-v1
 
 이다.
 

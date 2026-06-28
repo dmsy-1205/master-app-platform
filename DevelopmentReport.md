@@ -1,16 +1,23 @@
-# DevelopmentReport.md
+# DevelopmentReport
 
-## master-app-platform-step08-v5
+## 버전
 
-### 목표
-로그인 후 사용자가 전문 플랫폼처럼 느끼도록 다크 프리미엄 SaaS UI로 리뉴얼
+master-app-platform-step09-v1
 
-### 작업 내용
-- 기존 STEP8-v4 기능 유지
-- index.html 버전 문구 v5로 갱신
-- style.css에 STEP8-v5 프리미엄 디자인 레이어 추가
-- 로그인 화면 Dashboard App Store 관리자 센터 시각 개선
-- 문서 버전 갱신
+## 개발 목표
 
-### 유지된 기능
-로그인 회원가입 관리자 권한 회원 승인 앱 등록 활성 비활성 앱 실행 실행 로그
+관리자 기능을 SPA 방식으로 분리하여 전문 관리자 콘솔 구조를 만드는 것
+
+## 작업 내용
+
+- Dashboard App Store Runtime 신청 관리 Admin Center 화면 전환 구현
+- Admin Center 내부 Overview 승인 관리 앱 관리 개발 도구 탭 구현
+- workspace.js로 UI 상태 전환을 담당하도록 분리
+- 기존 Firebase 기능과 DOM ID는 변경하지 않음
+
+## 자체 검수
+
+- 기존 기능 참조 ID 유지 확인
+- 기존 모듈 import 유지 확인
+- 관리자 전용 data-auth 구조 유지 확인
+- 화면 전환은 CSS class 기반으로만 처리

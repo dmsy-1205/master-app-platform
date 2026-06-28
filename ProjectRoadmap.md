@@ -1,19 +1,19 @@
-# ProjectRoadmap.md
+# ProjectRoadmap
 
 ## 완료
-- STEP1 Authentication
-- STEP2 Realtime Database
+
+- STEP1 Firebase Authentication
+- STEP2 Realtime Database CRUD
 - STEP3 관리자 권한
 - STEP4 회원 신청
 - STEP5 회원 승인
-- STEP6 다중 앱 등록/라우팅
+- STEP6 앱 등록 라우팅
 - STEP7 사용자 Dashboard
-- STEP8 앱 실행 연결
-- STEP8-v3 App Store형 UI 구조 개편
+- STEP8 앱 실행 및 App Store형 UI
+- STEP9-v1 관리자 SPA 구조
 
-## 다음 후보
-- STEP8-v5 App Store 검색/카테고리/즐겨찾기
-- STEP9 Firebase Rules
-- STEP10 최종 배포 및 보안 점검
-- STEP11 관리자 Dashboard 고도화
-- STEP12 App Store 운영 기능 확장
+## 진행 예정
+
+- STEP9-v2 사용자 Dashboard 및 App Store 2.0
+- STEP9-v3 KPI 알림 활동 로그
+- STEP10 Firebase Rules 및 보안 강화
