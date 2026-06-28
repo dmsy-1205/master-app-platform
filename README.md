@@ -1,12 +1,12 @@
 # Master App Platform
 
 ## 현재 버전
-master-app-platform-step09-v3
+master-app-platform-step09-v4
 
 ## 목적
 여러 웹 애플리케이션을 하나의 플랫폼에서 회원 승인 권한 관리 앱 등록 앱 실행 로그까지 통합 운영하는 SaaS형 플랫폼입니다.
 
-## STEP9-v3 변경점
+## STEP9-v4 변경점
 - 전역 앱 검색 기능 추가
 - Notification Center 추가
 - 사용자 프로필 메뉴 추가

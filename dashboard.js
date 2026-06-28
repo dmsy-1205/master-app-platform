@@ -240,7 +240,11 @@ function renderApps(apps, approvalStatus) {
             <span>최근 실행 ${lastRunText}</span>
           </div>
         </div>
-        <div class="app-card-actions"><button type="button" class="favorite-app-btn" data-app-id="${escapeHtml(app.id)}">${favoriteIds.has(app.id) ? '★ 즐겨찾기' : '☆ 즐겨찾기'}</button><button type="button" class="user-app-open launch-app-btn" data-app-id="${escapeHtml(app.id)}">실행</button><small>Secure Launch</small></div>
+        <div class="app-card-actions app-card-actions-v4">
+          <div class="secure-launch-label">SECURE LAUNCH</div>
+          <button type="button" class="favorite-app-btn compact-favorite-btn" data-app-id="${escapeHtml(app.id)}" title="즐겨찾기">${favoriteIds.has(app.id) ? '★' : '☆'}</button>
+          <button type="button" class="user-app-open launch-app-btn compact-launch-btn" data-app-id="${escapeHtml(app.id)}">실행</button>
+        </div>
       </article>
     `;
   }).join('');

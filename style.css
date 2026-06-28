@@ -907,3 +907,70 @@ pre { background: rgba(3,7,18,.78); border: 1px solid var(--v5-line); }
   .notification-panel,
   .profile-panel { right: 10px; }
 }
+
+/* STEP9-v4: App Store action alignment and admin delete controls */
+.app-card-actions-v4 {
+  display: grid;
+  grid-template-columns: 44px minmax(110px, 1fr);
+  grid-template-areas:
+    "label label"
+    "fav launch";
+  gap: 10px;
+  align-items: center;
+  justify-content: end;
+  min-width: 190px;
+}
+.app-card-actions-v4 .secure-launch-label {
+  grid-area: label;
+  justify-self: end;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .18em;
+  color: rgba(203,213,225,.72);
+  font-weight: 900;
+}
+.app-card-actions-v4 .compact-favorite-btn {
+  grid-area: fav;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 14px;
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-card-actions-v4 .compact-launch-btn {
+  grid-area: launch;
+  min-width: 112px;
+  height: 44px;
+  border-radius: 14px;
+  font-weight: 900;
+}
+.app-card-v2 .app-card-actions-v4 small { display: none; }
+.admin-row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.delete-app-btn,
+.btn-danger.delete-app-btn {
+  background: linear-gradient(135deg, #fb7185, #ef4444) !important;
+  color: #fff !important;
+  border: 1px solid rgba(248,113,113,.48) !important;
+  box-shadow: 0 8px 20px rgba(239,68,68,.18) !important;
+}
+.delete-app-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+@media (max-width: 760px) {
+  .app-card-actions-v4 {
+    width: 100%;
+    grid-template-columns: 52px 1fr;
+    min-width: 0;
+  }
+  .app-card-actions-v4 .secure-launch-label { justify-self: start; }
+}

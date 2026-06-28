@@ -4,10 +4,10 @@
 Master App Platform
 
 ## 현재 버전
-master-app-platform-step09-v3
+master-app-platform-step09-v4
 
 ## 완료 상태
-STEP1 ~ STEP9-v3 완료
+STEP1 ~ STEP9-v4 완료
 
 ## 이번 버전 핵심
 - 사용자 활동 로그 화면 추가

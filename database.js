@@ -90,3 +90,16 @@ export function updateAppStatus(appId, isActive) {
         updatedAt: new Date().toISOString()
     });
 }
+
+
+/**
+ * STEP9-v4: 관리자 전용 서브 앱 삭제
+ * apps/{appId} 메타데이터를 삭제합니다.
+ */
+export function deleteSubApp(appId) {
+    if (!appId) {
+        return Promise.reject(new Error('앱 ID가 비어 있어 삭제할 수 없습니다.'));
+    }
+
+    return remove(ref(db, 'apps/' + appId));
+}

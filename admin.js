@@ -1,6 +1,6 @@
 import { db, auth } from './firebase.js';
 import { ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { registerSubApp, listenSubApps, updateAppStatus, normalizeActiveStatus } from './database.js';
+import { registerSubApp, listenSubApps, updateAppStatus, normalizeActiveStatus, deleteSubApp } from './database.js';
 
 const makeAdminBtn = document.getElementById('makeAdminBtn');
 const checkAdminBtn = document.getElementById('checkAdminBtn');
@@ -112,13 +112,36 @@ export function initAdminSubAppManager() {
     if (appListContainer && !appListContainer.dataset.toggleBound) {
         appListContainer.dataset.toggleBound = 'true';
         appListContainer.addEventListener('click', async (e) => {
-            const target = e.target.closest('.toggle-status-btn');
-            if (!target) return;
+            const toggleTarget = e.target.closest('.toggle-status-btn');
+            const deleteTarget = e.target.closest('.delete-app-btn');
 
-            const id = target.dataset.id;
-            const currentStatus = target.dataset.status === 'true';
-            target.disabled = true;
-            target.textContent = '처리 중...';
+            if (deleteTarget) {
+                const id = deleteTarget.dataset.id;
+                const name = deleteTarget.dataset.name || id;
+                const confirmed = confirm(`[${name}] 앱을 삭제하시겠습니까?\n\n삭제하면 App Store와 라우팅 테이블에서 제거됩니다.`);
+                if (!confirmed) return;
+
+                deleteTarget.disabled = true;
+                deleteTarget.textContent = '삭제 중...';
+
+                try {
+                    await deleteSubApp(id);
+                    alert(`[${name}] 앱 삭제 완료`);
+                } catch (error) {
+                    console.error('서브 앱 삭제 실패:', error);
+                    alert('앱 삭제 처리 오류: ' + error.message);
+                    deleteTarget.disabled = false;
+                    deleteTarget.textContent = '삭제';
+                }
+                return;
+            }
+
+            if (!toggleTarget) return;
+
+            const id = toggleTarget.dataset.id;
+            const currentStatus = toggleTarget.dataset.status === 'true';
+            toggleTarget.disabled = true;
+            toggleTarget.textContent = '처리 중...';
 
             try {
                 await updateAppStatus(id, !currentStatus);
@@ -126,8 +149,8 @@ export function initAdminSubAppManager() {
             } catch (error) {
                 console.error('서브 앱 상태 변경 실패:', error);
                 alert('활성화/비활성화 처리 오류: ' + error.message);
-                target.disabled = false;
-                target.textContent = currentStatus ? '비활성화' : '활성화';
+                toggleTarget.disabled = false;
+                toggleTarget.textContent = currentStatus ? '비활성화' : '활성화';
             }
         });
     }
@@ -167,7 +190,7 @@ export function initAdminSubAppManager() {
 
         const keys = Object.keys(apps);
         if (keys.length === 0) {
-            appListContainer.innerHTML = '<tr><td colspan="5" class="text-center text-muted">등록된 서브 애플리케이션이 없습니다.</td></tr>';
+            appListContainer.innerHTML = '<tr><td colspan="6" class="text-center text-muted">등록된 서브 애플리케이션이 없습니다.</td></tr>';
             return;
         }
 
@@ -185,9 +208,14 @@ export function initAdminSubAppManager() {
                     </span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm ${isActive ? 'btn-warning' : 'btn-success'} toggle-status-btn" data-id="${appId}" data-status="${isActive}">
-                        ${isActive ? '비활성화' : '활성화'}
-                    </button>
+                    <div class="admin-row-actions">
+                        <button type="button" class="btn btn-sm ${isActive ? 'btn-warning' : 'btn-success'} toggle-status-btn" data-id="${appId}" data-status="${isActive}">
+                            ${isActive ? '비활성화' : '활성화'}
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger delete-app-btn" data-id="${appId}" data-name="${(app.name || appId).replace(/"/g, '&quot;')}">
+                            삭제
+                        </button>
+                    </div>
                 </td>
             `;
             appListContainer.appendChild(tr);

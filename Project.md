@@ -10,7 +10,7 @@ Master App Platform
 
 현재 버전
 
-master-app-platform-step09-v3
+master-app-platform-step09-v4
 
 ---
 
@@ -271,7 +271,7 @@ Netlify 다시 만들기
 
 현재 프로젝트는
 
-master-app-platform-step09-v3
+master-app-platform-step09-v4
 
 이다.
 
@@ -286,7 +286,7 @@ STEP7 사용자 Dashboard
 
 ---
 
-✅ STEP9-v3
+✅ STEP9-v4
 
 검색 알림 프로필 활동 로그 즐겨찾기 기능 추가
 

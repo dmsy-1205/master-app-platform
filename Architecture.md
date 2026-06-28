@@ -25,7 +25,14 @@
 새 프로젝트를 만들지 않고 기존 Firebase와 기존 파일 구조를 기준으로 점진 개선한다.
 
 
-## STEP9-v3 추가 구조
+## STEP9-v4 추가 구조
 - dashboard.js: 검색 필터, 즐겨찾기, 알림, 프로필, 활동 로그 로직 추가
 - workspace.js: activity 라우트 추가
 - index.html: Notification Center, Profile Panel, Activity Log 화면 추가
+
+
+## STEP9-v4 구조 메모
+- database.js: deleteSubApp(appId) 추가
+- admin.js: 관리자 라우팅 테이블 삭제 이벤트 추가
+- dashboard.js: App Store 카드 액션 영역 정리
+- style.css: 컴팩트 즐겨찾기 실행 버튼 스타일 추가
