@@ -39,6 +39,15 @@ if (deleteTestBtn) {
   });
 }
 
+
+function sanitizeFirebaseKey(value, fallback = 'v1_0') {
+    return String(value || fallback)
+        .trim()
+        .replace(/[.#$\[\]\/]/g, '_')
+        .replace(/\s+/g, '_')
+        || fallback;
+}
+
 // ==========================================
 // [STEP 6] 다중 서브 애플리케이션 라우팅 메타데이터 관리
 // ==========================================
@@ -51,12 +60,15 @@ export async function registerSubApp(appId, appData) {
     const existingSnap = await get(appRef);
     const existingData = existingSnap.exists() ? existingSnap.val() : {};
 
+    const appVersion = appData.version || existingData.version || 'v1.0';
+    const versionKey = sanitizeFirebaseKey(appVersion);
+
     return set(appRef, {
         ...existingData,
         ...appData,
         manifest: {
             appId,
-            version: appData.version || existingData.version || 'v1.0',
+            version: appVersion,
             owner: appData.owner || existingData.owner || 'MasterOS',
             category: appData.category || existingData.category || 'General',
             icon: appData.icon || existingData.icon || '📦',
@@ -75,11 +87,12 @@ export async function registerSubApp(appId, appData) {
         updateNote: appData.updateNote || existingData.updateNote || '',
         versions: {
             ...(existingData.versions || {}),
-            [appData.version || existingData.version || 'v1.0']: {
-                version: appData.version || existingData.version || 'v1.0',
+            [versionKey]: {
+                version: appVersion,
+                versionKey,
                 entryUrl: appData.entryUrl || existingData.entryUrl || '',
                 updateNote: appData.updateNote || existingData.updateNote || '',
-                releasedAt: existingData.versions?.[appData.version || existingData.version || 'v1.0']?.releasedAt || new Date().toISOString()
+                releasedAt: existingData.versions?.[versionKey]?.releasedAt || new Date().toISOString()
             }
         },
         runCount: Number(existingData.runCount || appData.runCount || 0),

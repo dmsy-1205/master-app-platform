@@ -20,3 +20,10 @@
 - Dashboard 즐겨찾기 실행 버튼 실제 실행 연결
 - router/newTab/sameTab 실행 방식 처리 안정화
 - 생활관리 앱 보안 진입점에서 테스트 실행 연결
+
+
+## STEP10-v1.1 긴급 수정
+
+- Firebase Realtime Database 경로 제한으로 인해 앱 버전값 `v1.0`이 `versions/v1.0` 경로로 저장되며 등록 실패가 발생하던 문제를 수정했습니다.
+- Version Manager 내부 저장 키는 `v1_0`처럼 안전한 Firebase Key로 자동 변환하고 화면 및 manifest의 실제 버전 표기는 `v1.0` 그대로 유지합니다.
+- 앱 등록과 실행 로그 기록 모두 동일한 버전 키 정규화 규칙을 사용하도록 보정했습니다.

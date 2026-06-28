@@ -2,6 +2,14 @@ import { auth, db } from './firebase.js';
 import { ref, get, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { normalizeActiveStatus } from './database.js';
 
+function sanitizeFirebaseKey(value, fallback = 'v1_0') {
+  return String(value || fallback)
+    .trim()
+    .replace(/[.#$\[\]\/]/g, '_')
+    .replace(/\s+/g, '_')
+    || fallback;
+}
+
 export function buildAppManifest(appId, app = {}) {
   return {
     appId,
@@ -84,8 +92,10 @@ export async function recordSecureExecution(app, tokenInfo) {
   updates[`apps/${app.id}/runCount`] = currentRunCount + 1;
   updates[`apps/${app.id}/lastRunAt`] = launchedAt;
   updates[`apps/${app.id}/lastRunBy`] = profile.user.uid;
-  updates[`apps/${app.id}/versions/${app.version || 'v1.0'}/lastRunAt`] = launchedAt;
-  updates[`apps/${app.id}/versions/${app.version || 'v1.0'}/runCount`] = Number(app.versions?.[app.version || 'v1.0']?.runCount || 0) + 1;
+  const appVersion = app.version || 'v1.0';
+  const versionKey = sanitizeFirebaseKey(appVersion);
+  updates[`apps/${app.id}/versions/${versionKey}/lastRunAt`] = launchedAt;
+  updates[`apps/${app.id}/versions/${versionKey}/runCount`] = Number(app.versions?.[versionKey]?.runCount || 0) + 1;
   updates[`users/${profile.user.uid}/lastAppLaunch`] = { appId: app.id, appName: app.name || '', launchedAt, token: tokenInfo?.token || '' };
   if (tokenInfo?.token) updates[`launchTokens/${tokenInfo.token}/used`] = true;
   if (tokenInfo?.token) updates[`launchTokens/${tokenInfo.token}/usedAt`] = launchedAt;

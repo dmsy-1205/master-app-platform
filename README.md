@@ -29,3 +29,10 @@
 `Dashboard/App Store 실행 버튼` → `Permission Engine 검사` → `Launch Token 발급` → `Execution Log 기록` → `Runtime 이동` → `Token 확인 후 앱 로드`
 
 주의 현재 단계의 Launch Token은 클라이언트 기반 1차 보안 구조입니다. 완전한 서버 검증은 Firebase Rules 또는 Cloud Functions 연동 단계에서 강화해야 합니다.
+
+
+## STEP10-v1.1 긴급 수정
+
+- Firebase Realtime Database 경로 제한으로 인해 앱 버전값 `v1.0`이 `versions/v1.0` 경로로 저장되며 등록 실패가 발생하던 문제를 수정했습니다.
+- Version Manager 내부 저장 키는 `v1_0`처럼 안전한 Firebase Key로 자동 변환하고 화면 및 manifest의 실제 버전 표기는 `v1.0` 그대로 유지합니다.
+- 앱 등록과 실행 로그 기록 모두 동일한 버전 키 정규화 규칙을 사용하도록 보정했습니다.
