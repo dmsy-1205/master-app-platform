@@ -117,11 +117,13 @@
               <p>가장 먼저 등록된 활성 앱을 즉시 실행합니다.</p>
               <button type="button" id="dashboardQuickLaunchBtn" disabled>대표 앱 실행</button>
             </article>
-            <article class="home-widget">
+            <article class="home-widget favorite-widget" id="favoriteDashboardWidget">
               <div class="widget-icon">⭐</div>
               <h3>즐겨찾기</h3>
-              <p>다음 버전에서 자주 쓰는 앱을 고정합니다.</p>
-              <span class="widget-badge">준비중</span>
+              <div id="favoriteWidgetBody">
+                <p>즐겨찾기한 앱이 이곳에 표시됩니다.</p>
+                <span class="widget-badge">아직 없음</span>
+              </div>
             </article>
             <article class="home-widget">
               <div class="widget-icon">🔔</div>
@@ -254,8 +256,18 @@
               <li>Entry URL은 내부 앱이면 <code>./apps/파일명.html</code> 외부 앱이면 <code>https://주소</code>를 입력합니다.</li>
             </ol>
             <div class="baby-care-deploy-box">
-              <strong>아가 생활관리 앱 배포 흐름</strong>
-              <span>생활관리 앱 HTML을 <code>apps/baby-care.html</code>로 넣기 → 예시 버튼 클릭 → 등록 → 활성화 → 사용자 승인 후 App Store에서 실행</span>
+              <strong>아가 생활관리 앱 보안 배포 흐름</strong>
+              <span>원본 생활관리 앱을 그대로 외부 공개하지 않고 <code>apps/baby-care-secure.html</code> 보안 진입 페이지로 먼저 연결합니다.</span>
+              <span>최종 보호는 Firebase Rules에서 승인 사용자만 <code>rooms</code> 데이터에 접근하도록 막는 방식으로 완성합니다.</span>
+            </div>
+            <div class="baby-care-security-plan">
+              <strong>생활관리 앱 보호 체크리스트</strong>
+              <ul>
+                <li>외부 Netlify 주소를 직접 공개하지 않기</li>
+                <li>Master App Platform 승인 사용자만 App Store에서 실행</li>
+                <li>공유 코드 입력 방식은 추측 불가능한 코드로 교체</li>
+                <li>다음 보안 단계에서 Firebase Rules 적용</li>
+              </ul>
             </div>
             <form id="subapp-register-form" class="row g-3 easy-register-form">
               <div class="col-md-3"><label class="form-label">애플리케이션 고유 ID</label><input type="text" id="app-id" class="form-control" placeholder="finance-app" required><small>영문 소문자 숫자 하이픈 권장</small></div>

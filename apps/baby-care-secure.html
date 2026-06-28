@@ -1,0 +1,24 @@
+<div class="baby-secure-page">
+  <p class="eyebrow">SECURE BABY CARE LAUNCH</p>
+  <h2>💗 아가 생활관리 앱 보안 진입점</h2>
+  <p>이 화면은 생활관리 앱을 바로 외부 공개하지 않고 Master App Platform의 승인 흐름을 거쳐 실행하기 위한 보호 진입 페이지입니다.</p>
+  <div class="secure-grid">
+    <div class="secure-card"><strong>1 승인 사용자</strong><br><small>플랫폼 승인 후 App Store에서 실행</small></div>
+    <div class="secure-card"><strong>2 내부 라우팅</strong><br><small>외부 주소 직접 노출 최소화</small></div>
+    <div class="secure-card"><strong>3 Rules 예정</strong><br><small>Firebase 데이터 접근 제한 필요</small></div>
+  </div>
+  <button id="baby-secure-open" class="btn btn-primary">생활관리 앱 실행 준비 확인</button>
+  <div class="secure-warning">
+    <strong>중요</strong><br>현재 외부 Netlify 앱은 URL을 아는 사람이 직접 접근할 수 있습니다. 완전 보호는 앱 소스를 이 플랫폼 내부 앱으로 이전하고 Firebase Rules에서 승인 사용자만 rooms 데이터에 접근하게 막아야 완성됩니다.
+  </div>
+</div>
+<script>
+(function(){
+  const btn = document.getElementById('baby-secure-open');
+  if(btn){
+    btn.addEventListener('click', function(){
+      alert('다음 단계에서 생활관리 앱 소스를 플랫폼 내부 앱으로 이전하고 Firebase Rules를 적용하면 안전 배포가 완성됩니다.');
+    });
+  }
+})();
+</script>

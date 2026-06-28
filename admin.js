@@ -293,14 +293,14 @@ export function initAdminSubAppManager() {
     if (fillBabyCarePresetBtn && !fillBabyCarePresetBtn.dataset.bound) {
         fillBabyCarePresetBtn.dataset.bound = 'true';
         fillBabyCarePresetBtn.addEventListener('click', () => fillPreset({
-            id: 'baby-care-app',
+            id: 'baby-care-secure',
             name: '아가 생활관리 앱',
             path: '/baby-care',
-            entry: './apps/baby-care.html',
+            entry: './apps/baby-care-secure.html',
             icon: '💗',
             version: 'v1.0',
             launchMode: 'router',
-            description: '아가의 생활 기록 일정 케어 데이터를 안전하게 관리하는 전용 앱'
+            description: '승인 사용자만 접근하도록 플랫폼에서 보호하는 아가 생활관리 앱 진입점'
         }));
     }
 

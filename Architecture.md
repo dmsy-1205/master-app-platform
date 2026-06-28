@@ -8,5 +8,5 @@
 - `userFavorites/{uid}/{appId}` 즐겨찾기
 - `appRunLogs/{uid}/{appId}` 실행 로그
 
-## STEP9-v6 추가
+## STEP9-v7 추가
 회원관리 UI가 `users`, `admins`, `applications`를 함께 읽어 관리자 화면에서 회원 상태와 권한을 관리한다.

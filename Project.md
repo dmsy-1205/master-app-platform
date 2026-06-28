@@ -10,7 +10,7 @@ Master App Platform
 
 현재 버전
 
-master-app-platform-step09-v6
+master-app-platform-step09-v7
 
 ---
 
@@ -271,7 +271,7 @@ Netlify 다시 만들기
 
 현재 프로젝트는
 
-master-app-platform-step09-v6
+master-app-platform-step09-v7
 
 이다.
 
@@ -295,5 +295,5 @@ STEP7 사용자 Dashboard
 STEP10 Firebase Rules 및 보안 강화
 
 
-## STEP9-v6 추가 규칙
+## STEP9-v7 추가 규칙
 앱 등록은 초보자도 사용할 수 있게 예시 자동 채우기와 입력 검증을 제공한다. 즐겨찾기는 사용자별 Firebase 데이터로 저장한다.

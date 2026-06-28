@@ -4,3 +4,7 @@
 - 현재 퇴출은 users/applications 상태값 기반의 플랫폼 접근 차단 방식
 - 회원별 앱 접근 권한은 다음 단계에서 추가 예정
 - Firebase Rules 강화 전까지 운영 배포 전 보안 점검 필요
+
+
+## 보안 참고
+외부 Netlify 생활관리 앱은 URL 직접 접근을 완전히 막을 수 없습니다. STEP10 Firebase Rules 적용이 필요합니다.

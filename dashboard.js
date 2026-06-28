@@ -35,6 +35,7 @@ const recentActivityList = document.getElementById('recentActivityList');
 const fullActivityList = document.getElementById('fullActivityList');
 const activityRefreshBtn = document.getElementById('activityRefreshBtn');
 const favoriteCountWidget = document.getElementById('favoriteCountWidget');
+const favoriteWidgetBody = document.getElementById('favoriteWidgetBody');
 
 let appsUnsubscribeRef = null;
 let cachedApps = [];
@@ -124,6 +125,22 @@ async function syncFavorite(appId, enabled) {
 
 function updateFavoriteCount() {
   setText(favoriteCountWidget, `${favoriteIds.size}개`);
+}
+
+function renderFavoriteWidget(apps = cachedApps) {
+  if (!favoriteWidgetBody) return;
+  const favorites = apps.filter(app => favoriteIds.has(app.id));
+  if (!favorites.length) {
+    favoriteWidgetBody.innerHTML = '<p>즐겨찾기한 앱이 아직 없습니다.</p><span class="widget-badge">아직 없음</span>';
+    return;
+  }
+  favoriteWidgetBody.innerHTML = favorites.slice(0, 3).map(app => `
+    <div class="favorite-widget-app">
+      <span>${escapeHtml(app.icon || '📦')}</span>
+      <div><strong>${escapeHtml(app.name || '이름 없는 앱')}</strong><small>${escapeHtml(app.path || '-')}</small></div>
+      <button type="button" class="favorite-widget-launch" data-app-id="${escapeHtml(app.id)}">실행</button>
+    </div>
+  `).join('') + (favorites.length > 3 ? `<small class="favorite-more">외 ${favorites.length - 3}개 더 있음</small>` : '');
 }
 
 function buildNotifications(apps = [], approvalStatus = 'none') {
@@ -216,6 +233,7 @@ function renderApps(apps, approvalStatus) {
   currentApprovalStatus = approvalStatus;
   updateUserStats(apps, approvalStatus);
   updateFavoriteCount();
+  renderFavoriteWidget(apps);
   renderNotifications(apps, approvalStatus);
   const visibleApps = filterApps(apps);
 
@@ -345,6 +363,7 @@ async function loadUserDashboard(user) {
     updateUserStats([], 'none');
     favoriteIds = new Set();
     updateFavoriteCount();
+    renderFavoriteWidget([]);
     renderNotifications([], 'none');
     renderEmptyApps('로그인이 필요합니다.');
     setLaunchButtonsEnabled(false);

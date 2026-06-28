@@ -1,4 +1,4 @@
-# DevelopmentReport STEP9-v6
+# DevelopmentReport STEP9-v7
 
 ## 작업 목표
 플랫폼 운영에 필요한 회원관리 기능을 추가하고 아가 생활관리 앱 배포를 준비한다.

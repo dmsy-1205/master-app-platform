@@ -1,6 +1,6 @@
 # ProjectStatus
 
-버전: master-app-platform-step09-v6
+버전: master-app-platform-step09-v7
 
 ## 완료
 - STEP1 회원가입 로그인 자동 로그인
@@ -16,9 +16,14 @@
 - STEP9-v3 알림 검색 프로필 활동로그
 - STEP9-v4 앱 카드 버튼 정리 앱 삭제
 - STEP9-v5 즐겨찾기 저장 초보자 앱 등록
-- STEP9-v6 회원관리 생활관리 앱 배포 준비
+- STEP9-v7 회원관리 생활관리 앱 배포 준비
 
 ## 다음 후보
 - 생활관리 앱 실제 파일 연결
 - 회원별 앱 접근 권한
 - Firebase Rules 보안 강화
+
+
+현재 버전: master-app-platform-step09-v7
+- 즐겨찾기 Dashboard 연동 완료
+- 아가 생활관리 앱 보안 배포 준비 추가

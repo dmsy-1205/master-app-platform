@@ -1,11 +1,11 @@
 # Master App Platform
 
-현재 버전: `master-app-platform-step09-v6`
+현재 버전: `master-app-platform-step09-v7`
 
 ## 목적
 여러 웹 애플리케이션을 하나의 플랫폼에서 회원 승인 권한 관리 앱 등록 실행 로그와 함께 운영하는 통합 플랫폼입니다.
 
-## STEP9-v6 주요 변경
+## STEP9-v7 주요 변경
 - 관리자 회원관리 화면 추가
 - 회원 목록 검색 확인
 - 회원 승인 정지 퇴출 처리
@@ -23,3 +23,7 @@
 
 ## 생활관리 앱 연결 기본 흐름
 `apps/baby-care.html` 파일을 넣고 관리자 앱 관리에서 `아가 생활관리 앱 예시` 버튼을 누른 뒤 등록하면 사용자 App Store에 노출됩니다.
+
+
+## STEP9-v7
+즐겨찾기 표시와 아가 생활관리 앱 보안 진입점을 추가했습니다. 자세한 배포 절차는 `BabyCareDeploymentGuide.md`를 확인하세요.
