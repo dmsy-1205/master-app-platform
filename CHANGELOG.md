@@ -40,3 +40,11 @@
 - 승인 전 사용자는 앱 카드에서 실행 대신 사용 신청 버튼 표시
 - 사용 신청 버튼 클릭 시 회원 신청 시스템으로 이동하고 신청 앱 정보 자동 입력
 - My Runtime 네비게이션은 권한이 확인된 앱만 표시되도록 수정
+
+
+## STEP10-v3 Runtime Permission Fix
+- 승인되지 않은 일반 사용자의 My Runtime 동적 네비게이션 노출 문제 수정
+- My Runtime 앱 클릭 시 Launch Token 생성 후 실행되도록 수정
+- 앱별 사용 신청 데이터를 appAccessRequests 및 userAppAccess로 분리 저장
+- 관리자 승인 시 사용자별 앱 권한이 함께 부여되도록 수정
+- App Store는 공개 표시용 전시장 My Runtime은 승인된 실행 공간으로 분리

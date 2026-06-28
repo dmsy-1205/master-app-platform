@@ -29,16 +29,31 @@ export function buildAppManifest(appId, app = {}) {
 
 export async function getCurrentUserProfile() {
   const user = auth.currentUser;
-  if (!user) return { user: null, userData: {}, isAdmin: false, approvalStatus: 'none' };
-  const [adminSnap, userSnap, appSnap] = await Promise.all([
+  if (!user) return { user: null, userData: {}, isAdmin: false, approvalStatus: 'none', appAccess: {} };
+  const [adminSnap, userSnap, appSnap, appAccessSnap] = await Promise.all([
     get(ref(db, `admins/${user.uid}`)),
     get(ref(db, `users/${user.uid}`)),
-    get(ref(db, `applications/${user.uid}`))
+    get(ref(db, `applications/${user.uid}`)),
+    get(ref(db, `userAppAccess/${user.uid}`))
   ]);
   const userData = userSnap.exists() ? userSnap.val() : {};
   const appData = appSnap.exists() ? appSnap.val() : {};
+  const appAccess = appAccessSnap.exists() ? appAccessSnap.val() : {};
   const isAdmin = (adminSnap.exists() && adminSnap.val() === true) || userData.role === 'admin';
-  return { user, userData, isAdmin, approvalStatus: appData.status || userData.userStatus || 'none' };
+  return { user, userData, isAdmin, approvalStatus: appData.status || userData.userStatus || 'none', applicationData: appData, appAccess };
+}
+
+function hasAppAccess(app, current) {
+  const uid = current?.user?.uid;
+  const appId = app?.id || app?.appId;
+  if (!uid || !appId) return false;
+  const direct = app?.allowedUsers?.[uid];
+  if (direct === true || direct?.active === true || direct?.status === 'approved') return true;
+  const access = current?.appAccess?.[appId];
+  if (access === true || access?.active === true || access?.status === 'approved') return true;
+  const lastRequest = current?.applicationData;
+  if (lastRequest?.requestedAppId === appId && lastRequest?.status === 'approved') return true;
+  return false;
 }
 
 export async function checkAppPermission(app, profile = null) {
@@ -47,12 +62,11 @@ export async function checkAppPermission(app, profile = null) {
   if (!normalizeActiveStatus(app?.isActive)) return { allowed: false, reason: '현재 비활성화된 앱입니다.' };
   if (current.isAdmin) return { allowed: true, reason: '관리자 권한' };
   const permissionMode = app.permissionMode || 'approved';
-  const access = app.allowedUsers?.[current.user.uid] === true || app.allowedUsers?.[current.user.uid]?.active === true;
+  const appAccess = hasAppAccess(app, current);
   if (permissionMode === 'public') return { allowed: true, reason: '공개 앱' };
-  if (permissionMode === 'official' && (app.official === true || app.isOfficial === true) && current.approvalStatus === 'approved') return { allowed: true, reason: 'Official App 승인 사용자 권한' };
-  if (permissionMode === 'custom' && access) return { allowed: true, reason: '사용자별 접근 권한' };
-  if (permissionMode === 'approved' && current.approvalStatus === 'approved') return { allowed: true, reason: '승인 사용자 권한' };
-  return { allowed: false, reason: '이 앱을 실행할 권한이 없습니다.' };
+  if (appAccess) return { allowed: true, reason: '앱별 승인 권한' };
+  if (permissionMode === 'custom') return { allowed: false, reason: '사용자별 접근 권한이 없습니다.' };
+  return { allowed: false, reason: '이 앱은 신청 후 관리자 승인이 필요합니다.' };
 }
 
 export async function createLaunchToken(app, launchMode = 'router') {

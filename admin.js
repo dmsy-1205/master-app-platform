@@ -99,10 +99,27 @@ if (loadAppsBtn) {
 
 async function processApplication(targetUid, statusAction) {
   try {
+    const appRequest = cachedApplications[targetUid] || {};
+    if (!Object.keys(appRequest).length) {
+      const snap = await get(ref(db, `applications/${targetUid}`));
+      Object.assign(appRequest, snap.val() || {});
+    }
+    const reviewedAt = new Date().toISOString();
     const updates = {};
     updates[`applications/${targetUid}/status`] = statusAction;
-    updates[`applications/${targetUid}/reviewedAt`] = new Date().toISOString();
+    updates[`applications/${targetUid}/reviewedAt`] = reviewedAt;
     updates[`users/${targetUid}/userStatus`] = statusAction;
+
+    if (appRequest.requestedAppId) {
+      updates[`appAccessRequests/${appRequest.requestedAppId}/${targetUid}/status`] = statusAction;
+      updates[`appAccessRequests/${appRequest.requestedAppId}/${targetUid}/reviewedAt`] = reviewedAt;
+      updates[`userAppAccess/${targetUid}/${appRequest.requestedAppId}`] = {
+        status: statusAction,
+        active: statusAction === 'approved',
+        appName: appRequest.requestedAppName || '',
+        reviewedAt
+      };
+    }
 
     await update(ref(db), updates);
     alert(`정상적으로 해당 유저의 신청 내역을 [${statusAction}] 처리하였습니다.`);
@@ -191,12 +208,24 @@ async function startMemberManagement() {
 }
 
 async function updateMemberStatus(uid, status) {
+  const reviewedAt = new Date().toISOString();
+  const appRequest = cachedApplications[uid] || {};
   const updates = {};
   updates[`users/${uid}/userStatus`] = status;
-  updates[`users/${uid}/updatedAt`] = new Date().toISOString();
+  updates[`users/${uid}/updatedAt`] = reviewedAt;
   if (cachedApplications[uid]) {
     updates[`applications/${uid}/status`] = status === 'approved' ? 'approved' : status;
-    updates[`applications/${uid}/reviewedAt`] = new Date().toISOString();
+    updates[`applications/${uid}/reviewedAt`] = reviewedAt;
+  }
+  if (appRequest.requestedAppId) {
+    updates[`appAccessRequests/${appRequest.requestedAppId}/${uid}/status`] = status;
+    updates[`appAccessRequests/${appRequest.requestedAppId}/${uid}/reviewedAt`] = reviewedAt;
+    updates[`userAppAccess/${uid}/${appRequest.requestedAppId}`] = {
+      status,
+      active: status === 'approved',
+      appName: appRequest.requestedAppName || '',
+      reviewedAt
+    };
   }
   await update(ref(db), updates);
 }

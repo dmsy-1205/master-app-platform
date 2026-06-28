@@ -1,5 +1,5 @@
 import { db, auth } from './firebase.js';
-import { ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const applyReason = document.getElementById('applyReason');
 const applyBtn = document.getElementById('applyBtn');
@@ -14,15 +14,28 @@ applyBtn.addEventListener('click', async () => {
   try {
     const requestedAppId = applyReason.dataset.requestAppId || '';
     const requestedAppName = applyReason.dataset.requestAppName || '';
-    await set(ref(db, `applications/${user.uid}`), {
+    const submittedAt = new Date().toISOString();
+    const payload = {
       email: user.email,
       reason: applyReason.value,
       requestedAppId,
       requestedAppName,
       requestType: requestedAppId ? 'app-access' : 'platform-access',
       status: 'pending',
-      submittedAt: new Date().toISOString()
-    });
+      submittedAt
+    };
+    const updates = {};
+    updates[`applications/${user.uid}`] = payload;
+    if (requestedAppId) {
+      updates[`appAccessRequests/${requestedAppId}/${user.uid}`] = payload;
+      updates[`userAppAccess/${user.uid}/${requestedAppId}`] = {
+        status: 'pending',
+        active: false,
+        requestedAt: submittedAt,
+        appName: requestedAppName
+      };
+    }
+    await update(ref(db), updates);
     applyResult.innerText = requestedAppName
       ? `${requestedAppName} 사용 신청서가 성공적으로 접수되었습니다. (대기 상태)`
       : "플랫폼 이용 승인 신청서가 성공적으로 접수되었습니다. (대기 상태)";

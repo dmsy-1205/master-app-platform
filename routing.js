@@ -3,7 +3,7 @@
  * Firebase 메타데이터를 기반으로 클라이언트 사이드 라우팅 및 샌드박스 렌더링을 제어합니다.
  */
 import { listenSubApps, normalizeActiveStatus } from './database.js';
-import { checkAppPermission } from './security.js';
+import { checkAppPermission, createLaunchToken, recordSecureExecution, buildAppManifest } from './security.js';
 
 class MasterRouter {
     constructor() {
@@ -15,22 +15,34 @@ class MasterRouter {
 
     init() {
         // Firebase 등재 라우팅 메타데이터 실시간 감지 및 라우팅 테이블 맵핑
-        listenSubApps((apps) => {
+        listenSubApps(async (apps) => {
             this.routes = {};
             if (this.navContainer) this.navContainer.innerHTML = '';
-            
-            Object.keys(apps).forEach(async appId => {
-                const app = { id: appId, ...apps[appId] };
-                if (!normalizeActiveStatus(app.isActive)) return;
-                this.routes[app.path] = app;
+
+            const entries = Object.keys(apps).map(appId => ({ id: appId, ...apps[appId] }))
+                .filter(app => normalizeActiveStatus(app.isActive));
+
+            for (const app of entries) {
+                const path = app.path || `/${app.id}`;
+                this.routes[path] = app;
                 try {
                     const permission = await checkAppPermission(app);
                     if (permission.allowed) this.renderNavigationItem(app);
                 } catch {}
-            });
+            }
             // 메타데이터 업데이트 시 현재 경로 재확인
             this.resolveRoute(window.location.hash);
         });
+
+        if (this.navContainer) {
+            this.navContainer.addEventListener('click', (event) => {
+                const link = event.target.closest('[data-runtime-app-id]');
+                if (!link) return;
+                event.preventDefault();
+                const app = Object.values(this.routes).find(item => item.id === link.dataset.runtimeAppId);
+                this.launchFromRuntimeNav(app);
+            });
+        }
 
         // 해시 변경 이벤트 감지 및 라우팅 트리거
         window.addEventListener('hashchange', () => {
@@ -42,7 +54,7 @@ class MasterRouter {
         if (!this.navContainer) return;
         const li = document.createElement('li');
         li.className = 'nav-item';
-        li.innerHTML = `<a class="nav-link" href="#${app.path}">${app.icon || '📦'} ${app.name}</a>`;
+        li.innerHTML = `<a class="nav-link" href="#" data-runtime-app-id="${app.id}">${app.icon || '📦'} ${app.name}</a>`;
         this.navContainer.appendChild(li);
     }
 
@@ -55,6 +67,52 @@ class MasterRouter {
         return this.isExternalUrl(app.entryUrl) ? 'newTab' : 'router';
     }
 
+    async launchFromRuntimeNav(app) {
+        if (!app) return;
+        const launchMode = this.resolveLaunchMode(app);
+        let openedTab = null;
+        if (launchMode === 'newTab') openedTab = window.open('about:blank', '_blank');
+
+        try {
+            const permission = await checkAppPermission(app);
+            if (!permission.allowed) {
+                if (openedTab) openedTab.close();
+                this.viewContainer.innerHTML = `<div class="secure-runtime-block"><h3>🔒 실행 권한 없음</h3><p>${permission.reason}</p></div>`;
+                return;
+            }
+            const tokenInfo = await createLaunchToken(app, launchMode);
+            await recordSecureExecution(app, tokenInfo);
+            const launchUrl = app.entryUrl && tokenInfo?.token
+                ? `${app.entryUrl}${app.entryUrl.includes('?') ? '&' : '?'}masterLaunchToken=${encodeURIComponent(tokenInfo.token)}&appId=${encodeURIComponent(app.id)}`
+                : app.entryUrl;
+
+            if (launchMode === 'newTab') {
+                if (openedTab) {
+                    openedTab.opener = null;
+                    openedTab.location.href = launchUrl;
+                    this.viewContainer.innerHTML = `<div class="alert alert-info py-2"><strong>${app.name}</strong> 앱을 새 탭으로 실행했습니다.</div>`;
+                }
+                return;
+            }
+
+            if (launchMode === 'sameTab') {
+                window.location.href = launchUrl;
+                return;
+            }
+
+            window.MasterOSLastManifest = buildAppManifest(app.id, app);
+            const targetHash = app.path || '/';
+            if (window.location.hash === `#${targetHash}`) {
+                this.resolveRoute(window.location.hash);
+            } else {
+                window.location.hash = targetHash;
+            }
+        } catch (error) {
+            if (openedTab) openedTab.close();
+            this.viewContainer.innerHTML = `<div class="alert alert-danger py-2"><strong>보안 실행 실패:</strong> ${error.message}</div>`;
+        }
+    }
+
     async resolveRoute(hash) {
         const path = hash.replace('#', '') || '/';
         const targetApp = this.routes[path];
@@ -63,21 +121,6 @@ class MasterRouter {
 
         if (targetApp) {
             const launchMode = this.resolveLaunchMode(targetApp);
-
-            if (launchMode === 'newTab') {
-                this.viewContainer.innerHTML = `
-                    <div class="alert alert-info py-2">
-                        <strong>${targetApp.name}</strong> 앱을 새 탭으로 실행합니다.
-                    </div>
-                `;
-                window.open(targetApp.entryUrl, '_blank', 'noopener,noreferrer');
-                return;
-            }
-
-            if (launchMode === 'sameTab') {
-                window.location.href = targetApp.entryUrl;
-                return;
-            }
 
             const token = sessionStorage.getItem(`masterLaunchToken:${targetApp.id}`);
             if (!token) {

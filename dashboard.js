@@ -47,6 +47,8 @@ let currentIsAdmin = false;
 let searchKeyword = '';
 let favoriteIds = new Set();
 let cachedActivities = [];
+let currentAppAccess = {};
+let currentApplicationData = null;
 
 function setText(el, value) {
   if (el) el.textContent = value;
@@ -243,13 +245,23 @@ function moveToRuntime() {
 }
 
 
+function hasApprovedAppAccess(app) {
+  const uid = currentUser?.uid;
+  if (!uid || !app?.id) return false;
+  const direct = app.allowedUsers?.[uid];
+  if (direct === true || direct?.active === true || direct?.status === 'approved') return true;
+  const access = currentAppAccess?.[app.id];
+  if (access === true || access?.active === true || access?.status === 'approved') return true;
+  if (currentApplicationData?.requestedAppId === app.id && currentApplicationData?.status === 'approved') return true;
+  return false;
+}
+
 function canLaunchFromStore(app, approvalStatus = currentApprovalStatus) {
   if (currentIsAdmin) return true;
   if (!normalizeActiveStatus(app?.isActive)) return false;
   const mode = app.permissionMode || 'approved';
   if (mode === 'public') return true;
-  if ((mode === 'approved' || mode === 'official') && approvalStatus === 'approved') return true;
-  if (app.allowedUsers?.[currentUser?.uid] === true || app.allowedUsers?.[currentUser?.uid]?.active === true) return true;
+  if (hasApprovedAppAccess(app)) return true;
   return false;
 }
 
@@ -413,6 +425,8 @@ async function loadUserDashboard(user) {
     setText(dashboardReviewed, '-');
     currentApprovalStatus = 'none';
     currentIsAdmin = false;
+    currentAppAccess = {};
+    currentApplicationData = null;
     updateUserStats([], 'none');
     favoriteIds = new Set();
     updateFavoriteCount();
@@ -432,16 +446,19 @@ async function loadUserDashboard(user) {
   loadActivityLogs();
 
   try {
-    const [adminSnap, userSnap, applicationSnap] = await Promise.all([
+    const [adminSnap, userSnap, applicationSnap, appAccessSnap] = await Promise.all([
       get(ref(db, `admins/${user.uid}`)),
       get(ref(db, `users/${user.uid}`)),
-      get(ref(db, `applications/${user.uid}`))
+      get(ref(db, `applications/${user.uid}`)),
+      get(ref(db, `userAppAccess/${user.uid}`))
     ]);
 
     const userData = userSnap.exists() ? userSnap.val() : {};
     const isAdmin = (adminSnap.exists() && adminSnap.val() === true) || userData.role === 'admin';
     currentIsAdmin = isAdmin;
     const applicationData = applicationSnap.exists() ? applicationSnap.val() : null;
+    currentApplicationData = applicationData;
+    currentAppAccess = appAccessSnap.exists() ? appAccessSnap.val() : {};
     const approvalStatus = applicationData?.status || userData.userStatus || 'none';
     currentApprovalStatus = approvalStatus;
 
