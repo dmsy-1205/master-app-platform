@@ -1214,3 +1214,255 @@ pre { background: rgba(3,7,18,.78); border: 1px solid var(--v5-line); }
   color: #94a3b8;
   font-weight: 800;
 }
+
+/* STEP10-v6 Approval cleanup and feedback board */
+.approval-status-approved .app-control-btns .btn-reject:not(.is-complete),
+.approval-status-rejected .app-control-btns .btn-approve:not(.is-complete) {
+  display: none !important;
+}
+.approval-status-approved,
+.approval-status-rejected {
+  opacity: 0.92;
+}
+.feedback-board {
+  margin-top: 24px;
+  padding: 28px;
+}
+.feedback-form {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 24px;
+}
+.feedback-form select,
+.feedback-form input,
+.feedback-form textarea {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.58);
+  color: #e5eefc;
+  padding: 13px 15px;
+  outline: none;
+}
+.feedback-form textarea { resize: vertical; min-height: 110px; }
+.feedback-form button,
+.feedback-admin-actions button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(135deg, #4f7cff, #a855f7);
+}
+.feedback-list { display: grid; gap: 14px; }
+.feedback-item {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 18px;
+  padding: 18px;
+  background: rgba(15, 23, 42, 0.58);
+}
+.feedback-item-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.feedback-type {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: rgba(34, 211, 238, 0.14);
+  color: #67e8f9;
+  font-weight: 900;
+  font-size: 12px;
+}
+.feedback-item p { color: #dbeafe; line-height: 1.65; }
+.feedback-item small { color: #94a3b8; }
+.feedback-admin-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+/* STEP10-v7 Mobile Responsive UI Stabilization */
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; height: auto; }
+input, select, textarea, button { font-size: 16px; }
+button, .side-nav a, .admin-spa-tabs button, .launch-app-btn { min-height: 44px; }
+.small-uid,
+#userStatus,
+.dashboard-profile-grid span,
+.user-app-body p,
+.feedback-item p,
+.app-info p,
+.app-dashboard-card p,
+.runtime-view,
+pre {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.table { display: block; width: 100%; overflow-x: auto; white-space: nowrap; }
+.app-control-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.app-control-btns button { flex: 0 0 auto; }
+
+@media (max-width: 860px) {
+  .platform-root { width: 100%; padding: 10px; }
+  .workspace-shell { grid-template-columns: 1fr !important; gap: 10px; }
+  .workspace-main { gap: 12px; min-width: 0; }
+  .side-nav {
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    min-height: auto;
+    width: 100%;
+    padding: 14px;
+    border-radius: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    overflow: visible;
+  }
+  .side-logo {
+    grid-column: 1 / -1;
+    margin: 0;
+    justify-content: center;
+  }
+  .side-caption { display: none !important; }
+  .side-nav a {
+    margin: 0;
+    padding: 11px 10px;
+    text-align: center;
+    font-size: .9rem;
+    white-space: normal;
+    transform: none !important;
+  }
+  .topbar,
+  .topbar-v3,
+  .hero-strip,
+  .store-headline,
+  .dashboard-title-row,
+  .section-title-row,
+  .featured-store-banner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .logout-action,
+  .dashboard-actions button,
+  .section-title-row button,
+  .featured-store-banner button,
+  .store-tools button,
+  .store-tools input,
+  #applyBtn,
+  #checkApplyBtn,
+  #feedbackSubmitBtn {
+    width: 100%;
+  }
+  .store-tools { width: 100%; flex-direction: column; }
+  .hero-metrics,
+  .dashboard-profile-grid,
+  .user-kpi-grid,
+  .user-home-grid,
+  .appstore-grid,
+  .appstore-grid-v2,
+  .dev-tools-grid,
+  .admin-kpi-grid,
+  .runtime-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-spa-tabs {
+    position: sticky;
+    top: 8px;
+    z-index: 18;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    overflow: visible;
+  }
+  .admin-spa-tabs button { width: 100%; padding: 11px 8px; font-size: .9rem; }
+  .app-dashboard-card,
+  .feedback-item,
+  .home-widget,
+  .apps-list-container { padding: 14px; }
+  .app-control-btns button,
+  .feedback-admin-actions button { flex: 1 1 130px; }
+}
+
+@media (max-width: 520px) {
+  .platform-root { padding: 8px; }
+  .glass-card,
+  .auth-card,
+  .auth-brand-panel,
+  .user-dashboard-box,
+  .appstore-section,
+  .apply-box,
+  .feedback-board,
+  .admin-center-head,
+  .approval-box,
+  .app-manager-card,
+  .dev-tools-card,
+  .runtime-view {
+    padding: 16px;
+    border-radius: 20px;
+  }
+  .auth-landing { gap: 12px; }
+  .auth-brand-panel h1,
+  .topbar h1,
+  .hero-strip h2,
+  .user-dashboard-box h2,
+  .appstore-section h2,
+  .admin-center h2,
+  .apply-box h2,
+  .feedback-board h2 {
+    font-size: 1.45rem;
+    line-height: 1.22;
+  }
+  .topbar p:not(.eyebrow),
+  .hero-strip p,
+  .store-headline p,
+  .dashboard-help,
+  .feedback-board p,
+  .apply-box p { font-size: .92rem; }
+  .side-nav {
+    grid-template-columns: 1fr 1fr;
+    padding: 12px;
+    border-radius: 20px;
+  }
+  .side-nav a { font-size: .84rem; padding: 10px 6px; }
+  .side-logo { font-size: 1rem; }
+  .app-card-v2,
+  .user-app-card {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+    padding: 16px;
+    min-height: auto;
+  }
+  .app-card-visual,
+  .user-app-icon { justify-self: start; }
+  .app-card-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .app-card-actions .launch-app-btn,
+  .launch-app-btn { width: 100%; justify-self: stretch; }
+  .user-app-meta,
+  .user-app-run-info { gap: 6px; }
+  .user-app-meta span { max-width: 100%; }
+  .runtime-nav-card { min-height: auto !important; }
+  #dynamic-nav-menu { display: grid; gap: 6px; }
+  #dynamic-nav-menu .nav-link { width: 100%; text-align: left; white-space: normal; }
+  .approval-summary-panel { align-items: stretch; }
+  .approval-summary-panel span { display: flex; justify-content: space-between; }
+  .approval-filter-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+  .approval-filter-tabs button { width: 100%; font-size: .86rem; padding: 10px 8px; }
+  .feedback-item-head { align-items: flex-start; }
+}
+
+@media (max-width: 380px) {
+  .side-nav,
+  .admin-spa-tabs,
+  .approval-filter-tabs { grid-template-columns: 1fr; }
+  .glass-card,
+  .auth-card,
+  .auth-brand-panel { padding: 14px; }
+  button { padding-left: 12px; padding-right: 12px; }
+}

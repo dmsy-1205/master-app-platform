@@ -16,6 +16,7 @@ let cachedApplications = {};
 let membersRealtimeStarted = false;
 let approvalRealtimeStarted = false;
 let approvalStatusFilter = 'pending';
+let cachedApplicationHistory = {};
 
 if (makeAdminBtn) {
   makeAdminBtn.addEventListener('click', async () => {
@@ -73,28 +74,46 @@ function ensureApprovalFilterTabs() {
     if (!button) return;
     approvalStatusFilter = button.dataset.approvalFilter || 'pending';
     tabs.querySelectorAll('button').forEach(btn => btn.classList.toggle('is-active', btn === button));
-    renderApprovalRequests(cachedApplications);
+    renderApprovalRequests();
   });
 }
 
-function renderApprovalRequests(data = {}) {
+function collectApprovalRows() {
+  const activeRows = Object.keys(cachedApplications || {}).map(uid => ({ uid, source: 'active', ...(cachedApplications[uid] || {}) }));
+  const historyRows = Object.keys(cachedApplicationHistory || {}).map(id => ({ historyId: id, source: 'history', ...(cachedApplicationHistory[id] || {}) }));
+  const pendingRows = activeRows.filter(item => (item.status || 'pending') === 'pending');
+  const processedRows = [
+    ...activeRows.filter(item => ['approved', 'rejected'].includes(item.status || '')),
+    ...historyRows.filter(item => ['approved', 'rejected'].includes(item.status || ''))
+  ];
+  const allRows = [...pendingRows, ...processedRows];
+  const selected = approvalStatusFilter === 'pending'
+    ? pendingRows
+    : approvalStatusFilter === 'approved'
+      ? allRows.filter(item => item.status === 'approved')
+      : approvalStatusFilter === 'rejected'
+        ? allRows.filter(item => item.status === 'rejected')
+        : allRows;
+  return selected.sort((a, b) => new Date(b.submittedAt || b.requestedAt || b.reviewedAt || b.processedAt || 0) - new Date(a.submittedAt || a.requestedAt || a.reviewedAt || a.processedAt || 0));
+}
+
+function renderApprovalRequests() {
   if (!appsDashboardList) return;
   appsDashboardList.innerHTML = '';
-  const rows = Object.keys(data).map(uid => ({ uid, ...(data[uid] || {}) }))
-    .filter(item => approvalStatusFilter === 'all' || (item.status || 'pending') === approvalStatusFilter)
-    .sort((a, b) => new Date(b.submittedAt || b.requestedAt || b.reviewedAt || 0) - new Date(a.submittedAt || a.requestedAt || a.reviewedAt || 0));
-
-  const pendingCount = Object.values(data).filter(item => (item?.status || 'pending') === 'pending').length;
-  const approvedCount = Object.values(data).filter(item => item?.status === 'approved').length;
-  const rejectedCount = Object.values(data).filter(item => item?.status === 'rejected').length;
+  const rows = collectApprovalRows();
+  const pendingCount = Object.values(cachedApplications || {}).filter(item => (item?.status || 'pending') === 'pending').length;
+  const historyValues = Object.values(cachedApplicationHistory || {});
+  const activeProcessed = Object.values(cachedApplications || {}).filter(item => ['approved', 'rejected'].includes(item?.status || ''));
+  const approvedCount = [...historyValues, ...activeProcessed].filter(item => item?.status === 'approved').length;
+  const rejectedCount = [...historyValues, ...activeProcessed].filter(item => item?.status === 'rejected').length;
 
   const summary = document.createElement('div');
   summary.className = 'approval-summary-panel';
   summary.innerHTML = `
     <span>대기 <strong>${pendingCount}</strong></span>
-    <span>승인 <strong>${approvedCount}</strong></span>
-    <span>거절 <strong>${rejectedCount}</strong></span>
-    <small>기본 화면은 처리할 대기 신청만 표시합니다.</small>
+    <span>승인 이력 <strong>${approvedCount}</strong></span>
+    <span>거절 이력 <strong>${rejectedCount}</strong></span>
+    <small>대기 화면은 처리할 신청만 표시합니다. 승인 또는 거절하면 자동으로 이력으로 이동합니다.</small>
   `;
   appsDashboardList.appendChild(summary);
 
@@ -115,11 +134,11 @@ function renderApprovalRequests(data = {}) {
         <p><strong>사유:</strong> ${escapeHtml(item.reason || '입력 누락')}</p>
         <p><strong>현재 상태:</strong> <span class="member-pill status-${escapeHtml(status)}">${statusLabel(status)}</span></p>
         <p><strong>신청 일시:</strong> ${formatDate(item.submittedAt || item.requestedAt)}</p>
-        <p><strong>처리 일시:</strong> ${formatDate(item.reviewedAt)}</p>
+        <p><strong>처리 일시:</strong> ${formatDate(item.reviewedAt || item.processedAt)}</p>
         <p class="small-uid">UID: ${escapeHtml(item.uid)}</p>
       </div>
       <div class="app-control-btns">
-        ${renderApprovalActions(item.uid, status)}
+        ${renderApprovalActions(item.uid, status, item.source)}
       </div>`;
     appsDashboardList.appendChild(appCard);
   });
@@ -132,14 +151,33 @@ function renderApprovalRequests(data = {}) {
   });
 }
 
+async function archiveProcessedApplications() {
+  const processed = Object.entries(cachedApplications || {}).filter(([, item]) => ['approved', 'rejected'].includes(item?.status || ''));
+  if (!processed.length) return;
+  const updates = {};
+  processed.forEach(([uid, item]) => {
+    const status = item.status;
+    const stamp = item.reviewedAt || item.processedAt || new Date().toISOString();
+    const historyId = `${uid}_${String(item.requestedAppId || 'platform').replace(/[^a-zA-Z0-9_-]/g, '_')}_${Date.parse(stamp) || Date.now()}`;
+    updates[`applicationHistory/${historyId}`] = { uid, ...item, archivedAt: new Date().toISOString() };
+    updates[`applications/${uid}`] = null;
+  });
+  await update(ref(db), updates);
+}
+
 function startApprovalRealtime() {
   if (approvalRealtimeStarted) return;
   approvalRealtimeStarted = true;
   ensureApprovalFilterTabs();
-  onValue(ref(db, 'applications'), (snapshot) => {
+  onValue(ref(db, 'applications'), async (snapshot) => {
     cachedApplications = snapshot.val() || {};
-    renderApprovalRequests(cachedApplications);
+    await archiveProcessedApplications();
+    renderApprovalRequests();
     renderMembers();
+  });
+  onValue(ref(db, 'applicationHistory'), (snapshot) => {
+    cachedApplicationHistory = snapshot.val() || {};
+    renderApprovalRequests();
   });
 }
 
@@ -160,10 +198,17 @@ async function processApplication(targetUid, statusAction) {
     }
     const reviewedAt = new Date().toISOString();
     const updates = {};
-    updates[`applications/${targetUid}/status`] = statusAction;
-    updates[`applications/${targetUid}/reviewedAt`] = reviewedAt;
-    updates[`applications/${targetUid}/processedAt`] = reviewedAt;
-    updates[`applications/${targetUid}/processedBy`] = auth.currentUser?.email || auth.currentUser?.uid || 'admin';
+    const archivedRequest = {
+      uid: targetUid,
+      ...appRequest,
+      status: statusAction,
+      reviewedAt,
+      processedAt: reviewedAt,
+      processedBy: auth.currentUser?.email || auth.currentUser?.uid || 'admin'
+    };
+    const historyId = `${targetUid}_${String(appRequest.requestedAppId || 'platform').replace(/[^a-zA-Z0-9_-]/g, '_')}_${Date.now()}`;
+    updates[`applicationHistory/${historyId}`] = archivedRequest;
+    updates[`applications/${targetUid}`] = null;
     updates[`users/${targetUid}/userStatus`] = statusAction;
     updates[`users/${targetUid}/updatedAt`] = reviewedAt;
 
@@ -210,7 +255,7 @@ function statusLabel(status = '') {
   return map[status] || status || '-';
 }
 
-function renderApprovalActions(uid, status = 'pending') {
+function renderApprovalActions(uid, status = 'pending', source = 'active') {
   const approved = status === 'approved';
   const rejected = status === 'rejected';
   if (approved) {

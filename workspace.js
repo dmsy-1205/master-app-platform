@@ -4,6 +4,7 @@ const workspaceRoutes = {
   runtime: ['#runtime'],
   request: ['#request'],
   activity: ['#activity'],
+  feedback: ['#feedback'],
   admin: ['#admin']
 };
 
