@@ -256,6 +256,16 @@ function hasApprovedAppAccess(app) {
   return false;
 }
 
+function getAppRequestStatus(app) {
+  if (!app?.id) return 'none';
+  const access = currentAppAccess?.[app.id];
+  if (access === true || access?.active === true || access?.status === 'approved') return 'approved';
+  if (access?.status === 'pending') return 'pending';
+  if (access?.status === 'rejected') return 'rejected';
+  if (currentApplicationData?.requestedAppId === app.id) return currentApplicationData?.status || 'none';
+  return 'none';
+}
+
 function canLaunchFromStore(app, approvalStatus = currentApprovalStatus) {
   if (currentIsAdmin) return true;
   if (!normalizeActiveStatus(app?.isActive)) return false;
@@ -305,8 +315,12 @@ function renderApps(apps, approvalStatus) {
     const runCount = Number(app.runCount || 0);
     const lastRunText = formatDate(app.lastRunAt);
     const canLaunch = canLaunchFromStore(app, approvalStatus);
-    const actionLabel = canLaunch ? '실행' : '사용 신청';
-    const actionClass = canLaunch ? 'launch-app-btn' : 'request-app-btn';
+    const requestStatus = getAppRequestStatus(app);
+    const isPending = !canLaunch && requestStatus === 'pending';
+    const isRejected = !canLaunch && requestStatus === 'rejected';
+    const actionLabel = canLaunch ? '실행' : isPending ? '승인 대기중' : isRejected ? '재신청' : '사용 신청';
+    const actionClass = canLaunch ? 'launch-app-btn' : isPending ? 'pending-app-btn' : 'request-app-btn';
+    const actionDisabled = isPending ? 'disabled' : '';
     return `
       <article class="user-app-card step8-app-card app-card-v2">
         <div class="app-card-visual"><div class="user-app-icon">${escapeHtml(app.icon || '📦')}</div><span class="app-glow-dot"></span></div>
@@ -331,7 +345,7 @@ function renderApps(apps, approvalStatus) {
         <div class="app-card-actions app-card-actions-v4">
           <div class="secure-launch-label">SECURE LAUNCH · TOKEN</div>
           <button type="button" class="favorite-app-btn compact-favorite-btn ${favoriteIds.has(app.id) ? 'is-favorite' : ''}" data-app-id="${escapeHtml(app.id)}" title="즐겨찾기" ${canLaunch ? '' : 'disabled'}>${favoriteIds.has(app.id) ? '★' : '☆'}</button>
-          <button type="button" class="user-app-open ${actionClass} compact-launch-btn" data-app-id="${escapeHtml(app.id)}">${actionLabel}</button>
+          <button type="button" class="user-app-open ${actionClass} compact-launch-btn" data-app-id="${escapeHtml(app.id)}" ${actionDisabled}>${actionLabel}</button>
         </div>
       </article>
     `;
@@ -483,6 +497,29 @@ async function loadUserDashboard(user) {
     renderEmptyApps(`오류: ${error.message}`);
   }
 }
+
+
+window.addEventListener('master-app-request-submitted', (event) => {
+  const detail = event.detail || {};
+  if (detail.appId) {
+    currentAppAccess = {
+      ...currentAppAccess,
+      [detail.appId]: {
+        status: 'pending',
+        active: false,
+        appName: detail.appName || '',
+        requestedAt: detail.submittedAt || new Date().toISOString()
+      }
+    };
+    currentApplicationData = {
+      ...(currentApplicationData || {}),
+      requestedAppId: detail.appId,
+      requestedAppName: detail.appName || '',
+      status: 'pending'
+    };
+    renderApps(cachedApps, currentApprovalStatus);
+  }
+});
 
 if (dashboardRefreshBtn) {
   dashboardRefreshBtn.addEventListener('click', () => loadUserDashboard(currentUser));

@@ -42,9 +42,18 @@
 - My Runtime 네비게이션은 권한이 확인된 앱만 표시되도록 수정
 
 
-## STEP10-v3 Runtime Permission Fix
+## STEP10-v4 Runtime Permission Fix
 - 승인되지 않은 일반 사용자의 My Runtime 동적 네비게이션 노출 문제 수정
 - My Runtime 앱 클릭 시 Launch Token 생성 후 실행되도록 수정
 - 앱별 사용 신청 데이터를 appAccessRequests 및 userAppAccess로 분리 저장
 - 관리자 승인 시 사용자별 앱 권한이 함께 부여되도록 수정
 - App Store는 공개 표시용 전시장 My Runtime은 승인된 실행 공간으로 분리
+
+
+## STEP10-v4
+
+- 일반 사용자 App Store 신청 후 버튼이 즉시 승인 대기중 상태로 전환되도록 수정
+- 승인 대기중 앱은 중복 신청 버튼을 비활성화
+- 관리자 승인 관리에서 승인 완료 거절 완료 상태 문구와 버튼 색상 구분 강화
+- 신청 처리 상태가 다음 조회 시에도 명확히 보이도록 카드 상태 스타일 추가
+- Request Lifecycle UX를 다음 단계 기준으로 정리

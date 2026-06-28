@@ -41,8 +41,16 @@ Dashboard 실행 흐름은 Permission Engine 검사를 통과한 경우에만 La
 - My Runtime 네비게이션은 권한이 확인된 앱만 표시되도록 수정
 
 
-## STEP10-v3 개발 보고
+## STEP10-v4 개발 보고
 이번 수정은 일반 사용자 흐름의 권한 경계를 바로잡는 작업이다
 App Store에는 공개 앱이 보이고 신청이 가능하지만 My Runtime에는 승인된 앱만 표시되도록 변경했다
 또한 My Runtime 메뉴 클릭이 단순 hash 이동에 머물러 반응이 없던 문제를 Launch Token 기반 실행 흐름으로 연결했다
 신청 승인 데이터는 userAppAccess/{uid}/{appId} 구조로 저장되며 이후 여러 앱별 권한 관리로 확장 가능하다
+
+
+## STEP10-v4 개발 보고
+
+이번 단계는 App Store 신청 흐름과 관리자 승인 화면의 상태 인지 문제를 수정했다
+일반 사용자가 앱 사용 신청을 완료하면 해당 앱 카드의 버튼은 사용 신청에서 승인 대기중으로 즉시 변경된다
+관리자 승인 대시보드는 pending approved rejected 상태별로 카드와 버튼 문구를 다르게 표시한다
+이 수정으로 신청 중복과 승인 처리 혼동을 줄이고 App Security Platform의 권한 흐름을 더 명확하게 만들었다

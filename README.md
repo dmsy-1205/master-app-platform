@@ -1,6 +1,6 @@
 # Master App Platform
 
-현재 버전: `master-app-platform-step10-v2`
+현재 버전: `master-app-platform-step10-v4`
 
 ## 목적
 여러 웹 애플리케이션을 하나의 플랫폼에서 회원 승인 권한 관리 앱 등록 실행 로그와 함께 운영하는 통합 App Platform입니다.
@@ -51,7 +51,13 @@
 - My Runtime 네비게이션은 권한이 확인된 앱만 표시되도록 수정
 
 
-## STEP10-v3 안내
+## STEP10-v4 안내
 일반 사용자는 App Store에서 앱 설명을 확인하고 사용 신청을 할 수 있다
 관리자가 승인하면 해당 앱이 My Runtime에 표시되고 클릭 시 보안 토큰을 생성한 뒤 실행된다
 승인되지 않은 앱은 My Runtime에 표시되지 않는다
+
+
+## STEP10-v4 변경 요약
+
+App Store에서 앱 사용 신청 후 버튼이 승인 대기중으로 바뀌며 중복 신청을 막는다
+관리자 승인 화면은 승인 처리 거절 처리 승인 완료 거절 완료를 색상과 문구로 구분한다

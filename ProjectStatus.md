@@ -1,6 +1,6 @@
 # ProjectStatus
 
-현재 버전: master-app-platform-step10-v2
+현재 버전: master-app-platform-step10-v4
 
 ## 완료
 - STEP1 회원가입 로그인 자동 로그인
@@ -50,9 +50,18 @@
 - My Runtime 네비게이션은 권한이 확인된 앱만 표시되도록 수정
 
 
-## 현재 상태 STEP10-v3
+## 현재 상태 STEP10-v4
 - App Store 공개 앱 표시 정상화
 - 사용 신청 흐름 유지
 - 승인 전 My Runtime 앱 노출 차단
 - 승인 후 My Runtime 앱 클릭 실행 흐름 보강
 - 앱별 권한 저장 구조 도입
+
+
+## 현재 상태 STEP10-v4
+
+- App Store 신청 상태 표시 개선 완료
+- 승인 대기중 버튼 전환 완료
+- 관리자 승인 완료 거절 완료 버튼 상태 표시 완료
+- My Runtime 승인 앱 실행 흐름 유지
+- 다음 단계는 신청 이력 필터링 승인 알림 업데이트 관리 고도화

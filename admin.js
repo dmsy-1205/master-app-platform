@@ -70,27 +70,28 @@ if (loadAppsBtn) {
 
       Object.keys(data).forEach(uid => {
         const item = data[uid];
+        const status = item.status || 'pending';
         const appCard = document.createElement('div');
-        appCard.className = 'app-dashboard-card';
+        appCard.className = `app-dashboard-card approval-status-${escapeHtml(status)}`;
         appCard.innerHTML = `
           <div class="app-info">
-            <p><strong>신청자 이메일:</strong> ${item.email || '알 수 없음'}</p>
-            <p><strong>신청 앱:</strong> ${item.requestedAppName || '플랫폼 전체'}</p>
-            <p><strong>사유:</strong> ${item.reason || '입력 누락'}</p>
-            <p><strong>현재 상태:</strong> <span class="badge status-${item.status}">${item.status}</span></p>
-            <p class="small-uid">UID: ${uid}</p>
+            <p><strong>신청자 이메일:</strong> ${escapeHtml(item.email || '알 수 없음')}</p>
+            <p><strong>신청 앱:</strong> ${escapeHtml(item.requestedAppName || '플랫폼 전체')}</p>
+            <p><strong>사유:</strong> ${escapeHtml(item.reason || '입력 누락')}</p>
+            <p><strong>현재 상태:</strong> <span class="member-pill status-${escapeHtml(status)}">${statusLabel(status)}</span></p>
+            <p><strong>처리 일시:</strong> ${formatDate(item.reviewedAt)}</p>
+            <p class="small-uid">UID: ${escapeHtml(uid)}</p>
           </div>
           <div class="app-control-btns">
-            <button class="btn-approve" data-uid="${uid}">승인 처리</button>
-            <button class="btn-reject" data-uid="${uid}">거절 처리</button>
+            ${renderApprovalActions(uid, status)}
           </div>`;
         appsDashboardList.appendChild(appCard);
       });
 
-      document.querySelectorAll('.btn-approve').forEach(btn => {
+      document.querySelectorAll('.btn-approve:not(:disabled)').forEach(btn => {
         btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'approved'));
       });
-      document.querySelectorAll('.btn-reject').forEach(btn => {
+      document.querySelectorAll('.btn-reject:not(:disabled)').forEach(btn => {
         btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'rejected'));
       });
     });
@@ -122,7 +123,7 @@ async function processApplication(targetUid, statusAction) {
     }
 
     await update(ref(db), updates);
-    alert(`정상적으로 해당 유저의 신청 내역을 [${statusAction}] 처리하였습니다.`);
+    alert(`정상적으로 해당 유저의 신청 내역을 [${statusLabel(statusAction)}] 처리하였습니다.`);
   } catch (error) { alert('상태 제어 처리 오류: ' + error.message); }
 }
 
@@ -147,8 +148,17 @@ function formatDate(value) {
 }
 
 function statusLabel(status = '') {
-  const map = { approved: '승인', pending: '대기', rejected: '거절', expelled: '퇴출', suspended: '정지', registered: '가입' };
+  const map = { approved: '승인 완료', pending: '승인 대기', rejected: '거절 완료', expelled: '퇴출', suspended: '정지', registered: '가입' };
   return map[status] || status || '-';
+}
+
+function renderApprovalActions(uid, status = 'pending') {
+  const approved = status === 'approved';
+  const rejected = status === 'rejected';
+  return `
+    <button class="btn-approve ${approved ? 'is-complete' : ''}" data-uid="${escapeHtml(uid)}" ${approved ? 'disabled' : ''}>${approved ? '승인 완료' : '승인 처리'}</button>
+    <button class="btn-reject ${rejected ? 'is-complete' : ''}" data-uid="${escapeHtml(uid)}" ${rejected ? 'disabled' : ''}>${rejected ? '거절 완료' : '거절 처리'}</button>
+  `;
 }
 
 function roleLabel(role = '') {

@@ -36,6 +36,9 @@ applyBtn.addEventListener('click', async () => {
       };
     }
     await update(ref(db), updates);
+    window.dispatchEvent(new CustomEvent('master-app-request-submitted', {
+      detail: { appId: requestedAppId, appName: requestedAppName, submittedAt }
+    }));
     applyResult.innerText = requestedAppName
       ? `${requestedAppName} 사용 신청서가 성공적으로 접수되었습니다. (대기 상태)`
       : "플랫폼 이용 승인 신청서가 성공적으로 접수되었습니다. (대기 상태)";

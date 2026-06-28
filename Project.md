@@ -10,7 +10,7 @@ Master App Platform
 
 현재 버전
 
-master-app-platform-step10-v2
+master-app-platform-step10-v4
 
 ---
 
@@ -271,7 +271,7 @@ Netlify 다시 만들기
 
 현재 프로젝트는
 
-master-app-platform-step10-v2
+master-app-platform-step10-v4
 
 이다.
 
@@ -343,8 +343,15 @@ App Security Platform 1차 구현 완료
 - My Runtime 네비게이션은 권한이 확인된 앱만 표시되도록 수정
 
 
-## STEP10-v3 작업 원칙 추가
+## STEP10-v4 작업 원칙 추가
 App Store는 발견 신청 공간이다
 My Runtime은 승인된 앱만 실행하는 공간이다
 앱 실행은 App Store 실행 버튼 또는 My Runtime 승인 앱 클릭을 통해 Launch Token 생성 후 진행한다
 승인 전 hash 직접 접근이나 Runtime 메뉴 노출은 허용하지 않는다
+
+
+## STEP10-v4 추가 규칙
+
+App Store는 앱 발견과 신청 공간이다
+사용 신청 후에는 승인 대기중 상태가 즉시 사용자 화면에 보여야 한다
+관리자 승인 화면은 pending approved rejected 상태를 버튼 문구와 색상으로 명확히 구분해야 한다
