@@ -3,6 +3,7 @@
  * Firebase 메타데이터를 기반으로 클라이언트 사이드 라우팅 및 샌드박스 렌더링을 제어합니다.
  */
 import { listenSubApps, normalizeActiveStatus } from './database.js';
+import { checkAppPermission } from './security.js';
 
 class MasterRouter {
     constructor() {
@@ -18,12 +19,14 @@ class MasterRouter {
             this.routes = {};
             if (this.navContainer) this.navContainer.innerHTML = '';
             
-            Object.keys(apps).forEach(appId => {
-                const app = apps[appId];
-                if (normalizeActiveStatus(app.isActive)) {
-                    this.routes[app.path] = { id: appId, ...app };
-                    this.renderNavigationItem(app);
-                }
+            Object.keys(apps).forEach(async appId => {
+                const app = { id: appId, ...apps[appId] };
+                if (!normalizeActiveStatus(app.isActive)) return;
+                this.routes[app.path] = app;
+                try {
+                    const permission = await checkAppPermission(app);
+                    if (permission.allowed) this.renderNavigationItem(app);
+                } catch {}
             });
             // 메타데이터 업데이트 시 현재 경로 재확인
             this.resolveRoute(window.location.hash);

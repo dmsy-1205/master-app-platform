@@ -43,9 +43,18 @@ if (deleteTestBtn) {
 function sanitizeFirebaseKey(value, fallback = 'v1_0') {
     return String(value || fallback)
         .trim()
-        .replace(/[.#$\[\]\/]/g, '_')
-        .replace(/\s+/g, '_')
+        .replace(/[^a-zA-Z0-9_-]/g, '_')
+        .replace(/_+/g, '_')
+        .replace(/^_+|_+$/g, '')
         || fallback;
+}
+
+function normalizeVersionsForFirebase(versions = {}) {
+    return Object.keys(versions || {}).reduce((result, key) => {
+        const safeKey = sanitizeFirebaseKey(key);
+        result[safeKey] = { ...(versions[key] || {}), versionKey: safeKey };
+        return result;
+    }, {});
 }
 
 // ==========================================
@@ -86,7 +95,7 @@ export async function registerSubApp(appId, appData) {
         official: appData.official === true || existingData.official === true || false,
         updateNote: appData.updateNote || existingData.updateNote || '',
         versions: {
-            ...(existingData.versions || {}),
+            ...normalizeVersionsForFirebase(existingData.versions || {}),
             [versionKey]: {
                 version: appVersion,
                 versionKey,

@@ -5,8 +5,9 @@ import { normalizeActiveStatus } from './database.js';
 function sanitizeFirebaseKey(value, fallback = 'v1_0') {
   return String(value || fallback)
     .trim()
-    .replace(/[.#$\[\]\/]/g, '_')
-    .replace(/\s+/g, '_')
+    .replace(/[^a-zA-Z0-9_-]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '')
     || fallback;
 }
 

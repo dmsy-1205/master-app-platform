@@ -75,6 +75,7 @@ if (loadAppsBtn) {
         appCard.innerHTML = `
           <div class="app-info">
             <p><strong>신청자 이메일:</strong> ${item.email || '알 수 없음'}</p>
+            <p><strong>신청 앱:</strong> ${item.requestedAppName || '플랫폼 전체'}</p>
             <p><strong>사유:</strong> ${item.reason || '입력 누락'}</p>
             <p><strong>현재 상태:</strong> <span class="badge status-${item.status}">${item.status}</span></p>
             <p class="small-uid">UID: ${uid}</p>
@@ -156,7 +157,7 @@ function renderMembers() {
         <td><strong>${escapeHtml(member.email || '이메일 없음')}</strong><br><small>${escapeHtml(member.uid)}</small></td>
         <td><span class="member-pill ${isAdmin ? 'admin' : ''}">${roleLabel(isAdmin ? 'admin' : 'user')}</span></td>
         <td><span class="member-pill status-${escapeHtml(status)}">${statusLabel(status)}</span></td>
-        <td>${escapeHtml(cachedApplications[member.uid]?.reason || '-')}</td>
+        <td>${escapeHtml(cachedApplications[member.uid]?.requestedAppName || cachedApplications[member.uid]?.reason || '-')}</td>
         <td><small>${formatDate(member.updatedAt || member.createdAt || cachedApplications[member.uid]?.reviewedAt)}</small></td>
         <td>
           <div class="member-actions">

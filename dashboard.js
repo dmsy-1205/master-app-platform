@@ -1,6 +1,6 @@
 import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { ref, get, onValue, off, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, get, set, onValue, off, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { normalizeActiveStatus } from './database.js';
 import { buildAppManifest, checkAppPermission, createLaunchToken, recordSecureExecution } from './security.js';
 
@@ -37,6 +37,7 @@ const fullActivityList = document.getElementById('fullActivityList');
 const activityRefreshBtn = document.getElementById('activityRefreshBtn');
 const favoriteCountWidget = document.getElementById('favoriteCountWidget');
 const favoriteWidgetBody = document.getElementById('favoriteWidgetBody');
+const applyReason = document.getElementById('applyReason');
 
 let appsUnsubscribeRef = null;
 let cachedApps = [];
@@ -241,6 +242,29 @@ function moveToRuntime() {
   }
 }
 
+
+function canLaunchFromStore(app, approvalStatus = currentApprovalStatus) {
+  if (currentIsAdmin) return true;
+  if (!normalizeActiveStatus(app?.isActive)) return false;
+  const mode = app.permissionMode || 'approved';
+  if (mode === 'public') return true;
+  if ((mode === 'approved' || mode === 'official') && approvalStatus === 'approved') return true;
+  if (app.allowedUsers?.[currentUser?.uid] === true || app.allowedUsers?.[currentUser?.uid]?.active === true) return true;
+  return false;
+}
+
+function moveToRequest(app) {
+  const appName = app?.name || '선택한 앱';
+  if (applyReason) {
+    applyReason.value = `${appName} 사용 신청`;
+    applyReason.dataset.requestAppId = app?.id || '';
+    applyReason.dataset.requestAppName = appName;
+  }
+  if (window.MasterWorkspace?.showRoute) window.MasterWorkspace.showRoute('request');
+  const result = document.getElementById('applyResult');
+  if (result) result.innerText = `${appName} 사용 신청 사유를 확인한 뒤 신청하기를 누르세요.`;
+}
+
 function renderApps(apps, approvalStatus) {
   if (!dashboardApps) return;
   cachedApps = apps;
@@ -251,11 +275,6 @@ function renderApps(apps, approvalStatus) {
   renderNotifications(apps, approvalStatus);
   const visibleApps = filterApps(apps);
 
-  if (approvalStatus !== 'approved' && !currentIsAdmin) {
-    renderEmptyApps('승인 완료 후 사용 가능한 앱 목록이 표시됩니다. 관리자는 테스트 목적으로 앱 목록을 확인할 수 있습니다.');
-    setLaunchButtonsEnabled(false);
-    return;
-  }
 
   if (!apps.length) {
     renderEmptyApps('현재 활성화된 서브 애플리케이션이 없습니다. 관리자가 STEP6에서 앱을 등록해야 합니다.');
@@ -273,6 +292,9 @@ function renderApps(apps, approvalStatus) {
     const launchMode = resolveLaunchMode(app);
     const runCount = Number(app.runCount || 0);
     const lastRunText = formatDate(app.lastRunAt);
+    const canLaunch = canLaunchFromStore(app, approvalStatus);
+    const actionLabel = canLaunch ? '실행' : '사용 신청';
+    const actionClass = canLaunch ? 'launch-app-btn' : 'request-app-btn';
     return `
       <article class="user-app-card step8-app-card app-card-v2">
         <div class="app-card-visual"><div class="user-app-icon">${escapeHtml(app.icon || '📦')}</div><span class="app-glow-dot"></span></div>
@@ -296,14 +318,14 @@ function renderApps(apps, approvalStatus) {
         </div>
         <div class="app-card-actions app-card-actions-v4">
           <div class="secure-launch-label">SECURE LAUNCH · TOKEN</div>
-          <button type="button" class="favorite-app-btn compact-favorite-btn ${favoriteIds.has(app.id) ? 'is-favorite' : ''}" data-app-id="${escapeHtml(app.id)}" title="즐겨찾기">${favoriteIds.has(app.id) ? '★' : '☆'}</button>
-          <button type="button" class="user-app-open launch-app-btn compact-launch-btn" data-app-id="${escapeHtml(app.id)}">실행</button>
+          <button type="button" class="favorite-app-btn compact-favorite-btn ${favoriteIds.has(app.id) ? 'is-favorite' : ''}" data-app-id="${escapeHtml(app.id)}" title="즐겨찾기" ${canLaunch ? '' : 'disabled'}>${favoriteIds.has(app.id) ? '★' : '☆'}</button>
+          <button type="button" class="user-app-open ${actionClass} compact-launch-btn" data-app-id="${escapeHtml(app.id)}">${actionLabel}</button>
         </div>
       </article>
     `;
   }).join('');
 
-  setLaunchButtonsEnabled(true);
+  setLaunchButtonsEnabled(visibleApps.some(app => canLaunchFromStore(app, approvalStatus)));
 }
 
 async function recordAppLaunch(app, tokenInfo) {
@@ -480,6 +502,12 @@ if (dashboardApps) {
         console.warn('즐겨찾기 Firebase 저장 실패:', error);
         alert('즐겨찾기 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       }
+      return;
+    }
+    const requestButton = event.target.closest('.request-app-btn');
+    if (requestButton) {
+      const app = cachedApps.find(item => item.id === requestButton.dataset.appId);
+      moveToRequest(app);
       return;
     }
     const button = event.target.closest('.launch-app-btn');
