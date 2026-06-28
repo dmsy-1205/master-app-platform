@@ -66,5 +66,6 @@ window.addEventListener('master-auth-role-changed', (event) => {
   }
 });
 
+window.MasterWorkspace = { showRoute: showWorkspaceRoute, showAdminRoute };
 showWorkspaceRoute('dashboard');
 showAdminRoute('overview');

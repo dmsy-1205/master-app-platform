@@ -227,6 +227,19 @@ function setLaunchButtonsEnabled(enabled) {
   });
 }
 
+function getPrimaryApp() {
+  if (!cachedApps.length) return null;
+  return cachedApps.find(app => String(app.id || '').includes('baby-care'))
+    || cachedApps.find(app => String(app.name || '').includes('생활관리'))
+    || cachedApps[0];
+}
+
+function moveToRuntime() {
+  if (window.MasterWorkspace?.showRoute) {
+    window.MasterWorkspace.showRoute('runtime');
+  }
+}
+
 function renderApps(apps, approvalStatus) {
   if (!dashboardApps) return;
   cachedApps = apps;
@@ -331,23 +344,43 @@ async function launchApp(app) {
     return;
   }
 
+  const launchMode = resolveLaunchMode(app);
+  let openedTab = null;
+
+  if (launchMode === 'newTab') {
+    openedTab = window.open('about:blank', '_blank');
+  }
+
   try {
     await recordAppLaunch(app);
   } catch (error) {
     console.warn('앱 실행 기록 저장 실패:', error);
   }
 
-  const launchMode = resolveLaunchMode(app);
   if (launchMode === 'newTab') {
-    window.open(app.entryUrl, '_blank', 'noopener,noreferrer');
+    if (openedTab) {
+      openedTab.opener = null;
+      openedTab.location.href = app.entryUrl;
+    } else {
+      alert('팝업이 차단되었습니다. 브라우저에서 팝업 허용 후 다시 실행하세요.');
+    }
     return;
   }
+
   if (launchMode === 'sameTab') {
     window.location.href = app.entryUrl;
     return;
   }
-  window.location.hash = app.path || '/';
+
+  moveToRuntime();
+  const targetHash = app.path || '/';
+  if (window.location.hash === `#${targetHash}` && window.AppRouter?.resolveRoute) {
+    window.AppRouter.resolveRoute(window.location.hash);
+  } else {
+    window.location.hash = targetHash;
+  }
 }
+
 
 async function loadUserDashboard(user) {
   if (!user) {
@@ -419,8 +452,9 @@ if (dashboardRefreshBtn) {
 }
 
 function launchFirstCachedApp() {
-  if (!cachedApps.length) return;
-  launchApp(cachedApps[0]);
+  const app = getPrimaryApp();
+  if (!app) return;
+  launchApp(app);
 }
 
 if (dashboardOpenFirstAppBtn) {
@@ -457,6 +491,15 @@ if (dashboardApps) {
   });
 }
 
+
+if (favoriteWidgetBody) {
+  favoriteWidgetBody.addEventListener('click', (event) => {
+    const button = event.target.closest('.favorite-widget-launch');
+    if (!button) return;
+    const app = cachedApps.find(item => item.id === button.dataset.appId);
+    launchApp(app);
+  });
+}
 
 function applySearch(value) {
   searchKeyword = value || '';

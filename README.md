@@ -27,3 +27,7 @@
 
 ## STEP9-v7
 즐겨찾기 표시와 아가 생활관리 앱 보안 진입점을 추가했습니다. 자세한 배포 절차는 `BabyCareDeploymentGuide.md`를 확인하세요.
+
+
+## STEP9-v8
+이번 버전은 대표 앱 실행 즐겨찾기 실행 App Store 실행을 하나의 Platform Launcher 흐름으로 통합했다. 내부 앱은 Runtime 화면으로 이동해 로드하고 외부 앱은 새 탭 또는 현재 창 방식으로 실행한다.
