@@ -3,6 +3,7 @@ const workspaceRoutes = {
   appstore: ['.appstore-section'],
   runtime: ['#runtime'],
   request: ['#request'],
+  activity: ['#activity'],
   admin: ['#admin']
 };
 

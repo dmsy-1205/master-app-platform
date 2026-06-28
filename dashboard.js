@@ -19,12 +19,31 @@ const userTotalApps = document.getElementById('userTotalApps');
 const userTotalRuns = document.getElementById('userTotalRuns');
 const userRecentApp = document.getElementById('userRecentApp');
 const userApprovalCard = document.getElementById('userApprovalCard');
+const globalSearchInput = document.getElementById('globalSearchInput');
+const storeSearchInput = document.getElementById('storeSearchInput');
+const notificationToggleBtn = document.getElementById('notificationToggleBtn');
+const notificationBadge = document.getElementById('notificationBadge');
+const notificationPanel = document.getElementById('notificationPanel');
+const notificationList = document.getElementById('notificationList');
+const dashboardNotificationList = document.getElementById('dashboardNotificationList');
+const profileToggleBtn = document.getElementById('profileToggleBtn');
+const profilePanel = document.getElementById('profilePanel');
+const profileInitial = document.getElementById('profileInitial');
+const profileEmailText = document.getElementById('profileEmailText');
+const profileRoleText = document.getElementById('profileRoleText');
+const recentActivityList = document.getElementById('recentActivityList');
+const fullActivityList = document.getElementById('fullActivityList');
+const activityRefreshBtn = document.getElementById('activityRefreshBtn');
+const favoriteCountWidget = document.getElementById('favoriteCountWidget');
 
 let appsUnsubscribeRef = null;
 let cachedApps = [];
 let currentUser = null;
 let currentApprovalStatus = 'none';
 let currentIsAdmin = false;
+let searchKeyword = '';
+let favoriteIds = new Set();
+let cachedActivities = [];
 
 function setText(el, value) {
   if (el) el.textContent = value;
@@ -66,6 +85,88 @@ function resolveLaunchMode(app) {
   return isExternalUrl(app.entryUrl) ? 'newTab' : 'router';
 }
 
+
+function favoriteStorageKey() {
+  return currentUser ? `masterAppFavorites:${currentUser.uid}` : 'masterAppFavorites:guest';
+}
+
+function loadFavorites() {
+  try {
+    favoriteIds = new Set(JSON.parse(localStorage.getItem(favoriteStorageKey()) || '[]'));
+  } catch {
+    favoriteIds = new Set();
+  }
+}
+
+function saveFavorites() {
+  localStorage.setItem(favoriteStorageKey(), JSON.stringify([...favoriteIds]));
+}
+
+function updateFavoriteCount() {
+  setText(favoriteCountWidget, `${favoriteIds.size}개`);
+}
+
+function buildNotifications(apps = [], approvalStatus = 'none') {
+  const notices = [];
+  notices.push({ icon: '✅', title: `승인 상태 ${statusLabel(approvalStatus)}`, text: approvalStatus === 'approved' ? '현재 플랫폼 앱 실행이 가능합니다.' : '승인 완료 후 앱 실행 권한이 열립니다.' });
+  notices.push({ icon: '📦', title: `사용 가능 앱 ${apps.length}개`, text: apps.length ? 'App Store에서 앱을 실행할 수 있습니다.' : '관리자가 앱을 등록하면 이곳에 표시됩니다.' });
+  if (favoriteIds.size) notices.push({ icon: '⭐', title: `즐겨찾기 ${favoriteIds.size}개`, text: '자주 쓰는 앱을 빠르게 찾을 수 있습니다.' });
+  return notices;
+}
+
+function renderNotifications(apps = cachedApps, approvalStatus = currentApprovalStatus) {
+  const notices = buildNotifications(apps, approvalStatus);
+  if (notificationBadge) notificationBadge.textContent = String(notices.length);
+  const html = notices.map(item => `<article class="notice-item"><span>${item.icon}</span><div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}</small></div></article>`).join('');
+  if (notificationList) notificationList.innerHTML = html;
+  if (dashboardNotificationList) dashboardNotificationList.innerHTML = html;
+}
+
+function filterApps(apps = []) {
+  const keyword = searchKeyword.trim().toLowerCase();
+  if (!keyword) return apps;
+  return apps.filter(app => [app.name, app.description, app.version, app.path, app.id].join(' ').toLowerCase().includes(keyword));
+}
+
+function renderActivityList(target, activities = cachedActivities, compact = false) {
+  if (!target) return;
+  if (!activities.length) {
+    target.innerHTML = '<p class="empty-line">아직 실행 기록이 없습니다.</p>';
+    return;
+  }
+  const limited = compact ? activities.slice(0, 4) : activities;
+  target.innerHTML = limited.map(item => `
+    <article class="activity-item">
+      <span class="activity-dot"></span>
+      <div><strong>${escapeHtml(item.appName || '이름 없는 앱')}</strong><small>${formatDate(item.launchedAt)} · ${escapeHtml(item.launchMode || 'router')}</small></div>
+    </article>
+  `).join('');
+}
+
+async function loadActivityLogs() {
+  if (!currentUser) {
+    cachedActivities = [];
+    renderActivityList(recentActivityList, [], true);
+    renderActivityList(fullActivityList, [], false);
+    return;
+  }
+  try {
+    const snap = await get(ref(db, `appRunLogs/${currentUser.uid}`));
+    const raw = snap.val() || {};
+    const list = [];
+    Object.values(raw).forEach(group => {
+      Object.values(group || {}).forEach(item => list.push(item));
+    });
+    cachedActivities = list.sort((a, b) => new Date(b.launchedAt || 0) - new Date(a.launchedAt || 0));
+    renderActivityList(recentActivityList, cachedActivities, true);
+    renderActivityList(fullActivityList, cachedActivities, false);
+  } catch (error) {
+    const message = `<p class="empty-line">활동 로그 오류: ${escapeHtml(error.message)}</p>`;
+    if (recentActivityList) recentActivityList.innerHTML = message;
+    if (fullActivityList) fullActivityList.innerHTML = message;
+  }
+}
+
 function renderEmptyApps(message) {
   if (!dashboardApps) return;
   dashboardApps.innerHTML = `<div class="dashboard-empty">${escapeHtml(message)}</div>`;
@@ -94,6 +195,9 @@ function renderApps(apps, approvalStatus) {
   cachedApps = apps;
   currentApprovalStatus = approvalStatus;
   updateUserStats(apps, approvalStatus);
+  updateFavoriteCount();
+  renderNotifications(apps, approvalStatus);
+  const visibleApps = filterApps(apps);
 
   if (approvalStatus !== 'approved' && !currentIsAdmin) {
     renderEmptyApps('승인 완료 후 사용 가능한 앱 목록이 표시됩니다. 관리자는 테스트 목적으로 앱 목록을 확인할 수 있습니다.');
@@ -107,7 +211,13 @@ function renderApps(apps, approvalStatus) {
     return;
   }
 
-  dashboardApps.innerHTML = apps.map(app => {
+  if (!visibleApps.length) {
+    renderEmptyApps('검색 결과에 맞는 앱이 없습니다.');
+    setLaunchButtonsEnabled(false);
+    return;
+  }
+
+  dashboardApps.innerHTML = visibleApps.map(app => {
     const launchMode = resolveLaunchMode(app);
     const runCount = Number(app.runCount || 0);
     const lastRunText = formatDate(app.lastRunAt);
@@ -130,7 +240,7 @@ function renderApps(apps, approvalStatus) {
             <span>최근 실행 ${lastRunText}</span>
           </div>
         </div>
-        <div class="app-card-actions"><button type="button" class="user-app-open launch-app-btn" data-app-id="${escapeHtml(app.id)}">실행</button><small>Secure Launch</small></div>
+        <div class="app-card-actions"><button type="button" class="favorite-app-btn" data-app-id="${escapeHtml(app.id)}">${favoriteIds.has(app.id) ? '★ 즐겨찾기' : '☆ 즐겨찾기'}</button><button type="button" class="user-app-open launch-app-btn" data-app-id="${escapeHtml(app.id)}">실행</button><small>Secure Launch</small></div>
       </article>
     `;
   }).join('');
@@ -161,6 +271,7 @@ async function recordAppLaunch(app) {
     launchMode: resolveLaunchMode(app),
     launchedAt
   });
+  loadActivityLogs();
 }
 
 async function launchApp(app) {
@@ -208,6 +319,9 @@ async function loadUserDashboard(user) {
     currentApprovalStatus = 'none';
     currentIsAdmin = false;
     updateUserStats([], 'none');
+    favoriteIds = new Set();
+    updateFavoriteCount();
+    renderNotifications([], 'none');
     renderEmptyApps('로그인이 필요합니다.');
     setLaunchButtonsEnabled(false);
     return;
@@ -216,6 +330,10 @@ async function loadUserDashboard(user) {
   setText(dashboardLoginState, '로그인 확인 완료');
   setText(dashboardEmail, user.email || '-');
   setText(dashboardUid, user.uid || '-');
+  setText(profileEmailText, user.email || '-');
+  if (profileInitial) profileInitial.textContent = (user.email || 'U').charAt(0).toUpperCase();
+  loadFavorites();
+  loadActivityLogs();
 
   try {
     const [adminSnap, userSnap, applicationSnap] = await Promise.all([
@@ -232,6 +350,7 @@ async function loadUserDashboard(user) {
     currentApprovalStatus = approvalStatus;
 
     setText(dashboardRole, isAdmin ? '관리자' : '일반 사용자');
+    setText(profileRoleText, isAdmin ? '관리자 계정' : '일반 사용자');
     setText(dashboardApproval, statusLabel(approvalStatus));
     setText(dashboardSubmitted, formatDate(applicationData?.submittedAt));
     setText(dashboardReviewed, applicationData?.reviewedAt ? formatDate(applicationData.reviewedAt) : '심사 대기 또는 미처리');
@@ -273,11 +392,42 @@ if (storeFeaturedLaunchBtn) {
 
 if (dashboardApps) {
   dashboardApps.addEventListener('click', (event) => {
+    const favoriteButton = event.target.closest('.favorite-app-btn');
+    if (favoriteButton) {
+      const id = favoriteButton.dataset.appId;
+      favoriteIds.has(id) ? favoriteIds.delete(id) : favoriteIds.add(id);
+      saveFavorites();
+      renderApps(cachedApps, currentApprovalStatus);
+      return;
+    }
     const button = event.target.closest('.launch-app-btn');
     if (!button) return;
     const app = cachedApps.find(item => item.id === button.dataset.appId);
     launchApp(app);
   });
+}
+
+
+function applySearch(value) {
+  searchKeyword = value || '';
+  if (globalSearchInput && globalSearchInput.value !== searchKeyword) globalSearchInput.value = searchKeyword;
+  if (storeSearchInput && storeSearchInput.value !== searchKeyword) storeSearchInput.value = searchKeyword;
+  renderApps(cachedApps, currentApprovalStatus);
+}
+
+[globalSearchInput, storeSearchInput].forEach((input) => {
+  if (!input) return;
+  input.addEventListener('input', () => applySearch(input.value));
+});
+
+if (notificationToggleBtn && notificationPanel) {
+  notificationToggleBtn.addEventListener('click', () => notificationPanel.classList.toggle('workspace-hidden'));
+}
+if (profileToggleBtn && profilePanel) {
+  profileToggleBtn.addEventListener('click', () => profilePanel.classList.toggle('workspace-hidden'));
+}
+if (activityRefreshBtn) {
+  activityRefreshBtn.addEventListener('click', loadActivityLogs);
 }
 
 onAuthStateChanged(auth, (user) => {

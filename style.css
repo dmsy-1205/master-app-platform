@@ -753,3 +753,157 @@ pre { background: rgba(3,7,18,.78); border: 1px solid var(--v5-line); }
   .user-kpi-grid, .appstore-grid-v2 { grid-template-columns: 1fr; }
   .app-card-v2 { grid-template-columns: 1fr; }
 }
+
+/* STEP 9 v3 - activity, notification, search, profile */
+.topbar-v3 {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  align-items: center;
+}
+.topbar-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.global-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 250px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  background: rgba(2, 6, 23, .54);
+  border: 1px solid rgba(148, 163, 184, .18);
+}
+.global-search-box span { color: #93c5fd; font-weight: 1000; }
+.global-search-box input {
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 6px 0 !important;
+  color: #e5f2ff !important;
+  background: transparent !important;
+  outline: 0;
+}
+.global-search-box input::placeholder { color: rgba(203, 213, 225, .62); }
+.icon-action,
+.profile-chip {
+  position: relative;
+  min-height: 42px;
+  border: 1px solid rgba(148,163,184,.18);
+  background: rgba(15,23,42,.72);
+  color: #e0f2fe;
+  box-shadow: none;
+}
+.icon-action span {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #06111f;
+  background: linear-gradient(135deg, #22d3ee, #a78bfa);
+  font-size: .72rem;
+  font-weight: 1000;
+}
+.profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile-chip span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #071124;
+  background: linear-gradient(135deg, #7dd3fc, #c4b5fd);
+  font-weight: 1000;
+}
+.notification-panel,
+.profile-panel {
+  position: absolute;
+  right: 24px;
+  top: calc(100% + 12px);
+  width: min(380px, calc(100vw - 40px));
+  z-index: 20;
+  border-radius: 22px;
+  padding: 18px;
+  color: #e5f2ff;
+  background: rgba(6, 12, 28, .94);
+  border: 1px solid rgba(148,163,184,.24);
+  box-shadow: 0 24px 70px rgba(0,0,0,.36);
+  backdrop-filter: blur(18px);
+}
+.profile-panel { width: min(320px, calc(100vw - 40px)); }
+.notification-panel h3,
+.profile-panel h3 { color: #fff; margin-bottom: 14px; }
+.notice-item,
+.activity-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(148,163,184,.13);
+  margin-bottom: 10px;
+}
+.notice-item strong,
+.activity-item strong { display:block; color:#fff; }
+.notice-item small,
+.activity-item small { display:block; color: var(--v5-muted); margin-top: 3px; }
+.dashboard-insight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+.insight-card,
+.activity-page {
+  border-radius: 24px;
+  padding: 20px;
+  background: rgba(3,7,18,.28);
+  border: 1px solid rgba(148,163,184,.16);
+}
+.insight-card h3 { color:#fff; margin-bottom: 0; }
+.activity-list { margin-top: 14px; }
+.activity-dot {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: #34d399;
+  box-shadow: 0 0 18px rgba(52,211,153,.72);
+}
+.empty-line { color: var(--v5-muted); margin: 0; }
+.favorite-app-btn {
+  color: #fde68a;
+  background: rgba(250,204,21,.12);
+  border: 1px solid rgba(250,204,21,.2);
+  box-shadow: none;
+}
+.store-tools input:not(:disabled) {
+  color: #e5f2ff !important;
+  background: rgba(3,7,18,.36) !important;
+  border-color: rgba(148,163,184,.2) !important;
+}
+.full-activity .activity-item { margin-bottom: 12px; }
+@media (max-width: 980px) {
+  .topbar-v3 { grid-template-columns: 1fr; }
+  .topbar-tools { justify-content: flex-start; }
+  .dashboard-insight-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .global-search-box { min-width: 100%; }
+  .topbar-tools > * { flex: 1 1 auto; }
+  .notification-panel,
+  .profile-panel { right: 10px; }
+}
