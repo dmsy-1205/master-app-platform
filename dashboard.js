@@ -40,6 +40,8 @@ const favoriteWidgetBody = document.getElementById('favoriteWidgetBody');
 const applyReason = document.getElementById('applyReason');
 
 let appsUnsubscribeRef = null;
+let appAccessUnsubscribeRef = null;
+let applicationUnsubscribeRef = null;
 let cachedApps = [];
 let currentUser = null;
 let currentApprovalStatus = 'none';
@@ -361,7 +363,7 @@ async function recordAppLaunch(app, tokenInfo) {
 
 async function launchApp(app) {
   if (!app) return;
-  if (currentApprovalStatus !== 'approved' && !currentIsAdmin) {
+  if (!currentIsAdmin && !hasApprovedAppAccess(app) && currentApprovalStatus !== 'approved') {
     alert('승인 완료 사용자만 앱을 실행할 수 있습니다.');
     return;
   }
@@ -428,6 +430,31 @@ async function launchApp(app) {
 }
 
 
+function syncStoreStateFromRealtime(user) {
+  if (!user) return;
+  if (appAccessUnsubscribeRef) off(appAccessUnsubscribeRef);
+  if (applicationUnsubscribeRef) off(applicationUnsubscribeRef);
+
+  appAccessUnsubscribeRef = ref(db, `userAppAccess/${user.uid}`);
+  onValue(appAccessUnsubscribeRef, (snap) => {
+    currentAppAccess = snap.val() || {};
+    renderApps(cachedApps, currentApprovalStatus);
+  });
+
+  applicationUnsubscribeRef = ref(db, `applications/${user.uid}`);
+  onValue(applicationUnsubscribeRef, (snap) => {
+    currentApplicationData = snap.exists() ? snap.val() : null;
+    const nextStatus = currentApplicationData?.status || currentApprovalStatus || 'none';
+    currentApprovalStatus = nextStatus;
+    setText(dashboardApproval, statusLabel(nextStatus));
+    setText(userApprovalCard, statusLabel(nextStatus));
+    setText(dashboardSubmitted, formatDate(currentApplicationData?.submittedAt));
+    setText(dashboardReviewed, currentApplicationData?.reviewedAt ? formatDate(currentApplicationData.reviewedAt) : '심사 대기 또는 미처리');
+    renderApps(cachedApps, currentApprovalStatus);
+  });
+}
+
+
 async function loadUserDashboard(user) {
   if (!user) {
     setText(dashboardLoginState, '로그인 후 사용자 Dashboard를 사용할 수 있습니다.');
@@ -441,6 +468,10 @@ async function loadUserDashboard(user) {
     currentIsAdmin = false;
     currentAppAccess = {};
     currentApplicationData = null;
+    if (appAccessUnsubscribeRef) off(appAccessUnsubscribeRef);
+    if (applicationUnsubscribeRef) off(applicationUnsubscribeRef);
+    appAccessUnsubscribeRef = null;
+    applicationUnsubscribeRef = null;
     updateUserStats([], 'none');
     favoriteIds = new Set();
     updateFavoriteCount();
@@ -473,6 +504,7 @@ async function loadUserDashboard(user) {
     const applicationData = applicationSnap.exists() ? applicationSnap.val() : null;
     currentApplicationData = applicationData;
     currentAppAccess = appAccessSnap.exists() ? appAccessSnap.val() : {};
+    syncStoreStateFromRealtime(user);
     const approvalStatus = applicationData?.status || userData.userStatus || 'none';
     currentApprovalStatus = approvalStatus;
 

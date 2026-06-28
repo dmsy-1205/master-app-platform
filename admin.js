@@ -14,6 +14,8 @@ const refreshMembersBtn = document.getElementById('refreshMembersBtn');
 let cachedMembers = [];
 let cachedApplications = {};
 let membersRealtimeStarted = false;
+let approvalRealtimeStarted = false;
+let approvalStatusFilter = 'pending';
 
 if (makeAdminBtn) {
   makeAdminBtn.addEventListener('click', async () => {
@@ -54,47 +56,98 @@ if (checkAdminBtn) {
   });
 }
 
+function ensureApprovalFilterTabs() {
+  if (!loadAppsBtn || document.getElementById('approvalFilterTabs')) return;
+  const tabs = document.createElement('div');
+  tabs.id = 'approvalFilterTabs';
+  tabs.className = 'approval-filter-tabs';
+  tabs.innerHTML = `
+    <button type="button" data-approval-filter="pending" class="is-active">대기</button>
+    <button type="button" data-approval-filter="approved">승인 이력</button>
+    <button type="button" data-approval-filter="rejected">거절 이력</button>
+    <button type="button" data-approval-filter="all">전체</button>
+  `;
+  loadAppsBtn.insertAdjacentElement('afterend', tabs);
+  tabs.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-approval-filter]');
+    if (!button) return;
+    approvalStatusFilter = button.dataset.approvalFilter || 'pending';
+    tabs.querySelectorAll('button').forEach(btn => btn.classList.toggle('is-active', btn === button));
+    renderApprovalRequests(cachedApplications);
+  });
+}
+
+function renderApprovalRequests(data = {}) {
+  if (!appsDashboardList) return;
+  appsDashboardList.innerHTML = '';
+  const rows = Object.keys(data).map(uid => ({ uid, ...(data[uid] || {}) }))
+    .filter(item => approvalStatusFilter === 'all' || (item.status || 'pending') === approvalStatusFilter)
+    .sort((a, b) => new Date(b.submittedAt || b.requestedAt || b.reviewedAt || 0) - new Date(a.submittedAt || a.requestedAt || a.reviewedAt || 0));
+
+  const pendingCount = Object.values(data).filter(item => (item?.status || 'pending') === 'pending').length;
+  const approvedCount = Object.values(data).filter(item => item?.status === 'approved').length;
+  const rejectedCount = Object.values(data).filter(item => item?.status === 'rejected').length;
+
+  const summary = document.createElement('div');
+  summary.className = 'approval-summary-panel';
+  summary.innerHTML = `
+    <span>대기 <strong>${pendingCount}</strong></span>
+    <span>승인 <strong>${approvedCount}</strong></span>
+    <span>거절 <strong>${rejectedCount}</strong></span>
+    <small>기본 화면은 처리할 대기 신청만 표시합니다.</small>
+  `;
+  appsDashboardList.appendChild(summary);
+
+  if (!rows.length) {
+    const label = approvalStatusFilter === 'pending' ? '대기 중인 승인 신청' : `${statusLabel(approvalStatusFilter)} 내역`;
+    appsDashboardList.insertAdjacentHTML('beforeend', `<p class="placeholder-text">현재 ${label}이 없습니다.</p>`);
+    return;
+  }
+
+  rows.forEach(item => {
+    const status = item.status || 'pending';
+    const appCard = document.createElement('div');
+    appCard.className = `app-dashboard-card approval-status-${escapeHtml(status)}`;
+    appCard.innerHTML = `
+      <div class="app-info">
+        <p><strong>신청자 이메일:</strong> ${escapeHtml(item.email || '알 수 없음')}</p>
+        <p><strong>신청 앱:</strong> ${escapeHtml(item.requestedAppName || '플랫폼 전체')}</p>
+        <p><strong>사유:</strong> ${escapeHtml(item.reason || '입력 누락')}</p>
+        <p><strong>현재 상태:</strong> <span class="member-pill status-${escapeHtml(status)}">${statusLabel(status)}</span></p>
+        <p><strong>신청 일시:</strong> ${formatDate(item.submittedAt || item.requestedAt)}</p>
+        <p><strong>처리 일시:</strong> ${formatDate(item.reviewedAt)}</p>
+        <p class="small-uid">UID: ${escapeHtml(item.uid)}</p>
+      </div>
+      <div class="app-control-btns">
+        ${renderApprovalActions(item.uid, status)}
+      </div>`;
+    appsDashboardList.appendChild(appCard);
+  });
+
+  appsDashboardList.querySelectorAll('.btn-approve:not(:disabled)').forEach(btn => {
+    btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'approved'));
+  });
+  appsDashboardList.querySelectorAll('.btn-reject:not(:disabled)').forEach(btn => {
+    btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'rejected'));
+  });
+}
+
+function startApprovalRealtime() {
+  if (approvalRealtimeStarted) return;
+  approvalRealtimeStarted = true;
+  ensureApprovalFilterTabs();
+  onValue(ref(db, 'applications'), (snapshot) => {
+    cachedApplications = snapshot.val() || {};
+    renderApprovalRequests(cachedApplications);
+    renderMembers();
+  });
+}
+
 if (loadAppsBtn) {
   loadAppsBtn.addEventListener('click', () => {
     const user = auth.currentUser;
     if (!user) return alert('관리자 세션이 만료되었습니다.');
-
-    onValue(ref(db, 'applications'), (snapshot) => {
-      if (!appsDashboardList) return;
-      appsDashboardList.innerHTML = '';
-      const data = snapshot.val();
-      if (!data) {
-        appsDashboardList.innerHTML = '<p class="placeholder-text">현재 대기 중인 승인 신청 데이터가 존재하지 않습니다.</p>';
-        return;
-      }
-
-      Object.keys(data).forEach(uid => {
-        const item = data[uid];
-        const status = item.status || 'pending';
-        const appCard = document.createElement('div');
-        appCard.className = `app-dashboard-card approval-status-${escapeHtml(status)}`;
-        appCard.innerHTML = `
-          <div class="app-info">
-            <p><strong>신청자 이메일:</strong> ${escapeHtml(item.email || '알 수 없음')}</p>
-            <p><strong>신청 앱:</strong> ${escapeHtml(item.requestedAppName || '플랫폼 전체')}</p>
-            <p><strong>사유:</strong> ${escapeHtml(item.reason || '입력 누락')}</p>
-            <p><strong>현재 상태:</strong> <span class="member-pill status-${escapeHtml(status)}">${statusLabel(status)}</span></p>
-            <p><strong>처리 일시:</strong> ${formatDate(item.reviewedAt)}</p>
-            <p class="small-uid">UID: ${escapeHtml(uid)}</p>
-          </div>
-          <div class="app-control-btns">
-            ${renderApprovalActions(uid, status)}
-          </div>`;
-        appsDashboardList.appendChild(appCard);
-      });
-
-      document.querySelectorAll('.btn-approve:not(:disabled)').forEach(btn => {
-        btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'approved'));
-      });
-      document.querySelectorAll('.btn-reject:not(:disabled)').forEach(btn => {
-        btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'rejected'));
-      });
-    });
+    startApprovalRealtime();
   });
 }
 
@@ -109,21 +162,26 @@ async function processApplication(targetUid, statusAction) {
     const updates = {};
     updates[`applications/${targetUid}/status`] = statusAction;
     updates[`applications/${targetUid}/reviewedAt`] = reviewedAt;
+    updates[`applications/${targetUid}/processedAt`] = reviewedAt;
+    updates[`applications/${targetUid}/processedBy`] = auth.currentUser?.email || auth.currentUser?.uid || 'admin';
     updates[`users/${targetUid}/userStatus`] = statusAction;
+    updates[`users/${targetUid}/updatedAt`] = reviewedAt;
 
     if (appRequest.requestedAppId) {
       updates[`appAccessRequests/${appRequest.requestedAppId}/${targetUid}/status`] = statusAction;
       updates[`appAccessRequests/${appRequest.requestedAppId}/${targetUid}/reviewedAt`] = reviewedAt;
+      updates[`appAccessRequests/${appRequest.requestedAppId}/${targetUid}/processedAt`] = reviewedAt;
       updates[`userAppAccess/${targetUid}/${appRequest.requestedAppId}`] = {
         status: statusAction,
         active: statusAction === 'approved',
         appName: appRequest.requestedAppName || '',
-        reviewedAt
+        reviewedAt,
+        processedAt: reviewedAt
       };
     }
 
     await update(ref(db), updates);
-    alert(`정상적으로 해당 유저의 신청 내역을 [${statusLabel(statusAction)}] 처리하였습니다.`);
+    alert(`정상적으로 [${statusLabel(statusAction)}] 처리되었습니다. 대기 목록에서는 자동으로 정리됩니다.`);
   } catch (error) { alert('상태 제어 처리 오류: ' + error.message); }
 }
 
@@ -155,9 +213,15 @@ function statusLabel(status = '') {
 function renderApprovalActions(uid, status = 'pending') {
   const approved = status === 'approved';
   const rejected = status === 'rejected';
+  if (approved) {
+    return `<button class="btn-approve is-complete" data-uid="${escapeHtml(uid)}" disabled>승인 완료</button>`;
+  }
+  if (rejected) {
+    return `<button class="btn-reject is-complete" data-uid="${escapeHtml(uid)}" disabled>거절 완료</button>`;
+  }
   return `
-    <button class="btn-approve ${approved ? 'is-complete' : ''}" data-uid="${escapeHtml(uid)}" ${approved ? 'disabled' : ''}>${approved ? '승인 완료' : '승인 처리'}</button>
-    <button class="btn-reject ${rejected ? 'is-complete' : ''}" data-uid="${escapeHtml(uid)}" ${rejected ? 'disabled' : ''}>${rejected ? '거절 완료' : '거절 처리'}</button>
+    <button class="btn-approve" data-uid="${escapeHtml(uid)}">승인 처리</button>
+    <button class="btn-reject" data-uid="${escapeHtml(uid)}">거절 처리</button>
   `;
 }
 
