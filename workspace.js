@@ -9,6 +9,7 @@ const workspaceRoutes = {
 
 const adminRoutes = {
   overview: '[data-admin-panel="overview"]',
+  members: '[data-admin-panel="members"]',
   approval: '[data-admin-panel="approval"]',
   apps: '[data-admin-panel="apps"]',
   tools: '[data-admin-panel="tools"]'

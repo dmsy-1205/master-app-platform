@@ -1044,3 +1044,29 @@ pre { background: rgba(3,7,18,.78); border: 1px solid var(--v5-line); }
   .guide-actions { justify-content: flex-start; }
   .app-register-steps { grid-template-columns: 1fr; }
 }
+
+/* STEP9-v6 Member Management + Baby Care Deploy UX */
+.member-management { margin-top: 22px; }
+.member-management-toolbar { display: flex; gap: 12px; align-items: center; margin: 18px 0; flex-wrap: wrap; }
+.member-management-toolbar input { flex: 1; min-width: 240px; background: rgba(8,15,35,.86); border: 1px solid rgba(100,180,255,.25); color: #f8fbff; border-radius: 14px; padding: 14px 16px; }
+.member-management-toolbar button,
+.member-actions button { border: 0; border-radius: 12px; padding: 10px 14px; font-weight: 800; color: white; background: linear-gradient(135deg,#2ed3ff,#8d5bff); box-shadow: 0 8px 22px rgba(60,130,255,.22); }
+.member-management-note { border: 1px solid rgba(46,211,255,.22); background: rgba(46,211,255,.08); color: #bdd7ff; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
+.member-table-wrap { border: 1px solid rgba(120,160,255,.18); border-radius: 16px; overflow: hidden; }
+.member-table { color: #e9f1ff; margin: 0; }
+.member-table thead { background: rgba(255,255,255,.06); color: #bcd0ff; }
+.member-table td, .member-table th { border-color: rgba(255,255,255,.12) !important; vertical-align: middle; }
+.member-pill { display: inline-flex; align-items:center; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 900; background: rgba(148,163,184,.18); color: #dbeafe; }
+.member-pill.admin { background: rgba(168,85,247,.26); color: #f3e8ff; }
+.member-pill.status-approved { background: rgba(34,197,94,.2); color: #86efac; }
+.member-pill.status-pending { background: rgba(234,179,8,.18); color: #fde68a; }
+.member-pill.status-suspended, .member-pill.status-expelled, .member-pill.status-rejected { background: rgba(244,63,94,.2); color: #fecdd3; }
+.member-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.member-actions button { padding: 8px 10px; font-size: 12px; }
+.member-actions button.danger { background: linear-gradient(135deg,#fb7185,#ef4444); }
+.baby-care-deploy-box { display:flex; flex-direction:column; gap:6px; margin: 14px 0 20px; padding:16px; border-radius:16px; border:1px solid rgba(244,114,182,.24); background:linear-gradient(135deg,rgba(244,114,182,.12),rgba(46,211,255,.08)); color:#dbeafe; }
+.baby-care-deploy-box strong { color:#fff; font-size: 16px; }
+.baby-care-deploy-box code { color:#7dd3fc; }
+.guide-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+.guide-actions button:first-child { background: linear-gradient(135deg,#ff6fb1,#8b5cf6); color:#fff; }
+@media (max-width: 860px) { .member-management-toolbar { flex-direction: column; align-items: stretch; } .member-actions { flex-direction: column; } }

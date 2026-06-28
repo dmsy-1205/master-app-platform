@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 9 v3</title>
+  <title>Master App Platform - STEP 9 v6</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
@@ -66,7 +66,7 @@
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">STEP 9 v3</p>
+            <p class="eyebrow">STEP 9 v6</p>
             <h1>Master App Platform</h1>
             <p id="userStatus">확인 중...</p>
           </div>
@@ -75,9 +75,9 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">Premium Control Workspace · STEP 9 v3</p>
+            <p class="eyebrow">Premium Control Workspace · STEP 9 v6</p>
             <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
-            <p>사용자 Dashboard와 App Store 2.0에 알림 활동 로그 검색 프로필 기능을 더했습니다.</p>
+            <p>사용자 경험과 관리자 회원관리 생활관리 앱 배포 준비 기능을 더했습니다.</p>
           </div>
           <div class="hero-metrics">
             <div><strong id="dashboardRole">-</strong><span>권한</span></div>
@@ -127,7 +127,7 @@
               <div class="widget-icon">🔔</div>
               <h3>공지 및 업데이트</h3>
               <p>새 앱 등록과 플랫폼 변경사항을 이곳에서 확인합니다.</p>
-              <span class="widget-badge live">STEP9-v3</span>
+              <span class="widget-badge live">STEP9-v6</span>
             </article>
           </div>
         </section>
@@ -189,6 +189,7 @@
 
           <div class="admin-spa-tabs glass-card" role="tablist" aria-label="관리자 메뉴">
             <button type="button" data-admin-route="overview" class="active">Overview</button>
+            <button type="button" data-admin-route="members">회원 관리</button>
             <button type="button" data-admin-route="approval">승인 관리</button>
             <button type="button" data-admin-route="apps">앱 관리</button>
             <button type="button" data-admin-route="tools">개발 도구</button>
@@ -202,6 +203,25 @@
               <div><span>등록 앱</span><strong id="adminAppsKpi">라우팅 테이블</strong><small>앱 관리 메뉴에서 관리</small></div>
               <div><span>권한 상태</span><strong>관리자</strong><small>Firebase admins/users.role 기준</small></div>
               <div><span>콘솔 모드</span><strong>SPA</strong><small>STEP9-v1 적용</small></div>
+            </div>
+          </section>
+
+
+          <section class="member-management glass-card" data-admin-panel="members">
+            <div class="admin-card-title"><h2>회원 관리</h2><span>User Control</span></div>
+            <p class="dashboard-help">가입 회원을 확인하고 권한 상태 승인 정지 퇴출 처리를 관리합니다.</p>
+            <div class="member-management-toolbar">
+              <input id="memberSearchInput" type="search" placeholder="이메일 UID 권한 상태 검색">
+              <button type="button" id="refreshMembersBtn">회원 목록 새로고침</button>
+            </div>
+            <div class="member-management-note">
+              <strong>안내</strong> 브라우저 앱에서는 Firebase Authentication 계정 자체 삭제는 제한됩니다. 여기서는 플랫폼 접근 상태를 퇴출로 변경하고 관리자 권한을 해제합니다.
+            </div>
+            <div class="table-responsive member-table-wrap">
+              <table class="table table-hover align-middle member-table">
+                <thead><tr><th>회원</th><th>권한</th><th>상태</th><th>신청</th><th>최근 변경</th><th>관리</th></tr></thead>
+                <tbody id="admin-member-list"><tr><td colspan="6">회원 목록을 불러오는 중입니다.</td></tr></tbody>
+              </table>
             </div>
           </section>
 
@@ -223,6 +243,7 @@
                 <p>앱 파일을 <code>apps/앱파일.html</code> 형태로 넣고 아래 정보를 등록하면 App Store에 표시됩니다.</p>
               </div>
               <div class="guide-actions">
+                <button type="button" id="fillBabyCarePresetBtn">아가 생활관리 앱 예시</button>
                 <button type="button" id="fillFinancePresetBtn">금융 앱 예시 채우기</button>
                 <button type="button" id="fillExternalPresetBtn">외부 URL 예시 채우기</button>
               </div>
@@ -232,6 +253,10 @@
               <li>앱 이름만 입력하면 ID와 라우팅 경로는 자동 추천됩니다.</li>
               <li>Entry URL은 내부 앱이면 <code>./apps/파일명.html</code> 외부 앱이면 <code>https://주소</code>를 입력합니다.</li>
             </ol>
+            <div class="baby-care-deploy-box">
+              <strong>아가 생활관리 앱 배포 흐름</strong>
+              <span>생활관리 앱 HTML을 <code>apps/baby-care.html</code>로 넣기 → 예시 버튼 클릭 → 등록 → 활성화 → 사용자 승인 후 App Store에서 실행</span>
+            </div>
             <form id="subapp-register-form" class="row g-3 easy-register-form">
               <div class="col-md-3"><label class="form-label">애플리케이션 고유 ID</label><input type="text" id="app-id" class="form-control" placeholder="finance-app" required><small>영문 소문자 숫자 하이픈 권장</small></div>
               <div class="col-md-3"><label class="form-label">앱 이름</label><input type="text" id="app-name" class="form-control" placeholder="자금 관리 앱" required><small>입력하면 ID와 경로를 자동 추천합니다</small></div>

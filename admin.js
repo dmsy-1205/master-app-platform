@@ -1,5 +1,5 @@
 import { db, auth } from './firebase.js';
-import { ref, set, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { registerSubApp, listenSubApps, updateAppStatus, normalizeActiveStatus, deleteSubApp } from './database.js';
 
 const makeAdminBtn = document.getElementById('makeAdminBtn');
@@ -8,6 +8,12 @@ const adminResult = document.getElementById('adminResult');
 const adminDashboardSection = document.getElementById('adminDashboardSection');
 const loadAppsBtn = document.getElementById('loadAppsBtn');
 const appsDashboardList = document.getElementById('appsDashboardList');
+const adminMemberList = document.getElementById('admin-member-list');
+const memberSearchInput = document.getElementById('memberSearchInput');
+const refreshMembersBtn = document.getElementById('refreshMembersBtn');
+let cachedMembers = [];
+let cachedApplications = {};
+let membersRealtimeStarted = false;
 
 if (makeAdminBtn) {
   makeAdminBtn.addEventListener('click', async () => {
@@ -102,12 +108,143 @@ async function processApplication(targetUid, statusAction) {
   } catch (error) { alert('상태 제어 처리 오류: ' + error.message); }
 }
 
+
+// ==========================================
+// [STEP 9-v6] 관리자 회원관리
+// ==========================================
+function escapeHtml(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function formatDate(value) {
+  if (!value) return '-';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '-';
+  return date.toLocaleString('ko-KR');
+}
+
+function statusLabel(status = '') {
+  const map = { approved: '승인', pending: '대기', rejected: '거절', expelled: '퇴출', suspended: '정지', registered: '가입' };
+  return map[status] || status || '-';
+}
+
+function roleLabel(role = '') {
+  return role === 'admin' ? '관리자' : '일반 사용자';
+}
+
+function renderMembers() {
+  if (!adminMemberList) return;
+  const keyword = (memberSearchInput?.value || '').trim().toLowerCase();
+  const filtered = cachedMembers.filter(member => {
+    const blob = [member.uid, member.email, member.role, member.userStatus, member.applicationStatus].join(' ').toLowerCase();
+    return !keyword || blob.includes(keyword);
+  });
+  if (!filtered.length) {
+    adminMemberList.innerHTML = '<tr><td colspan="6">표시할 회원이 없습니다.</td></tr>';
+    return;
+  }
+  adminMemberList.innerHTML = filtered.map(member => {
+    const isAdmin = member.role === 'admin' || member.isAdmin === true;
+    const status = member.applicationStatus || member.userStatus || 'registered';
+    return `
+      <tr>
+        <td><strong>${escapeHtml(member.email || '이메일 없음')}</strong><br><small>${escapeHtml(member.uid)}</small></td>
+        <td><span class="member-pill ${isAdmin ? 'admin' : ''}">${roleLabel(isAdmin ? 'admin' : 'user')}</span></td>
+        <td><span class="member-pill status-${escapeHtml(status)}">${statusLabel(status)}</span></td>
+        <td>${escapeHtml(cachedApplications[member.uid]?.reason || '-')}</td>
+        <td><small>${formatDate(member.updatedAt || member.createdAt || cachedApplications[member.uid]?.reviewedAt)}</small></td>
+        <td>
+          <div class="member-actions">
+            <button type="button" data-member-action="approve" data-uid="${escapeHtml(member.uid)}">승인</button>
+            <button type="button" data-member-action="suspend" data-uid="${escapeHtml(member.uid)}">정지</button>
+            <button type="button" data-member-action="toggle-admin" data-uid="${escapeHtml(member.uid)}" data-admin="${isAdmin}">${isAdmin ? '관리자 해제' : '관리자 부여'}</button>
+            <button type="button" class="danger" data-member-action="expel" data-uid="${escapeHtml(member.uid)}">퇴출</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+async function startMemberManagement() {
+  if (!adminMemberList || membersRealtimeStarted) return;
+  membersRealtimeStarted = true;
+  onValue(ref(db, 'applications'), snap => {
+    cachedApplications = snap.val() || {};
+    renderMembers();
+  });
+  onValue(ref(db, 'users'), async snap => {
+    const users = snap.val() || {};
+    let admins = {};
+    try {
+      const adminSnap = await get(ref(db, 'admins'));
+      admins = adminSnap.val() || {};
+    } catch {}
+    cachedMembers = Object.keys(users).map(uid => ({ uid, ...users[uid], isAdmin: admins[uid] === true, applicationStatus: cachedApplications[uid]?.status }));
+    renderMembers();
+  });
+}
+
+async function updateMemberStatus(uid, status) {
+  const updates = {};
+  updates[`users/${uid}/userStatus`] = status;
+  updates[`users/${uid}/updatedAt`] = new Date().toISOString();
+  if (cachedApplications[uid]) {
+    updates[`applications/${uid}/status`] = status === 'approved' ? 'approved' : status;
+    updates[`applications/${uid}/reviewedAt`] = new Date().toISOString();
+  }
+  await update(ref(db), updates);
+}
+
+async function setMemberAdmin(uid, enabled) {
+  const updates = {};
+  updates[`users/${uid}/role`] = enabled ? 'admin' : 'user';
+  updates[`users/${uid}/updatedAt`] = new Date().toISOString();
+  await update(ref(db), updates);
+  if (enabled) await set(ref(db, `admins/${uid}`), true);
+  else await remove(ref(db, `admins/${uid}`));
+}
+
+if (memberSearchInput) memberSearchInput.addEventListener('input', renderMembers);
+if (refreshMembersBtn) refreshMembersBtn.addEventListener('click', startMemberManagement);
+if (adminMemberList) {
+  adminMemberList.addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-member-action]');
+    if (!button) return;
+    const uid = button.dataset.uid;
+    const action = button.dataset.memberAction;
+    if (!uid) return;
+    try {
+      if (action === 'approve') await updateMemberStatus(uid, 'approved');
+      if (action === 'suspend') {
+        if (!confirm('해당 회원을 정지 상태로 변경할까요?')) return;
+        await updateMemberStatus(uid, 'suspended');
+      }
+      if (action === 'expel') {
+        if (!confirm('해당 회원을 퇴출 처리할까요?\nAuth 계정은 삭제되지 않지만 플랫폼 접근 상태가 차단됩니다.')) return;
+        await updateMemberStatus(uid, 'expelled');
+        await setMemberAdmin(uid, false);
+      }
+      if (action === 'toggle-admin') await setMemberAdmin(uid, button.dataset.admin !== 'true');
+      renderMembers();
+    } catch (error) {
+      alert('회원 관리 처리 오류: ' + error.message);
+    }
+  });
+}
+startMemberManagement();
+
 // ==========================================
 // [STEP 6] 서브 앱 등록 및 메타데이터 UI 제어
 // ==========================================
 export function initAdminSubAppManager() {
     const registerForm = document.getElementById('subapp-register-form');
     const appListContainer = document.getElementById('admin-subapp-list');
+    const fillBabyCarePresetBtn = document.getElementById('fillBabyCarePresetBtn');
     const fillFinancePresetBtn = document.getElementById('fillFinancePresetBtn');
     const fillExternalPresetBtn = document.getElementById('fillExternalPresetBtn');
     const appNameInput = document.getElementById('app-name');
@@ -150,6 +287,21 @@ export function initAdminSubAppManager() {
         if (appLaunchModeInput) appLaunchModeInput.value = data.launchMode;
         if (appDescInput) appDescInput.value = data.description;
         updateRegisterPreview();
+    }
+
+
+    if (fillBabyCarePresetBtn && !fillBabyCarePresetBtn.dataset.bound) {
+        fillBabyCarePresetBtn.dataset.bound = 'true';
+        fillBabyCarePresetBtn.addEventListener('click', () => fillPreset({
+            id: 'baby-care-app',
+            name: '아가 생활관리 앱',
+            path: '/baby-care',
+            entry: './apps/baby-care.html',
+            icon: '💗',
+            version: 'v1.0',
+            launchMode: 'router',
+            description: '아가의 생활 기록 일정 케어 데이터를 안전하게 관리하는 전용 앱'
+        }));
     }
 
     if (fillFinancePresetBtn && !fillFinancePresetBtn.dataset.bound) {

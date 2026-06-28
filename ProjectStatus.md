@@ -1,39 +1,24 @@
 # ProjectStatus
 
-## 프로젝트명
-Master App Platform
+버전: master-app-platform-step09-v6
 
-## 현재 버전
-master-app-platform-step09-v4
+## 완료
+- STEP1 회원가입 로그인 자동 로그인
+- STEP2 Realtime Database 테스트
+- STEP3 관리자 권한
+- STEP4 회원 신청
+- STEP5 승인 거절
+- STEP6 서브 앱 등록 라우팅
+- STEP7 사용자 Dashboard
+- STEP8 App Store형 UI
+- STEP9-v1 관리자 SPA
+- STEP9-v2 사용자 Dashboard UX
+- STEP9-v3 알림 검색 프로필 활동로그
+- STEP9-v4 앱 카드 버튼 정리 앱 삭제
+- STEP9-v5 즐겨찾기 저장 초보자 앱 등록
+- STEP9-v6 회원관리 생활관리 앱 배포 준비
 
-## 완료 상태
-STEP1 ~ STEP9-v4 완료
-
-## 이번 버전 핵심
-- 사용자 활동 로그 화면 추가
-- Notification Center 추가
-- 전역 검색과 App Store 검색 적용
-- 프로필 메뉴 추가
-- 즐겨찾기 기능 추가
-- 기존 관리자 SPA와 Firebase 경로 유지
-
-## 유지된 기능
-- Firebase Authentication
-- Realtime Database CRUD
-- 관리자 권한 시스템
-- 회원 신청 및 승인 시스템
-- 앱 등록 및 라우팅
-- 사용자 Dashboard
-- 앱 실행 및 실행 로그
-
-## 다음 권장 작업
-STEP10 Firebase Rules 및 권한 보안 강화
-
-
-## 현재 버전
-master-app-platform-step09-v5
-
-## STEP9-v5 완료
-- Firebase 사용자별 즐겨찾기 저장
-- 관리자 앱 등록 UX 개선
-- 초보자용 등록 가이드 추가
+## 다음 후보
+- 생활관리 앱 실제 파일 연결
+- 회원별 앱 접근 권한
+- Firebase Rules 보안 강화
