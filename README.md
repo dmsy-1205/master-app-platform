@@ -2,13 +2,13 @@
 
 ## 현재 버전
 
-master-app-platform-step09-v1
+master-app-platform-step09-v2
 
 ## 목적
 
 여러 웹 애플리케이션을 하나의 플랫폼에서 회원 승인 권한 관리 앱 등록 앱 실행 로그까지 통합 운영하는 SaaS형 플랫폼입니다.
 
-## STEP9-v1 변경점
+## STEP9-v2 변경점
 
 - 관리자 콘솔 SPA 메뉴 구조 적용
 - 좌측 사이드바 메뉴 전환 방식 적용
@@ -31,3 +31,8 @@ master-app-platform-step09-v1
 ## 배포 방식
 
 GitHub에 ZIP 내용을 덮어쓰기 업로드한 뒤 Netlify 자동 배포로 테스트합니다.
+
+
+## STEP9-v2
+
+사용자 Dashboard와 App Store 경험을 개선한 버전입니다. 기존 인증, 승인, 앱 등록, 실행, 관리자 SPA 기능은 유지됩니다.

@@ -1,23 +1,30 @@
-# DevelopmentReport
+# Development Report
 
-## 버전
+## Version
+master-app-platform-step09-v2
 
-master-app-platform-step09-v1
+## Goal
+사용자 Dashboard와 App Store 화면을 상용 SaaS 플랫폼에 가깝게 리뉴얼한다.
 
-## 개발 목표
+## Completed
+- 사용자 KPI 카드 추가
+- 총 앱 수 / 총 실행 수 / 최근 실행 / 승인 상태 표시
+- 빠른 실행 위젯 추가
+- App Store Featured 배너 추가
+- 앱 카드 크기와 정보 구조 개선
+- 실행 버튼과 기록 저장 로직 유지
+- 관리자 SPA 구조 유지
 
-관리자 기능을 SPA 방식으로 분리하여 전문 관리자 콘솔 구조를 만드는 것
+## Test Checklist
+- 로그인
+- 회원가입
+- 관리자 권한 유지
+- 사용자 Dashboard 표시
+- 앱 카드 표시
+- 첫 번째 앱 실행
+- App Store 추천 앱 실행
+- 관리자 탭 전환
+- 앱 활성/비활성
 
-## 작업 내용
-
-- Dashboard App Store Runtime 신청 관리 Admin Center 화면 전환 구현
-- Admin Center 내부 Overview 승인 관리 앱 관리 개발 도구 탭 구현
-- workspace.js로 UI 상태 전환을 담당하도록 분리
-- 기존 Firebase 기능과 DOM ID는 변경하지 않음
-
-## 자체 검수
-
-- 기존 기능 참조 ID 유지 확인
-- 기존 모듈 import 유지 확인
-- 관리자 전용 data-auth 구조 유지 확인
-- 화면 전환은 CSS class 기반으로만 처리
+## Notes
+STEP9-v2는 기능 확장보다 사용자 경험 개선에 집중한 버전이다.

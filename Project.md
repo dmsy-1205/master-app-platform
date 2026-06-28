@@ -10,7 +10,7 @@ Master App Platform
 
 현재 버전
 
-master-app-platform-step09-v1
+master-app-platform-step09-v2
 
 ---
 
@@ -271,7 +271,7 @@ Netlify 다시 만들기
 
 현재 프로젝트는
 
-master-app-platform-step09-v1
+master-app-platform-step09-v2
 
 이다.
 

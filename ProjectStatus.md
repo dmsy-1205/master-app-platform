@@ -6,11 +6,11 @@ Master App Platform
 
 ## 현재 버전
 
-master-app-platform-step09-v1
+master-app-platform-step09-v2
 
 ## 완료 상태
 
-STEP1 ~ STEP8-v5 완료 후 STEP9-v1 관리자 SPA 구조 개편 완료
+STEP1 ~ STEP8-v5 완료 후 STEP9-v2 관리자 SPA 구조 개편 완료
 
 ## 이번 버전 핵심
 
@@ -33,3 +33,11 @@ STEP1 ~ STEP8-v5 완료 후 STEP9-v1 관리자 SPA 구조 개편 완료
 ## 다음 권장 작업
 
 STEP9-v2 사용자 Dashboard 및 App Store 2.0 고도화
+
+
+## STEP9-v2 완료
+
+- 사용자 Dashboard UX 리뉴얼
+- App Store 2.0 카드형 구조 적용
+- KPI 카드와 빠른 실행 위젯 추가
+- 관리자 SPA 구조 유지

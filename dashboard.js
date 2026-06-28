@@ -13,6 +13,12 @@ const dashboardReviewed = document.getElementById('dashboardReviewed');
 const dashboardApps = document.getElementById('dashboardApps');
 const dashboardRefreshBtn = document.getElementById('dashboardRefreshBtn');
 const dashboardOpenFirstAppBtn = document.getElementById('dashboardOpenFirstAppBtn');
+const dashboardQuickLaunchBtn = document.getElementById('dashboardQuickLaunchBtn');
+const storeFeaturedLaunchBtn = document.getElementById('storeFeaturedLaunchBtn');
+const userTotalApps = document.getElementById('userTotalApps');
+const userTotalRuns = document.getElementById('userTotalRuns');
+const userRecentApp = document.getElementById('userRecentApp');
+const userApprovalCard = document.getElementById('userApprovalCard');
 
 let appsUnsubscribeRef = null;
 let cachedApps = [];
@@ -65,20 +71,39 @@ function renderEmptyApps(message) {
   dashboardApps.innerHTML = `<div class="dashboard-empty">${escapeHtml(message)}</div>`;
 }
 
+function updateUserStats(apps = [], approvalStatus = 'none') {
+  const totalRuns = apps.reduce((sum, app) => sum + Number(app.runCount || 0), 0);
+  const recent = apps
+    .filter(app => app.lastRunAt)
+    .sort((a, b) => new Date(b.lastRunAt) - new Date(a.lastRunAt))[0];
+
+  setText(userTotalApps, String(apps.length));
+  setText(userTotalRuns, String(totalRuns));
+  setText(userRecentApp, recent?.name || '-');
+  setText(userApprovalCard, statusLabel(approvalStatus));
+}
+
+function setLaunchButtonsEnabled(enabled) {
+  [dashboardOpenFirstAppBtn, dashboardQuickLaunchBtn, storeFeaturedLaunchBtn].forEach((button) => {
+    if (button) button.disabled = !enabled;
+  });
+}
+
 function renderApps(apps, approvalStatus) {
   if (!dashboardApps) return;
   cachedApps = apps;
   currentApprovalStatus = approvalStatus;
+  updateUserStats(apps, approvalStatus);
 
   if (approvalStatus !== 'approved' && !currentIsAdmin) {
     renderEmptyApps('승인 완료 후 사용 가능한 앱 목록이 표시됩니다. 관리자는 테스트 목적으로 앱 목록을 확인할 수 있습니다.');
-    if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = true;
+    setLaunchButtonsEnabled(false);
     return;
   }
 
   if (!apps.length) {
     renderEmptyApps('현재 활성화된 서브 애플리케이션이 없습니다. 관리자가 STEP6에서 앱을 등록해야 합니다.');
-    if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = true;
+    setLaunchButtonsEnabled(false);
     return;
   }
 
@@ -87,8 +112,8 @@ function renderApps(apps, approvalStatus) {
     const runCount = Number(app.runCount || 0);
     const lastRunText = formatDate(app.lastRunAt);
     return `
-      <article class="user-app-card step8-app-card">
-        <div class="user-app-icon">${escapeHtml(app.icon || '📦')}</div>
+      <article class="user-app-card step8-app-card app-card-v2">
+        <div class="app-card-visual"><div class="user-app-icon">${escapeHtml(app.icon || '📦')}</div><span class="app-glow-dot"></span></div>
         <div class="user-app-body">
           <div class="user-app-headline">
             <h4>${escapeHtml(app.name || '이름 없는 앱')}</h4>
@@ -105,12 +130,12 @@ function renderApps(apps, approvalStatus) {
             <span>최근 실행 ${lastRunText}</span>
           </div>
         </div>
-        <button type="button" class="user-app-open launch-app-btn" data-app-id="${escapeHtml(app.id)}">실행</button>
+        <div class="app-card-actions"><button type="button" class="user-app-open launch-app-btn" data-app-id="${escapeHtml(app.id)}">실행</button><small>Secure Launch</small></div>
       </article>
     `;
   }).join('');
 
-  if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = false;
+  setLaunchButtonsEnabled(true);
 }
 
 async function recordAppLaunch(app) {
@@ -182,8 +207,9 @@ async function loadUserDashboard(user) {
     setText(dashboardReviewed, '-');
     currentApprovalStatus = 'none';
     currentIsAdmin = false;
+    updateUserStats([], 'none');
     renderEmptyApps('로그인이 필요합니다.');
-    if (dashboardOpenFirstAppBtn) dashboardOpenFirstAppBtn.disabled = true;
+    setLaunchButtonsEnabled(false);
     return;
   }
 
@@ -230,11 +256,19 @@ if (dashboardRefreshBtn) {
   dashboardRefreshBtn.addEventListener('click', () => loadUserDashboard(currentUser));
 }
 
+function launchFirstCachedApp() {
+  if (!cachedApps.length) return;
+  launchApp(cachedApps[0]);
+}
+
 if (dashboardOpenFirstAppBtn) {
-  dashboardOpenFirstAppBtn.addEventListener('click', () => {
-    if (!cachedApps.length) return;
-    launchApp(cachedApps[0]);
-  });
+  dashboardOpenFirstAppBtn.addEventListener('click', launchFirstCachedApp);
+}
+if (dashboardQuickLaunchBtn) {
+  dashboardQuickLaunchBtn.addEventListener('click', launchFirstCachedApp);
+}
+if (storeFeaturedLaunchBtn) {
+  storeFeaturedLaunchBtn.addEventListener('click', launchFirstCachedApp);
 }
 
 if (dashboardApps) {
