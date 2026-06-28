@@ -28,3 +28,9 @@
 ## master-app-platform-step09-v1
 - 관리자 SPA 메뉴 분리
 - Admin Center Overview / 승인 관리 / 앱 관리 / 개발 도구 탭 구성
+
+
+## STEP9-v5
+- 즐겨찾기를 localStorage 준비 기능에서 Firebase 사용자별 저장 기능으로 확장했습니다.
+- userFavorites/{uid}/{appId} 와 users/{uid}/favoriteApps/{appId} 경로에 즐겨찾기를 동기화합니다.
+- 관리자 앱 등록 폼에 초보자용 가이드 예시 채우기 미리보기 입력 검증을 추가했습니다.

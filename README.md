@@ -27,3 +27,7 @@ master-app-platform-step09-v4
 
 ## 배포 방식
 GitHub에 ZIP 내용을 덮어쓰기 업로드한 뒤 Netlify 자동 배포로 테스트합니다.
+
+
+## STEP9-v5 사용 방법
+앱을 추가하려면 HTML 파일을 apps 폴더에 넣고 관리자 센터의 앱 관리에서 앱 이름 Entry URL 라우팅 경로를 등록합니다. 내부 앱은 Entry URL을 ./apps/파일명.html 형식으로 입력하고 실행 방식은 플랫폼 내부 실행을 권장합니다.

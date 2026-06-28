@@ -90,16 +90,36 @@ function favoriteStorageKey() {
   return currentUser ? `masterAppFavorites:${currentUser.uid}` : 'masterAppFavorites:guest';
 }
 
-function loadFavorites() {
+async function loadFavorites() {
   try {
+    if (currentUser) {
+      const snap = await get(ref(db, `userFavorites/${currentUser.uid}`));
+      const raw = snap.val() || {};
+      favoriteIds = new Set(Object.keys(raw).filter(appId => raw[appId] === true || raw[appId]?.active === true));
+      localStorage.setItem(favoriteStorageKey(), JSON.stringify([...favoriteIds]));
+      return;
+    }
     favoriteIds = new Set(JSON.parse(localStorage.getItem(favoriteStorageKey()) || '[]'));
   } catch {
-    favoriteIds = new Set();
+    try {
+      favoriteIds = new Set(JSON.parse(localStorage.getItem(favoriteStorageKey()) || '[]'));
+    } catch {
+      favoriteIds = new Set();
+    }
   }
 }
 
 function saveFavorites() {
   localStorage.setItem(favoriteStorageKey(), JSON.stringify([...favoriteIds]));
+}
+
+async function syncFavorite(appId, enabled) {
+  if (!currentUser || !appId) return;
+  const updates = {};
+  updates[`userFavorites/${currentUser.uid}/${appId}`] = enabled ? true : null;
+  updates[`users/${currentUser.uid}/favoriteApps/${appId}`] = enabled ? true : null;
+  updates[`users/${currentUser.uid}/favoriteUpdatedAt`] = new Date().toISOString();
+  await update(ref(db), updates);
 }
 
 function updateFavoriteCount() {
@@ -242,7 +262,7 @@ function renderApps(apps, approvalStatus) {
         </div>
         <div class="app-card-actions app-card-actions-v4">
           <div class="secure-launch-label">SECURE LAUNCH</div>
-          <button type="button" class="favorite-app-btn compact-favorite-btn" data-app-id="${escapeHtml(app.id)}" title="즐겨찾기">${favoriteIds.has(app.id) ? '★' : '☆'}</button>
+          <button type="button" class="favorite-app-btn compact-favorite-btn ${favoriteIds.has(app.id) ? 'is-favorite' : ''}" data-app-id="${escapeHtml(app.id)}" title="즐겨찾기">${favoriteIds.has(app.id) ? '★' : '☆'}</button>
           <button type="button" class="user-app-open launch-app-btn compact-launch-btn" data-app-id="${escapeHtml(app.id)}">실행</button>
         </div>
       </article>
@@ -336,7 +356,7 @@ async function loadUserDashboard(user) {
   setText(dashboardUid, user.uid || '-');
   setText(profileEmailText, user.email || '-');
   if (profileInitial) profileInitial.textContent = (user.email || 'U').charAt(0).toUpperCase();
-  loadFavorites();
+  await loadFavorites();
   loadActivityLogs();
 
   try {
@@ -395,13 +415,20 @@ if (storeFeaturedLaunchBtn) {
 }
 
 if (dashboardApps) {
-  dashboardApps.addEventListener('click', (event) => {
+  dashboardApps.addEventListener('click', async (event) => {
     const favoriteButton = event.target.closest('.favorite-app-btn');
     if (favoriteButton) {
       const id = favoriteButton.dataset.appId;
-      favoriteIds.has(id) ? favoriteIds.delete(id) : favoriteIds.add(id);
+      const willEnable = !favoriteIds.has(id);
+      willEnable ? favoriteIds.add(id) : favoriteIds.delete(id);
       saveFavorites();
       renderApps(cachedApps, currentApprovalStatus);
+      try {
+        await syncFavorite(id, willEnable);
+      } catch (error) {
+        console.warn('즐겨찾기 Firebase 저장 실패:', error);
+        alert('즐겨찾기 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      }
       return;
     }
     const button = event.target.closest('.launch-app-btn');

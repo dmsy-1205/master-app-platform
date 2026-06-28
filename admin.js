@@ -108,6 +108,91 @@ async function processApplication(targetUid, statusAction) {
 export function initAdminSubAppManager() {
     const registerForm = document.getElementById('subapp-register-form');
     const appListContainer = document.getElementById('admin-subapp-list');
+    const fillFinancePresetBtn = document.getElementById('fillFinancePresetBtn');
+    const fillExternalPresetBtn = document.getElementById('fillExternalPresetBtn');
+    const appNameInput = document.getElementById('app-name');
+    const appIdInput = document.getElementById('app-id');
+    const appPathInput = document.getElementById('app-path');
+    const appEntryInput = document.getElementById('app-entry');
+    const appIconInput = document.getElementById('app-icon');
+    const appVersionInput = document.getElementById('app-version');
+    const appLaunchModeInput = document.getElementById('app-launch-mode');
+    const appDescInput = document.getElementById('app-desc');
+    const appRegisterPreview = document.getElementById('appRegisterPreview');
+
+    function slugifyAppName(value = '') {
+        const cleaned = value.toLowerCase().trim()
+            .replace(/[^a-z0-9가-힣\s-]/g, '')
+            .replace(/[가-힣]+/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '');
+        return cleaned || 'my-app';
+    }
+
+    function updateRegisterPreview() {
+        if (!appRegisterPreview) return;
+        const id = appIdInput?.value.trim() || 'app-id';
+        const name = appNameInput?.value.trim() || '앱 이름';
+        const path = appPathInput?.value.trim() || '/app-path';
+        const entry = appEntryInput?.value.trim() || './apps/app.html';
+        const mode = appLaunchModeInput?.value || 'router';
+        appRegisterPreview.innerHTML = `미리보기: <strong>${name}</strong> / ID <code>${id}</code> / 경로 <code>${path}</code> / Entry <code>${entry}</code> / 실행방식 <strong>${mode}</strong>`;
+    }
+
+    function fillPreset(data) {
+        if (appIdInput) appIdInput.value = data.id;
+        if (appNameInput) appNameInput.value = data.name;
+        if (appPathInput) appPathInput.value = data.path;
+        if (appEntryInput) appEntryInput.value = data.entry;
+        if (appIconInput) appIconInput.value = data.icon;
+        if (appVersionInput) appVersionInput.value = data.version;
+        if (appLaunchModeInput) appLaunchModeInput.value = data.launchMode;
+        if (appDescInput) appDescInput.value = data.description;
+        updateRegisterPreview();
+    }
+
+    if (fillFinancePresetBtn && !fillFinancePresetBtn.dataset.bound) {
+        fillFinancePresetBtn.dataset.bound = 'true';
+        fillFinancePresetBtn.addEventListener('click', () => fillPreset({
+            id: 'finance-app',
+            name: '자금 관리 앱',
+            path: '/finance',
+            entry: './apps/finance.html',
+            icon: '💰',
+            version: 'v1.0',
+            launchMode: 'router',
+            description: '수입 지출 손익을 확인하는 자금 관리 서브 앱'
+        }));
+    }
+
+    if (fillExternalPresetBtn && !fillExternalPresetBtn.dataset.bound) {
+        fillExternalPresetBtn.dataset.bound = 'true';
+        fillExternalPresetBtn.addEventListener('click', () => fillPreset({
+            id: 'external-tool',
+            name: '외부 업무 도구',
+            path: '/external-tool',
+            entry: 'https://example.com',
+            icon: '🌐',
+            version: 'v1.0',
+            launchMode: 'newTab',
+            description: '외부 웹 서비스를 새 탭으로 연결하는 앱'
+        }));
+    }
+
+    [appNameInput, appIdInput, appPathInput, appEntryInput, appIconInput, appVersionInput, appLaunchModeInput, appDescInput].forEach(input => {
+        if (!input || input.dataset.previewBound) return;
+        input.dataset.previewBound = 'true';
+        input.addEventListener('input', () => {
+            if (input === appNameInput) {
+                const slug = slugifyAppName(appNameInput.value);
+                if (appIdInput && !appIdInput.value.trim()) appIdInput.value = slug;
+                if (appPathInput && !appPathInput.value.trim()) appPathInput.value = `/${slug}`;
+            }
+            updateRegisterPreview();
+        });
+    });
+    updateRegisterPreview();
 
     if (appListContainer && !appListContainer.dataset.toggleBound) {
         appListContainer.dataset.toggleBound = 'true';
@@ -159,10 +244,24 @@ export function initAdminSubAppManager() {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const appId = document.getElementById('app-id').value.trim();
+            const entryUrl = document.getElementById('app-entry').value.trim();
+            const appPath = document.getElementById('app-path').value.trim();
+            if (!/^[a-z0-9-]+$/.test(appId)) {
+                alert('앱 ID는 영문 소문자 숫자 하이픈만 사용하는 것을 권장합니다. 예: finance-app');
+                return;
+            }
+            if (!appPath.startsWith('/')) {
+                alert('라우팅 경로는 / 로 시작해야 합니다. 예: /finance');
+                return;
+            }
+            if (!entryUrl.startsWith('./') && !entryUrl.startsWith('/') && !/^https?:\/\//i.test(entryUrl)) {
+                alert('Entry URL은 ./apps/app.html 또는 https://주소 형식으로 입력하세요.');
+                return;
+            }
             const appData = {
                 name: document.getElementById('app-name').value.trim(),
-                path: document.getElementById('app-path').value.trim(),
-                entryUrl: document.getElementById('app-entry').value.trim(),
+                path: appPath,
+                entryUrl: entryUrl,
                 icon: document.getElementById('app-icon').value.trim() || '📦',
                 version: document.getElementById('app-version')?.value.trim() || 'v1.0',
                 launchMode: document.getElementById('app-launch-mode')?.value || 'router',
@@ -176,6 +275,7 @@ export function initAdminSubAppManager() {
                 await registerSubApp(appId, appData);
                 alert(`서브 앱 [${appData.name}] 등록 및 라우팅 메타데이터 동기화 완료`);
                 registerForm.reset();
+                updateRegisterPreview();
             } catch (error) {
                 console.error("서브 앱 등록 실패:", error);
                 alert("등록 실패: " + error.message);

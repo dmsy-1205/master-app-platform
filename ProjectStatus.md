@@ -28,3 +28,12 @@ STEP1 ~ STEP9-v4 완료
 
 ## 다음 권장 작업
 STEP10 Firebase Rules 및 권한 보안 강화
+
+
+## 현재 버전
+master-app-platform-step09-v5
+
+## STEP9-v5 완료
+- Firebase 사용자별 즐겨찾기 저장
+- 관리자 앱 등록 UX 개선
+- 초보자용 등록 가이드 추가

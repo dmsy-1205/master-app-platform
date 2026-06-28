@@ -36,3 +36,9 @@
 - admin.js: 관리자 라우팅 테이블 삭제 이벤트 추가
 - dashboard.js: App Store 카드 액션 영역 정리
 - style.css: 컴팩트 즐겨찾기 실행 버튼 스타일 추가
+
+
+## STEP9-v5 데이터 흐름
+- userFavorites/{uid}/{appId}: 사용자별 즐겨찾기 상태
+- users/{uid}/favoriteApps/{appId}: 사용자 프로필 하위 즐겨찾기 백업 경로
+- apps/{appId}: 앱 메타데이터 등록 유지
