@@ -1,3 +1,15 @@
+<script>
+(function(){
+  try {
+    const hasToken = sessionStorage.getItem('masterLaunchToken:finance-app') || new URLSearchParams(location.search).get('masterLaunchToken');
+    const isEmbeddedInPlatform = Boolean(document.getElementById('main-runtime-view')) || document.body.closest('#main-runtime-view');
+    if (!hasToken && !isEmbeddedInPlatform) {
+      document.body.innerHTML = '<div style="font-family:sans-serif;padding:32px;max-width:760px;margin:auto"><h2>🔒 MasterOS Secure Launch Required</h2><p>이 앱은 Master App Platform에서 Launch Token을 발급받은 뒤 실행해야 합니다.</p><p>Dashboard 또는 App Store의 실행 버튼을 사용하세요.</p></div>';
+      return;
+    }
+  } catch(e) {}
+})();
+</script>
 <div class="p-4 bg-white rounded shadow-sm border-start border-4 border-primary">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-dark m-0" style="border: none; padding: 0;">💰 자금 관리 서브 애플리케이션 (Finance App)</h2>

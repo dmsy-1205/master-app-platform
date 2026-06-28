@@ -1,17 +1,21 @@
-# DevelopmentReport STEP9-v7
+# DevelopmentReport STEP10-v1
 
 ## 작업 목표
-플랫폼 운영에 필요한 회원관리 기능을 추가하고 아가 생활관리 앱 배포를 준비한다.
+STEP9-v8에서 정상 동작한 Platform Launcher 위에 App Security Platform을 추가한다.
 
 ## 구현 내용
-관리자는 회원 목록을 확인하고 승인 정지 퇴출 관리자 권한 부여 해제를 수행할 수 있다. 앱 관리 화면에는 아가 생활관리 앱 프리셋과 초보자용 배포 안내를 추가했다.
+기존 프로젝트 구조를 유지하면서 앱 메타데이터를 Manifest 중심으로 확장했다. 관리자 앱 등록 폼은 Owner Category 권한 모드 권한 태그 Official 공개 여부 업데이트 노트를 입력할 수 있도록 확장했다.
 
-## 검수
-기존 로그인 승인 앱 등록 실행 즐겨찾기 관리자 SPA 구조를 유지했다.
+Dashboard 실행 흐름은 Permission Engine 검사를 통과한 경우에만 Launch Token을 생성하고 실행 로그를 저장한다. Runtime 라우터는 Token이 없는 직접 접근을 차단해 사용자가 App Store 또는 Dashboard 실행 버튼을 통해서만 내부 앱을 열도록 했다.
+
+생활관리 앱은 첫 번째 Official App으로 지정할 수 있도록 프리셋을 수정했고 Platform Verified Badge를 App Store와 관리자 목록에 표시한다.
+
+## 검수 포인트
+- 기존 로그인 회원가입 승인 관리자 권한 유지
+- 기존 앱 등록 수정 삭제 활성 비활성 기능 유지
+- 기존 Dashboard App Store 즐겨찾기 최근 실행 대표 앱 실행 흐름 유지
+- 기존 `appRunLogs` 유지하면서 `executionLogs` 추가
+- 외부 앱 newTab sameTab router 실행 방식 유지
 
 ## 주의
-브라우저 클라이언트만으로 Firebase Authentication 계정 자체 삭제는 불가능하므로 퇴출은 플랫폼 접근 상태 차단 방식으로 처리한다.
-
-
-## STEP9-v8 개발 보고서
-대표 앱 실행과 즐겨찾기 실행 버튼이 실제 앱 실행 엔진으로 연결되도록 수정했다. 내부 라우터 실행 시 Runtime 화면으로 자동 전환되며 새 탭 실행은 팝업 차단을 줄이기 위해 사용자 클릭 시점에 탭을 먼저 생성한다. 생활관리 앱 보안 진입점은 테스트 단계에서 외부 Netlify 앱을 새 탭으로 실행한다.
+이번 Token은 클라이언트에서 발급하고 Firebase에 기록하는 1차 구조입니다. URL 직접 접근 완전 차단과 데이터 접근 완전 보호는 Firebase Rules 또는 Cloud Functions 검증이 필요합니다.

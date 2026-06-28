@@ -1,19 +1,25 @@
 # ProjectRoadmap
 
 ## 완료
-STEP1~STEP8 완료
-STEP9-v1 관리자 SPA
-STEP9-v2 사용자 UX
-STEP9-v3 알림 검색 활동로그
-STEP9-v4 앱 카드 정리 앱 삭제
-STEP9-v5 즐겨찾기 앱 등록 개선
-STEP9-v7 회원관리 생활관리 앱 배포 준비
+- STEP1~STEP8 기본 플랫폼 구축
+- STEP9 관리자 SPA 사용자 UX 알림 검색 활동로그 즐겨찾기 Platform Launcher
+- STEP10-v1 App Security Platform 1차 구축
 
-## 다음
-STEP9-v7 회원별 앱 접근 권한
-STEP10 Firebase Rules 보안 강화
-STEP11 생활관리 앱 실제 배포 연결
+## STEP10-v1 완료 항목
+- App Manifest
+- Launch Token
+- Permission Engine
+- Official App Badge
+- Version Manager 기초 구조
+- Execution Log
+- Dashboard 연동
 
+## 다음 단계 STEP10-v2 후보
+- Firebase Rules 설계 문서와 실제 rules 초안 작성
+- `launchTokens` 만료 검증 강화
+- 사용자별 앱 권한 관리 UI 추가
+- Official App 업데이트 알림 UI 추가
+- 생활관리 앱의 외부 Netlify 의존도 제거 및 내부 보호 실행 전환
 
-## STEP9-v8 완료
-Platform Launcher 실행 엔진 보강 완료. 다음 단계는 STEP10 보안 게이트웨이와 Firebase Rules 기반 생활관리 앱 보호.
+## 장기 목표
+MasterOS를 단순 실행기가 아니라 웹앱 등록 권한 검증 보안 실행 로그 버전 업데이트 관리를 갖춘 App Platform으로 확장한다.

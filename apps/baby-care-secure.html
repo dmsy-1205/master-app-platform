@@ -1,3 +1,15 @@
+<script>
+(function(){
+  try {
+    const hasToken = sessionStorage.getItem('masterLaunchToken:baby-care-secure') || new URLSearchParams(location.search).get('masterLaunchToken');
+    const isEmbeddedInPlatform = Boolean(document.getElementById('main-runtime-view')) || document.body.closest('#main-runtime-view');
+    if (!hasToken && !isEmbeddedInPlatform) {
+      document.body.innerHTML = '<div style="font-family:sans-serif;padding:32px;max-width:760px;margin:auto"><h2>🔒 MasterOS Secure Launch Required</h2><p>이 앱은 Master App Platform에서 Launch Token을 발급받은 뒤 실행해야 합니다.</p><p>Dashboard 또는 App Store의 실행 버튼을 사용하세요.</p></div>';
+      return;
+    }
+  } catch(e) {}
+})();
+</script>
 <div class="baby-secure-page">
   <p class="eyebrow">SECURE BABY CARE LAUNCH</p>
   <h2>💗 아가 생활관리 앱 보안 진입점</h2>

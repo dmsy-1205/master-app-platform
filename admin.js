@@ -255,6 +255,13 @@ export function initAdminSubAppManager() {
     const appVersionInput = document.getElementById('app-version');
     const appLaunchModeInput = document.getElementById('app-launch-mode');
     const appDescInput = document.getElementById('app-desc');
+    const appOwnerInput = document.getElementById('app-owner');
+    const appCategoryInput = document.getElementById('app-category');
+    const appPermissionModeInput = document.getElementById('app-permission-mode');
+    const appPermissionsInput = document.getElementById('app-permissions');
+    const appOfficialInput = document.getElementById('app-official');
+    const appPublicVisibleInput = document.getElementById('app-public-visible');
+    const appUpdateNoteInput = document.getElementById('app-update-note');
     const appRegisterPreview = document.getElementById('appRegisterPreview');
 
     function slugifyAppName(value = '') {
@@ -274,7 +281,9 @@ export function initAdminSubAppManager() {
         const path = appPathInput?.value.trim() || '/app-path';
         const entry = appEntryInput?.value.trim() || './apps/app.html';
         const mode = appLaunchModeInput?.value || 'router';
-        appRegisterPreview.innerHTML = `미리보기: <strong>${name}</strong> / ID <code>${id}</code> / 경로 <code>${path}</code> / Entry <code>${entry}</code> / 실행방식 <strong>${mode}</strong>`;
+        const perm = appPermissionModeInput?.value || 'approved';
+        const official = appOfficialInput?.value === 'true' ? 'Verified' : 'General';
+        appRegisterPreview.innerHTML = `미리보기: <strong>${name}</strong> / ID <code>${id}</code> / 경로 <code>${path}</code> / Entry <code>${entry}</code> / 실행방식 <strong>${mode}</strong> / 권한 <strong>${perm}</strong> / ${official}`;
     }
 
     function fillPreset(data) {
@@ -286,6 +295,13 @@ export function initAdminSubAppManager() {
         if (appVersionInput) appVersionInput.value = data.version;
         if (appLaunchModeInput) appLaunchModeInput.value = data.launchMode;
         if (appDescInput) appDescInput.value = data.description;
+        if (appOwnerInput) appOwnerInput.value = data.owner || 'MasterOS';
+        if (appCategoryInput) appCategoryInput.value = data.category || 'General';
+        if (appPermissionModeInput) appPermissionModeInput.value = data.permissionMode || 'approved';
+        if (appPermissionsInput) appPermissionsInput.value = data.permissions || 'approved-user';
+        if (appOfficialInput) appOfficialInput.value = data.official ? 'true' : 'false';
+        if (appPublicVisibleInput) appPublicVisibleInput.value = data.publicVisible === false ? 'false' : 'true';
+        if (appUpdateNoteInput) appUpdateNoteInput.value = data.updateNote || '';
         updateRegisterPreview();
     }
 
@@ -300,7 +316,14 @@ export function initAdminSubAppManager() {
             icon: '💗',
             version: 'v1.0',
             launchMode: 'router',
-            description: '승인 사용자만 접근하도록 플랫폼에서 보호하는 아가 생활관리 앱 진입점'
+            description: '승인 사용자만 접근하도록 플랫폼에서 보호하는 아가 생활관리 앱 진입점',
+            owner: 'MasterOS',
+            category: 'Official',
+            permissionMode: 'official',
+            permissions: 'approved-user,official-app,baby-care',
+            official: true,
+            publicVisible: true,
+            updateNote: 'STEP10 Official App 보안 매니페스트 적용'
         }));
     }
 
@@ -314,7 +337,14 @@ export function initAdminSubAppManager() {
             icon: '💰',
             version: 'v1.0',
             launchMode: 'router',
-            description: '수입 지출 손익을 확인하는 자금 관리 서브 앱'
+            description: '수입 지출 손익을 확인하는 자금 관리 서브 앱',
+            owner: 'MasterOS',
+            category: 'Finance',
+            permissionMode: 'approved',
+            permissions: 'approved-user,finance',
+            official: false,
+            publicVisible: true,
+            updateNote: 'STEP10 Manifest 대응'
         }));
     }
 
@@ -328,11 +358,18 @@ export function initAdminSubAppManager() {
             icon: '🌐',
             version: 'v1.0',
             launchMode: 'newTab',
-            description: '외부 웹 서비스를 새 탭으로 연결하는 앱'
+            description: '외부 웹 서비스를 새 탭으로 연결하는 앱',
+            owner: 'External',
+            category: 'Tool',
+            permissionMode: 'approved',
+            permissions: 'approved-user,external',
+            official: false,
+            publicVisible: true,
+            updateNote: '외부 연결 앱 샘플'
         }));
     }
 
-    [appNameInput, appIdInput, appPathInput, appEntryInput, appIconInput, appVersionInput, appLaunchModeInput, appDescInput].forEach(input => {
+    [appNameInput, appIdInput, appPathInput, appEntryInput, appIconInput, appVersionInput, appLaunchModeInput, appDescInput, appOwnerInput, appCategoryInput, appPermissionModeInput, appPermissionsInput, appOfficialInput, appPublicVisibleInput, appUpdateNoteInput].forEach(input => {
         if (!input || input.dataset.previewBound) return;
         input.dataset.previewBound = 'true';
         input.addEventListener('input', () => {
@@ -418,6 +455,13 @@ export function initAdminSubAppManager() {
                 version: document.getElementById('app-version')?.value.trim() || 'v1.0',
                 launchMode: document.getElementById('app-launch-mode')?.value || 'router',
                 description: document.getElementById('app-desc').value.trim(),
+                owner: document.getElementById('app-owner')?.value.trim() || 'MasterOS',
+                category: document.getElementById('app-category')?.value.trim() || 'General',
+                permissionMode: document.getElementById('app-permission-mode')?.value || 'approved',
+                permissions: (document.getElementById('app-permissions')?.value || 'approved-user').split(',').map(v => v.trim()).filter(Boolean),
+                official: document.getElementById('app-official')?.value === 'true',
+                publicVisible: document.getElementById('app-public-visible')?.value !== 'false',
+                updateNote: document.getElementById('app-update-note')?.value.trim() || '',
                 runCount: 0,
                 lastRunAt: '',
                 isActive: true
@@ -451,7 +495,8 @@ export function initAdminSubAppManager() {
             const isActive = normalizeActiveStatus(app.isActive);
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${app.icon || '📦'} <strong>${app.name || '이름 없음'}</strong> (${appId})</td>
+                <td>${app.icon || '📦'} <strong>${app.name || '이름 없음'}</strong> (${appId})<br>${app.official === true ? '<span class="verified-badge">Platform Verified</span>' : '<span class="verified-badge muted">General App</span>'}</td>
+                <td><small>Owner ${app.owner || 'MasterOS'}</small><br><small>Category ${app.category || 'General'}</small><br><small>Permission ${app.permissionMode || 'approved'}</small></td>
                 <td><code>${app.path || '-'}</code></td>
                 <td><small>${app.entryUrl || '-'}</small><br><span class="text-muted">${app.version || 'v1.0'} · ${app.launchMode || 'router'}</span></td>
                 <td>

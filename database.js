@@ -54,6 +54,34 @@ export async function registerSubApp(appId, appData) {
     return set(appRef, {
         ...existingData,
         ...appData,
+        manifest: {
+            appId,
+            version: appData.version || existingData.version || 'v1.0',
+            owner: appData.owner || existingData.owner || 'MasterOS',
+            category: appData.category || existingData.category || 'General',
+            icon: appData.icon || existingData.icon || '📦',
+            entry: appData.entryUrl || existingData.entryUrl || appData.entry || '',
+            launchType: appData.launchMode || existingData.launchMode || 'router',
+            permissions: appData.permissions || existingData.permissions || ['approved-user'],
+            publicVisible: appData.publicVisible !== false,
+            official: appData.official === true || existingData.official === true
+        },
+        owner: appData.owner || existingData.owner || 'MasterOS',
+        category: appData.category || existingData.category || 'General',
+        permissionMode: appData.permissionMode || existingData.permissionMode || 'approved',
+        permissions: appData.permissions || existingData.permissions || ['approved-user'],
+        publicVisible: appData.publicVisible !== false,
+        official: appData.official === true || existingData.official === true || false,
+        updateNote: appData.updateNote || existingData.updateNote || '',
+        versions: {
+            ...(existingData.versions || {}),
+            [appData.version || existingData.version || 'v1.0']: {
+                version: appData.version || existingData.version || 'v1.0',
+                entryUrl: appData.entryUrl || existingData.entryUrl || '',
+                updateNote: appData.updateNote || existingData.updateNote || '',
+                releasedAt: existingData.versions?.[appData.version || existingData.version || 'v1.0']?.releasedAt || new Date().toISOString()
+            }
+        },
         runCount: Number(existingData.runCount || appData.runCount || 0),
         lastRunAt: existingData.lastRunAt || appData.lastRunAt || '',
         createdAt: existingData.createdAt || new Date().toISOString(),

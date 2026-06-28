@@ -76,10 +76,22 @@ class MasterRouter {
                 return;
             }
 
+            const token = sessionStorage.getItem(`masterLaunchToken:${targetApp.id}`);
+            if (!token) {
+                this.viewContainer.innerHTML = `
+                    <div class="secure-runtime-block">
+                        <h3>🔒 Secure Runtime 대기</h3>
+                        <p><strong>${targetApp.name}</strong> 앱은 App Store 또는 Dashboard의 실행 버튼으로만 열 수 있습니다.</p>
+                        <p>Launch Token이 없기 때문에 직접 라우팅 접근을 차단했습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+
             this.viewContainer.innerHTML = `
                 <div class="app-loading-fallback d-flex align-items-center gap-2">
                     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                    <span>Sub Application [${targetApp.name}] 로딩 중...</span>
+                    <span>Sub Application [${targetApp.name}] 보안 토큰 검증 후 로딩 중...</span>
                 </div>
             `;
             try {

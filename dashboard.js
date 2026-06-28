@@ -2,6 +2,7 @@ import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { ref, get, onValue, off, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { normalizeActiveStatus } from './database.js';
+import { buildAppManifest, checkAppPermission, createLaunchToken, recordSecureExecution } from './security.js';
 
 const dashboardLoginState = document.getElementById('dashboardLoginState');
 const dashboardEmail = document.getElementById('dashboardEmail');
@@ -283,6 +284,8 @@ function renderApps(apps, approvalStatus) {
           <p>${escapeHtml(app.description || '앱 설명이 등록되지 않았습니다.')}</p>
           <div class="user-app-meta">
             <span>${escapeHtml(app.version || 'version 미등록')}</span>
+            <span>${app.official === true ? '✅ Platform Verified' : 'General App'}</span>
+            <span>${escapeHtml(app.category || 'General')}</span>
             <span>${escapeHtml(app.path || '-')}</span>
             <span>${launchMode === 'router' ? '플랫폼 내부 실행' : launchMode === 'sameTab' ? '현재 창 이동' : '새 탭 실행'}</span>
           </div>
@@ -292,7 +295,7 @@ function renderApps(apps, approvalStatus) {
           </div>
         </div>
         <div class="app-card-actions app-card-actions-v4">
-          <div class="secure-launch-label">SECURE LAUNCH</div>
+          <div class="secure-launch-label">SECURE LAUNCH · TOKEN</div>
           <button type="button" class="favorite-app-btn compact-favorite-btn ${favoriteIds.has(app.id) ? 'is-favorite' : ''}" data-app-id="${escapeHtml(app.id)}" title="즐겨찾기">${favoriteIds.has(app.id) ? '★' : '☆'}</button>
           <button type="button" class="user-app-open launch-app-btn compact-launch-btn" data-app-id="${escapeHtml(app.id)}">실행</button>
         </div>
@@ -303,29 +306,8 @@ function renderApps(apps, approvalStatus) {
   setLaunchButtonsEnabled(true);
 }
 
-async function recordAppLaunch(app) {
-  if (!currentUser || !app?.id) return;
-
-  const launchedAt = new Date().toISOString();
-  const currentRunCount = Number(app.runCount || 0);
-  const updates = {};
-  updates[`apps/${app.id}/runCount`] = currentRunCount + 1;
-  updates[`apps/${app.id}/lastRunAt`] = launchedAt;
-  updates[`apps/${app.id}/lastRunBy`] = currentUser.uid;
-  updates[`users/${currentUser.uid}/lastAppLaunch`] = {
-    appId: app.id,
-    appName: app.name || '',
-    launchedAt
-  };
-
-  await update(ref(db), updates);
-  await push(ref(db, `appRunLogs/${currentUser.uid}/${app.id}`), {
-    appId: app.id,
-    appName: app.name || '',
-    entryUrl: app.entryUrl || '',
-    launchMode: resolveLaunchMode(app),
-    launchedAt
-  });
+async function recordAppLaunch(app, tokenInfo) {
+  await recordSecureExecution(app, tokenInfo);
   loadActivityLogs();
 }
 
@@ -351,16 +333,31 @@ async function launchApp(app) {
     openedTab = window.open('about:blank', '_blank');
   }
 
+  let tokenInfo = null;
   try {
-    await recordAppLaunch(app);
+    const permission = await checkAppPermission(app);
+    if (!permission.allowed) {
+      alert(permission.reason);
+      if (openedTab) openedTab.close();
+      return;
+    }
+    tokenInfo = await createLaunchToken(app, launchMode);
+    await recordAppLaunch(app, tokenInfo);
   } catch (error) {
-    console.warn('앱 실행 기록 저장 실패:', error);
+    console.warn('앱 보안 실행 준비 실패:', error);
+    alert('앱 실행 보안 검증 실패: ' + error.message);
+    if (openedTab) openedTab.close();
+    return;
   }
+
+  const launchUrl = app.entryUrl && tokenInfo?.token
+    ? `${app.entryUrl}${app.entryUrl.includes('?') ? '&' : '?'}masterLaunchToken=${encodeURIComponent(tokenInfo.token)}&appId=${encodeURIComponent(app.id)}`
+    : app.entryUrl;
 
   if (launchMode === 'newTab') {
     if (openedTab) {
       openedTab.opener = null;
-      openedTab.location.href = app.entryUrl;
+      openedTab.location.href = launchUrl;
     } else {
       alert('팝업이 차단되었습니다. 브라우저에서 팝업 허용 후 다시 실행하세요.');
     }
@@ -368,11 +365,12 @@ async function launchApp(app) {
   }
 
   if (launchMode === 'sameTab') {
-    window.location.href = app.entryUrl;
+    window.location.href = launchUrl;
     return;
   }
 
   moveToRuntime();
+  window.MasterOSLastManifest = buildAppManifest(app.id, app);
   const targetHash = app.path || '/';
   if (window.location.hash === `#${targetHash}` && window.AppRouter?.resolveRoute) {
     window.AppRouter.resolveRoute(window.location.hash);
@@ -437,7 +435,7 @@ async function loadUserDashboard(user) {
       const appsData = snapshot.val() || {};
       const activeApps = Object.keys(appsData)
         .map(appId => ({ id: appId, ...appsData[appId] }))
-        .filter(app => normalizeActiveStatus(app.isActive))
+        .filter(app => normalizeActiveStatus(app.isActive) && app.publicVisible !== false)
         .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
       renderApps(activeApps, approvalStatus);
     });

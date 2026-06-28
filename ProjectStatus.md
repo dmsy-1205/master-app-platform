@@ -1,6 +1,6 @@
 # ProjectStatus
 
-버전: master-app-platform-step09-v7
+현재 버전: master-app-platform-step10-v1
 
 ## 완료
 - STEP1 회원가입 로그인 자동 로그인
@@ -11,23 +11,20 @@
 - STEP6 서브 앱 등록 라우팅
 - STEP7 사용자 Dashboard
 - STEP8 App Store형 UI
-- STEP9-v1 관리자 SPA
-- STEP9-v2 사용자 Dashboard UX
-- STEP9-v3 알림 검색 프로필 활동로그
-- STEP9-v4 앱 카드 버튼 정리 앱 삭제
-- STEP9-v5 즐겨찾기 저장 초보자 앱 등록
-- STEP9-v7 회원관리 생활관리 앱 배포 준비
+- STEP9 관리자 SPA 사용자 UX 알림 검색 즐겨찾기 최근 실행 대표 앱 실행
+- STEP9-v8 Platform Launcher 완료
+- STEP10-v1 App Security Platform 1차 완료
+
+## STEP10-v1 현재 상태
+- App Manifest 필드가 apps 메타데이터에 저장됩니다.
+- 앱 실행 전 Permission Engine이 로그인 승인 관리자 Official 권한을 확인합니다.
+- 실행 시 Launch Token을 생성하고 sessionStorage 및 Firebase `launchTokens`에 기록합니다.
+- Runtime 라우터는 Token 없는 직접 hash 접근을 차단합니다.
+- 실행 기록은 기존 사용자별 로그와 신규 앱별 Execution Log에 함께 저장됩니다.
+- 생활관리 앱 프리셋은 Official App Platform Verified 상태로 등록됩니다.
 
 ## 다음 후보
-- 생활관리 앱 실제 파일 연결
-- 회원별 앱 접근 권한
-- Firebase Rules 보안 강화
-
-
-현재 버전: master-app-platform-step09-v7
-- 즐겨찾기 Dashboard 연동 완료
-- 아가 생활관리 앱 보안 배포 준비 추가
-
-
-## 현재 상태 STEP9-v8
-Platform Launcher 1차 적용 완료. 대표 앱 실행 즐겨찾기 실행 App Store 실행이 동일한 실행 엔진을 사용한다. 생활관리 앱은 보안 진입점을 통해 테스트 실행 가능하다.
+- Firebase Rules로 `launchTokens`와 앱 데이터 접근 검증 강화
+- Cloud Functions 기반 서버 토큰 검증
+- 사용자별 앱 접근 권한 UI 세분화
+- 생활관리 앱 소스의 Platform 내부 완전 이전
