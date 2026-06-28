@@ -5,7 +5,8 @@ import {
   signOut,
   onAuthStateChanged,
   setPersistence,
-  browserSessionPersistence
+  browserSessionPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -15,6 +16,7 @@ const signupBtn = document.getElementById('signupBtn');
 const loginEmail = document.getElementById('loginEmail');
 const loginPassword = document.getElementById('loginPassword');
 const loginBtn = document.getElementById('loginBtn');
+const rememberLogin = document.getElementById('rememberLogin');
 const userStatus = document.getElementById('userStatus');
 const logoutBtn = document.getElementById('logoutBtn');
 const adminDashboardSection = document.getElementById('adminDashboardSection');
@@ -23,9 +25,9 @@ const publicSections = document.querySelectorAll('[data-auth="public"]');
 const privateSections = document.querySelectorAll('[data-auth="private"]');
 const adminSections = document.querySelectorAll('[data-auth="admin"]');
 
-async function configureSessionPersistence() {
+async function configureSessionPersistence(useLocal = false) {
   try {
-    await setPersistence(auth, browserSessionPersistence);
+    await setPersistence(auth, useLocal ? browserLocalPersistence : browserSessionPersistence);
   } catch (error) {
     console.warn('세션 유지 방식 설정 실패:', error);
   }
@@ -135,7 +137,7 @@ if (loginBtn) {
       return alert('로그인할 이메일과 비밀번호를 채워주세요.');
     }
     try {
-      await configureSessionPersistence();
+      await configureSessionPersistence(Boolean(rememberLogin?.checked));
       await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
       alert('로그인 성공!');
     } catch (error) {
@@ -154,6 +156,15 @@ if (logoutBtn) {
     }
   });
 }
+
+document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const input = document.getElementById(button.dataset.togglePassword);
+    if (!input) return;
+    input.type = input.type === 'password' ? 'text' : 'password';
+    button.textContent = input.type === 'password' ? '👁' : '🙈';
+  });
+});
 
 configureSessionPersistence().finally(() => {
   onAuthStateChanged(auth, (user) => {

@@ -373,7 +373,7 @@ App Store는 앱 발견과 신청 공간이다
 
 ---
 
-# STEP10-v7 Mobile Responsive UI
+# STEP10-v8 Mobile Responsive UI
 
 모바일 사용을 위해 전체 화면 반응형 구조를 보강했습니다.
 
@@ -387,3 +387,24 @@ App Store는 앱 발견과 신청 공간이다
 * 관리자 승인 목록 모바일 가독성 개선
 
 다음 단계는 실제 스마트폰 테스트 결과를 기반으로 하단 탭 네비게이션과 알림 기능을 검토합니다.
+
+
+# STEP10-v8 Login Landing UI Renewal
+
+## 작업 원칙
+
+새 프로젝트를 만들지 않고 기존 STEP10-v7 구조를 유지한 상태에서 공개 로그인 화면만 개선했습니다.
+
+## 변경 범위
+
+- index.html 공개 인증 섹션
+- style.css 로그인 랜딩 전용 스타일
+- auth.js 비밀번호 보기 토글 로그인 유지 옵션
+- README ProjectStatus CHANGELOG DevelopmentReport ProjectRoadmap 문서 갱신
+
+## 유지 범위
+
+- Firebase 인증
+- 관리자 권한 유지
+- Dashboard App Store My Runtime Request Board Admin Center
+- 승인 신청 실행 로그 요청 게시판 흐름

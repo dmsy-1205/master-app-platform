@@ -3,53 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 10 v7</title>
+  <title>Master App Platform - STEP 10 v8</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 </head>
 <body>
   <main class="platform-root">
-    <section class="auth-landing" data-auth="public">
-      <div class="auth-brand-panel">
-        <div class="brand-badge">🔐 Master App Platform</div>
-        <h1>모든 앱을 하나의 플랫폼에서</h1>
-        <p>회원 승인 권한 관리 앱 등록 실행 기록까지 한 곳에서 관리하는 통합 SaaS 플랫폼입니다.</p>
-        <div class="feature-stack">
-          <div><span>⚡</span><strong>빠른 앱 실행</strong><small>등록된 서브 앱을 카드에서 바로 실행</small></div>
-          <div><span>🛡️</span><strong>권한 기반 관리</strong><small>사용자 관리자 화면 자동 분리</small></div>
-          <div><span>📊</span><strong>실행 로그 추적</strong><small>실행 횟수와 최근 실행 시간 저장</small></div>
+    <section class="auth-landing login-renewal" data-auth="public">
+      <nav class="landing-nav" aria-label="서비스 안내 메뉴">
+        <div class="landing-logo"><span class="logo-mark">M</span><strong>Master App Platform</strong></div>
+        <div class="landing-links">
+          <a href="#">소개</a>
+          <a href="#">기능</a>
+          <a href="#">요금제</a>
+          <a href="#">고객지원</a>
+          <button type="button" class="theme-ghost" aria-label="화면 테마">☼</button>
         </div>
-        <div class="landing-trust-row">
-          <div><strong>STEP 8</strong><span>Platform Core</span></div>
-          <div><strong>Admin</strong><span>Role Center</span></div>
-          <div><strong>Store</strong><span>App Runtime</span></div>
+      </nav>
+
+      <div class="auth-hero-grid">
+        <div class="auth-brand-panel landing-hero-panel">
+          <div class="brand-badge"><span>⭐</span> 통합 앱 관리의 새로운 기준</div>
+          <h1>모든 앱을<br><span>하나의 플랫폼에서</span></h1>
+          <p>회원 승인부터 권한 관리 실행 로그까지<br>한 곳에서 관리하는 통합 SaaS 플랫폼입니다.</p>
+
+          <div class="feature-stack landing-feature-cards">
+            <div><span>⚡</span><strong>빠른 앱 실행</strong><small>등록된 모든 서비스를 원클릭으로 바로 실행</small></div>
+            <div><span>🛡️</span><strong>권한 기반 관리</strong><small>사용자 권한에 따라 안전하게 관리</small></div>
+            <div><span>📊</span><strong>실행 로그 추적</strong><small>실행 기록과 로그를 실시간으로 확인</small></div>
+          </div>
+
+          <div class="landing-trust-row landing-steps">
+            <div><strong>01</strong><span>플랫폼 코어</span><em>안정적인 시스템 운영</em></div>
+            <div><strong>02</strong><span>관리자 센터</span><em>역할 기반 관리 시스템</em></div>
+            <div><strong>03</strong><span>앱 스토어</span><em>모든 앱을 한 곳에서</em></div>
+          </div>
+
+          <div class="security-note"><span>🔒</span><p><strong>보안이 검증된 안전한 플랫폼</strong><br>최신 보안 기술로 데이터를 안전하게 보호합니다.</p></div>
+          <div class="brand-visual orbital-visual">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="cube">◆</div>
+            <span class="orb orb-a"></span><span class="orb orb-b"></span><span class="orb orb-c"></span>
+          </div>
         </div>
-        <div class="brand-visual">
-          <div class="cube">MAP</div>
-          <span class="orb orb-a"></span><span class="orb orb-b"></span><span class="orb orb-c"></span>
+
+        <div class="auth-card-panel landing-form-panel">
+          <div class="auth-card login-card premium-auth-card">
+            <div class="card-icon">👤</div>
+            <h2>로그인</h2>
+            <p>프리미엄 앱 워크스페이스로 접속합니다.</p>
+            <label>이메일</label>
+            <input id="loginEmail" type="email" placeholder="이메일을 입력하세요">
+            <label>비밀번호</label>
+            <div class="password-wrap"><input id="loginPassword" type="password" placeholder="비밀번호를 입력하세요"><button type="button" class="password-toggle" data-toggle-password="loginPassword" aria-label="비밀번호 보기">👁</button></div>
+            <div class="login-options"><label class="remember-row"><input id="rememberLogin" type="checkbox"> 로그인 상태 유지</label><a href="#" class="forgot-link">비밀번호 찾기</a></div>
+            <button id="loginBtn" class="primary-action">로그인</button>
+          </div>
+          <div class="auth-card signup-card premium-auth-card">
+            <div class="card-icon">👥</div>
+            <h2>회원가입</h2>
+            <p>초대받은 사용자만 계정을 만들 수 있습니다.</p>
+            <label>이메일</label>
+            <input id="signupEmail" type="email" placeholder="이메일을 입력하세요">
+            <label>비밀번호</label>
+            <div class="password-wrap"><input id="signupPassword" type="password" placeholder="비밀번호를 입력하세요"><button type="button" class="password-toggle" data-toggle-password="signupPassword" aria-label="비밀번호 보기">👁</button></div>
+            <button id="signupBtn" class="secondary-action">회원가입</button>
+          </div>
         </div>
       </div>
-      <div class="auth-card-panel">
-        <div class="auth-card login-card">
-          <h2>로그인</h2>
-          <p>프리미엄 앱 워크스페이스로 접속합니다.</p>
-          <label>이메일</label>
-          <input id="loginEmail" type="email" placeholder="이메일을 입력하세요">
-          <label>비밀번호</label>
-          <input id="loginPassword" type="password" placeholder="비밀번호를 입력하세요">
-          <button id="loginBtn" class="primary-action">로그인</button>
-        </div>
-        <div class="auth-card signup-card">
-          <h2>회원가입</h2>
-          <p>초대받은 사용자는 계정을 만들고 승인 신청을 진행하세요.</p>
-          <label>이메일</label>
-          <input id="signupEmail" type="email" placeholder="이메일을 입력하세요">
-          <label>비밀번호</label>
-          <input id="signupPassword" type="password" placeholder="비밀번호를 입력하세요">
-          <button id="signupBtn" class="secondary-action">회원가입</button>
-        </div>
-      </div>
+      <div class="scroll-cue">⌄ 스크롤하여 더 보기</div>
     </section>
 
     <section class="workspace-shell" data-auth="private" style="display:none;">
@@ -67,7 +91,7 @@
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">STEP 10 v7</p>
+            <p class="eyebrow">STEP 10 v8</p>
             <h1>Master App Platform</h1>
             <p id="userStatus">확인 중...</p>
           </div>
@@ -76,7 +100,7 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">Premium Control Workspace · STEP 10 v7</p>
+            <p class="eyebrow">Premium Control Workspace · STEP 10 v8</p>
             <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
             <p>사용자 경험과 관리자 회원관리 Platform Launcher 실행 엔진과 생활관리 앱 테스트 실행을 더했습니다.</p>
           </div>
@@ -130,7 +154,7 @@
               <div class="widget-icon">🔔</div>
               <h3>공지 및 업데이트</h3>
               <p>새 앱 등록과 플랫폼 변경사항을 이곳에서 확인합니다.</p>
-              <span class="widget-badge live">STEP10-v7</span>
+              <span class="widget-badge live">STEP10-v8</span>
             </article>
           </div>
         </section>
