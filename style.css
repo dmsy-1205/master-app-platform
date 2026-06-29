@@ -2294,3 +2294,32 @@ pre {
     width: 100%;
   }
 }
+
+/* STEP11 Ultimate v1.1 - Auth Gate Center Alignment Fix */
+.login-gate.auth-landing,
+.auth-landing.login-gate {
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 1fr !important;
+  justify-items: center !important;
+  align-items: center !important;
+  place-items: center !important;
+}
+.login-gate .gate-card {
+  grid-column: 1 / -1 !important;
+  justify-self: center !important;
+  align-self: center !important;
+}
+.login-gate .wave-layer,
+.login-gate .gate-brand,
+.login-gate .gate-footer {
+  grid-column: 1 / -1 !important;
+}
+@media (max-width: 720px) {
+  .login-gate.auth-landing,
+  .auth-landing.login-gate {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    align-items: start !important;
+    place-items: start center !important;
+  }
+}

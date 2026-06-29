@@ -143,3 +143,34 @@ master-app-platform-step11-ultimate-v1
 - 기존 App Store My Runtime Launcher 유지
 - Firebase 기존 경로 유지
 - 새 프로젝트 생성 없음
+
+
+## 현재 상태 업데이트 STEP11 Ultimate v1.1
+
+- 로그인 대문 PC 중앙 정렬 수정 완료
+- 기존 로그인 회원가입 비밀번호 찾기 기능 유지
+- 모바일 배치 유지
+- 다음 테스트 필요 항목: PC 로그인 카드 정중앙 확인 모바일 세로 배치 확인
+
+# STEP12 Platform Core Modularization 완료
+
+현재 버전: master-app-platform-step12-core-v1
+
+## 완료 항목
+- 기능별 HTML 템플릿 구조 추가
+- core UI Kit 추가
+- core utility JS 추가
+- 모듈별 README 추가
+- 운영 진입점 index.html 유지
+- 기존 기능 보존
+
+## 현재 구조
+- index.html: 안정적인 운영 진입점
+- core/: 공통 유틸리티와 UI Kit
+- pages/: 화면별 HTML 템플릿
+- modules/: 기능별 모듈 경계 문서
+- apps/: 등록 서브앱 실행 파일
+
+## 안정화 원칙
+STEP12에서는 전체 기능을 무리하게 분리하지 않고 먼저 구조를 만든다.
+다음 단계부터 기능별 JS를 안전하게 이동한다.

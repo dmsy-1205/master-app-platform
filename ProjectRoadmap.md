@@ -139,3 +139,22 @@ STEP10-v5 또는 STEP11에서는 신청 이력 필터 상태별 조회 관리자
 4. Official App Center
 - 생활관리 앱을 첫 번째 Official App으로 고정
 - 향후 금융 메모 AI 일정 앱 등록 구조 확장
+
+
+## STEP11 Ultimate v1.1
+
+로그인 게이트 레이아웃 안정화가 완료되었습니다. 다음 단계에서는 모바일 실기기 확인과 사용자 대시보드 운영 품질 개선을 이어갑니다.
+
+## STEP12 Platform Core 완료
+
+- 모듈화 기반 구조 도입
+- UI Kit 기반 마련
+- 기능별 HTML 템플릿 추가
+- 다음 단계에서 App Details 사용자 프로필 공지사항 관리자 통계를 실제 화면으로 연결한다.
+
+## STEP12-v2 후보
+- App Details 상세 화면
+- User Profile 화면
+- Notice Center
+- Admin Statistics
+- UI Kit 적용 범위 확대

@@ -441,3 +441,34 @@ App Store는 앱 발견과 신청 공간이다
 - 승인센터 정리 안정화
 - Version Manager 기초
 - UI Kit 기반 스타일 보강
+
+
+## STEP11 Ultimate v1.1 작업 기록
+
+로그인 대문이 PC에서 한쪽으로 몰려 보이는 문제를 수정했습니다. 기존 2컬럼 랜딩 레이아웃 규칙과 중앙 로그인 게이트 규칙이 충돌한 것이 원인이며, 로그인 게이트에서는 1컬럼 중앙 정렬을 강제하도록 보강했습니다.
+
+# STEP12 Platform Core Modularization
+
+## 목적
+MasterOS를 장기 운영 가능한 구조로 만들기 위해 기능별 파일 구조와 공통 UI 기준을 도입한다.
+
+## 핵심 원칙
+- 기존 기능은 깨뜨리지 않는다.
+- 운영 진입점은 index.html로 유지한다.
+- 기능별 HTML 템플릿은 pages에 분리한다.
+- 공통 기능은 core로 분리한다.
+- 이후 JS 기능은 modules 기준으로 단계적으로 이동한다.
+
+## 추가 구조
+- core/masteros-core.js
+- core/ui-kit.css
+- pages/login.html
+- pages/dashboard.html
+- pages/app-store.html
+- pages/runtime.html
+- pages/admin.html
+- pages/feedback.html
+- modules/*/README.md
+
+## 다음 개발 방향
+STEP12-v2부터 App Details User Profile Notice Center Admin Statistics를 실제 라우팅 화면으로 연결한다.

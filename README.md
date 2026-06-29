@@ -142,3 +142,47 @@ App Store에서 앱 사용 신청 후 버튼이 승인 대기중으로 바뀌며
 5. 관리자 계정으로 답변과 상태 변경
 6. 알림 센터에서 처리 결과 확인
 7. 앱 관리에서 Version Manager 목록 확인
+
+
+## STEP11 Ultimate v1.1
+
+PC 로그인 대문 중앙 정렬 문제가 수정되었습니다. 기존 인증 기능은 유지됩니다.
+
+# STEP12 Platform Core
+
+MasterOS는 STEP12부터 유지보수 가능한 플랫폼 구조로 전환한다.
+
+## 추가된 구조
+
+```text
+core/
+  masteros-core.js
+  ui-kit.css
+
+pages/
+  login.html
+  dashboard.html
+  app-store.html
+  runtime.html
+  admin.html
+  feedback.html
+
+modules/
+  auth/
+  workspace/
+  admin/
+  store/
+  runtime/
+  feedback/
+  notifications/
+```
+
+## 운영 방식
+현재 배포 진입점은 여전히 `index.html`이다.
+기존 Firebase 로그인과 관리자 기능을 깨뜨리지 않기 위해 기능 분리는 단계적으로 진행한다.
+
+## 개발 원칙
+- 기존 DOM ID 유지
+- 기존 Firebase 구조 유지
+- 신규 기능은 core와 modules 기준으로 추가
+- 공통 UI는 `core/ui-kit.css` 기준 사용

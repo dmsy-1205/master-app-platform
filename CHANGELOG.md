@@ -134,3 +134,20 @@
   - 앱별 버전 업데이트 노트 Stable 표시 기반 추가
 - UI Kit 성격의 공통 카드 버튼 배지 스타일 보강
 - 20년차 프로그래머 코딩 작업자 웹디자이너 관점 검수 기준 반영
+
+
+## STEP11 Ultimate v1.1
+
+- 로그인 대문이 PC에서 왼쪽으로 밀리는 문제를 수정했습니다.
+- `.auth-landing`의 기존 2컬럼 그리드가 `.login-gate`에 남아 있던 충돌을 제거했습니다.
+- 로그인 카드가 데스크톱에서는 정확히 화면 정중앙에 배치되도록 보정했습니다.
+- 모바일에서는 상단 브랜드 아래 자연스럽게 세로 배치되도록 유지했습니다.
+
+## STEP12 Platform Core Modularization
+
+- 기존 단일 index.html 중심 구조를 유지하면서 기능별 HTML 템플릿 디렉터리 `pages/`를 추가했다.
+- 공통 UI Kit `core/ui-kit.css`를 추가해 버튼 카드 배지 토스트 스타일의 기준을 마련했다.
+- 공통 유틸리티 `core/masteros-core.js`를 추가해 안전 키 생성 토스트 로딩 처리 버전 상수를 제공한다.
+- 향후 기능별 JS 분리를 위한 `modules/` 구조와 모듈별 README를 추가했다.
+- 기존 Firebase 로그인 회원가입 비밀번호 찾기 Dashboard App Store Runtime Admin Center 기능은 유지했다.
+- 문서 기준 버전을 STEP12 Platform Core로 갱신했다.
