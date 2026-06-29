@@ -151,3 +151,11 @@
 - 향후 기능별 JS 분리를 위한 `modules/` 구조와 모듈별 README를 추가했다.
 - 기존 Firebase 로그인 회원가입 비밀번호 찾기 Dashboard App Store Runtime Admin Center 기능은 유지했다.
 - 문서 기준 버전을 STEP12 Platform Core로 갱신했다.
+
+
+## STEP12-v2 Admin Control Update
+- 앱 등록 후 기존 앱 정보를 관리자 폼에서 다시 불러와 수정 저장할 수 있도록 개선했습니다.
+- 앱 소개글 버전 Entry URL 권한 공개 여부 Official 여부 업데이트 노트 수정 흐름을 추가했습니다.
+- 요청 게시판 글을 관리자가 삭제할 수 있도록 삭제 버튼을 추가했습니다.
+- 알림 센터의 공지성 항목을 관리자가 삭제할 수 있도록 개선했습니다.
+- 관리자 공지 작성 영역을 추가해 플랫폼 공지를 등록할 수 있도록 했습니다.

@@ -2323,3 +2323,39 @@ pre {
     place-items: start center !important;
   }
 }
+
+/* STEP12-v2 관리자 운영 권한 보강 */
+.admin-notice-form {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid rgba(120, 150, 255, 0.22);
+  border-radius: 18px;
+  background: rgba(10, 18, 42, 0.55);
+}
+.admin-notice-form h3 { margin: 0; font-size: 1rem; }
+.admin-notice-form input,
+.admin-notice-form textarea {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.6);
+  color: #f8fafc;
+  padding: 12px 14px;
+}
+.admin-notice-form button,
+.mini-danger,
+.danger-action {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+}
+.admin-notice-form button { background: linear-gradient(135deg, #38bdf8, #8b5cf6); color: #fff; }
+.mini-danger,
+.danger-action { background: linear-gradient(135deg, #fb7185, #ef4444); color: #fff; }
+.op-notice { align-items: center; }
+.op-notice .mini-danger { margin-left: auto; min-width: 64px; }
+.edit-app-btn { background: linear-gradient(135deg, #38bdf8, #6366f1) !important; color: #fff !important; border: 0 !important; }
+#app-id[readonly] { opacity: .75; cursor: not-allowed; }

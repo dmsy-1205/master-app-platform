@@ -1,6 +1,6 @@
 import { db, auth } from './firebase.js';
 import { ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { registerSubApp, listenSubApps, updateAppStatus, normalizeActiveStatus, deleteSubApp } from './database.js';
+import { registerSubApp, updateSubApp, listenSubApps, updateAppStatus, normalizeActiveStatus, deleteSubApp } from './database.js';
 
 const makeAdminBtn = document.getElementById('makeAdminBtn');
 const checkAdminBtn = document.getElementById('checkAdminBtn');
@@ -421,6 +421,8 @@ export function initAdminSubAppManager() {
     const appPublicVisibleInput = document.getElementById('app-public-visible');
     const appUpdateNoteInput = document.getElementById('app-update-note');
     const appRegisterPreview = document.getElementById('appRegisterPreview');
+    const appSubmitBtn = registerForm?.querySelector('button[type="submit"]');
+    let editingAppId = null;
 
     function slugifyAppName(value = '') {
         const cleaned = value.toLowerCase().trim()
@@ -462,6 +464,37 @@ export function initAdminSubAppManager() {
         if (appUpdateNoteInput) appUpdateNoteInput.value = data.updateNote || '';
         updateRegisterPreview();
     }
+
+    function enterEditMode(appId, app = {}) {
+        editingAppId = appId;
+        fillPreset({
+            id: appId,
+            name: app.name || '',
+            path: app.path || '',
+            entry: app.entryUrl || app.entry || '',
+            icon: app.icon || '📦',
+            version: app.version || 'v1.0',
+            launchMode: app.launchMode || 'router',
+            description: app.description || '',
+            owner: app.owner || 'MasterOS',
+            category: app.category || 'General',
+            permissionMode: app.permissionMode || 'approved',
+            permissions: Array.isArray(app.permissions) ? app.permissions.join(',') : (app.permissions || 'approved-user'),
+            official: app.official === true,
+            publicVisible: app.publicVisible !== false,
+            updateNote: app.updateNote || ''
+        });
+        if (appIdInput) appIdInput.readOnly = true;
+        if (appSubmitBtn) appSubmitBtn.textContent = '앱 정보 수정 저장';
+        appRegisterPreview?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetEditMode() {
+        editingAppId = null;
+        if (appIdInput) appIdInput.readOnly = false;
+        if (appSubmitBtn) appSubmitBtn.textContent = '앱 등록 및 App Store 반영';
+    }
+
 
 
     if (fillBabyCarePresetBtn && !fillBabyCarePresetBtn.dataset.bound) {
@@ -546,6 +579,15 @@ export function initAdminSubAppManager() {
         appListContainer.addEventListener('click', async (e) => {
             const toggleTarget = e.target.closest('.toggle-status-btn');
             const deleteTarget = e.target.closest('.delete-app-btn');
+            const editTarget = e.target.closest('.edit-app-btn');
+
+            if (editTarget) {
+                const id = editTarget.dataset.id;
+                const appSnap = await get(ref(db, 'apps/' + id));
+                if (!appSnap.exists()) return alert('수정할 앱 정보를 찾지 못했습니다.');
+                enterEditMode(id, appSnap.val() || {});
+                return;
+            }
 
             if (deleteTarget) {
                 const id = deleteTarget.dataset.id;
@@ -626,9 +668,15 @@ export function initAdminSubAppManager() {
             };
 
             try {
-                await registerSubApp(appId, appData);
-                alert(`서브 앱 [${appData.name}] 등록 및 라우팅 메타데이터 동기화 완료`);
+                if (editingAppId) {
+                    await updateSubApp(editingAppId, appData);
+                    alert(`앱 [${appData.name}] 정보 수정 완료`);
+                } else {
+                    await registerSubApp(appId, appData);
+                    alert(`서브 앱 [${appData.name}] 등록 및 라우팅 메타데이터 동기화 완료`);
+                }
                 registerForm.reset();
+                resetEditMode();
                 updateRegisterPreview();
             } catch (error) {
                 console.error("서브 앱 등록 실패:", error);
@@ -664,6 +712,7 @@ export function initAdminSubAppManager() {
                 </td>
                 <td>
                     <div class="admin-row-actions">
+                        <button type="button" class="btn btn-sm btn-info edit-app-btn" data-id="${appId}">수정</button>
                         <button type="button" class="btn btn-sm ${isActive ? 'btn-warning' : 'btn-success'} toggle-status-btn" data-id="${appId}" data-status="${isActive}">
                             ${isActive ? '비활성화' : '활성화'}
                         </button>

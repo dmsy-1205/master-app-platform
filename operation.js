@@ -1,5 +1,5 @@
 import { db, auth } from './firebase.js';
-import { ref, onValue, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, onValue, update, push, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const qaCriticalCount = document.getElementById('qaCriticalCount');
 const qaWarningCount = document.getElementById('qaWarningCount');
@@ -9,6 +9,10 @@ const qaChecklist = document.getElementById('qaChecklist');
 const notificationCenterList = document.getElementById('notificationCenterList');
 const notificationRefreshBtn = document.getElementById('notificationRefreshBtn');
 const versionManagerList = document.getElementById('versionManagerList');
+const adminNoticeTitle = document.getElementById('adminNoticeTitle');
+const adminNoticeContent = document.getElementById('adminNoticeContent');
+const adminNoticeSubmitBtn = document.getElementById('adminNoticeSubmitBtn');
+const adminNoticeResult = document.getElementById('adminNoticeResult');
 
 let apps = {};
 let applications = {};
@@ -60,9 +64,9 @@ function buildNotifications() {
     if (!currentIsAdmin && item.uid !== myUid) return;
     list.push({ level: item.status === 'approved' ? 'normal' : 'warning', title: `${item.requestedAppName || '앱'} ${statusLabel(item.status)}`, text: item.reason || item.email || '', at: item.reviewedAt || item.processedAt || item.archivedAt });
   });
-  Object.values(feedback || {}).forEach(item => {
+  Object.entries(feedback || {}).forEach(([id, item]) => {
     if (!currentIsAdmin && item.uid !== myUid && item.type !== 'notice') return;
-    list.push({ level: item.type === 'bug' ? 'critical' : 'normal', title: `${typeLabel(item.type)} · ${item.title || '제목 없음'}`, text: `${statusLabel(item.status || 'open')} ${item.adminReply ? '· 관리자 답변 있음' : ''}`, at: item.updatedAt || item.createdAt });
+    list.push({ source: 'feedbackBoard', id, level: item.type === 'bug' ? 'critical' : 'normal', title: `${typeLabel(item.type)} · ${item.title || '제목 없음'}`, text: `${statusLabel(item.status || 'open')} ${item.adminReply ? '· 관리자 답변 있음' : ''}`, at: item.updatedAt || item.createdAt });
   });
   Object.values(apps || {}).forEach(app => {
     if (app.updateNote) list.push({ level: 'normal', title: `${app.name || '앱'} 업데이트`, text: `${app.version || 'v1.0'} · ${app.updateNote}`, at: app.updatedAt });
@@ -81,6 +85,7 @@ function renderNotifications() {
     <article class="op-notice level-${escapeHtml(item.level)}">
       <span>${item.level === 'critical' ? '🚨' : item.level === 'warning' ? '⚠️' : '🔔'}</span>
       <div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)} · ${fmt(item.at)}</small></div>
+      ${currentIsAdmin && item.source === 'feedbackBoard' ? `<button type="button" class="mini-danger" data-notice-delete="${escapeHtml(item.id)}">삭제</button>` : ''}
     </article>
   `).join('');
 }
@@ -152,6 +157,44 @@ onValue(ref(db, 'users'), snap => { users = snap.val() || {}; refreshAll(); });
 onValue(ref(db, 'executionLogs'), snap => { executionLogs = snap.val() || {}; refreshAll(); });
 
 if (notificationRefreshBtn) notificationRefreshBtn.addEventListener('click', refreshAll);
+if (notificationCenterList) {
+  notificationCenterList.addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-notice-delete]');
+    if (!btn || !currentIsAdmin) return;
+    if (!confirm('이 알림 또는 공지 항목을 삭제할까요?')) return;
+    try {
+      await remove(ref(db, `feedbackBoard/${btn.dataset.noticeDelete}`));
+    } catch (error) {
+      alert('삭제 실패: ' + error.message);
+    }
+  });
+}
+if (adminNoticeSubmitBtn) {
+  adminNoticeSubmitBtn.addEventListener('click', async () => {
+    if (!currentIsAdmin) return alert('관리자만 공지를 등록할 수 있습니다.');
+    const title = adminNoticeTitle?.value.trim() || '';
+    const content = adminNoticeContent?.value.trim() || '';
+    if (!title || !content) return alert('공지 제목과 내용을 입력하세요.');
+    try {
+      const itemRef = push(ref(db, 'feedbackBoard'));
+      await set(itemRef, {
+        uid: currentUser?.uid || 'admin',
+        email: currentUser?.email || 'admin',
+        type: 'notice',
+        title,
+        content,
+        status: 'done',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      if (adminNoticeTitle) adminNoticeTitle.value = '';
+      if (adminNoticeContent) adminNoticeContent.value = '';
+      if (adminNoticeResult) adminNoticeResult.textContent = '공지 등록 완료';
+    } catch (error) {
+      if (adminNoticeResult) adminNoticeResult.textContent = '공지 등록 실패: ' + error.message;
+    }
+  });
+}
 if (versionManagerList) {
   versionManagerList.addEventListener('click', async (event) => {
     const btn = event.target.closest('[data-version-stable]');

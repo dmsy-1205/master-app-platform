@@ -153,3 +153,14 @@ export function deleteSubApp(appId) {
 
     return remove(ref(db, 'apps/' + appId));
 }
+
+/**
+ * STEP12-v2: 관리자 전용 앱 정보 수정
+ * 기존 앱 등록 폼을 재사용해 소개글 버전 권한 노출 상태 등을 갱신합니다.
+ */
+export async function updateSubApp(appId, appData) {
+    if (!appId) {
+        return Promise.reject(new Error('앱 ID가 비어 있어 수정할 수 없습니다.'));
+    }
+    return registerSubApp(appId, appData);
+}

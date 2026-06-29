@@ -1,5 +1,5 @@
 import { db, auth } from './firebase.js';
-import { ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const feedbackType = document.getElementById('feedbackType');
 const feedbackTitle = document.getElementById('feedbackTitle');
@@ -64,6 +64,7 @@ function renderFeedback() {
         <button type="button" data-feedback-action="developing" data-id="${escapeHtml(item.id)}">개발중</button>
         <button type="button" data-feedback-action="done" data-id="${escapeHtml(item.id)}">완료</button>
         <button type="button" data-feedback-action="closed" data-id="${escapeHtml(item.id)}">보류</button>
+        <button type="button" class="danger-action" data-feedback-delete="${escapeHtml(item.id)}">삭제</button>
       </div>` : ''}
     </article>
   `).join('');
@@ -126,6 +127,16 @@ if (feedbackSubmitBtn) {
 if (feedbackRefreshBtn) feedbackRefreshBtn.addEventListener('click', startFeedbackRealtime);
 if (feedbackList) {
   feedbackList.addEventListener('click', async (event) => {
+    const deleteButton = event.target.closest('[data-feedback-delete]');
+    if (deleteButton && currentIsAdmin) {
+      if (!confirm('이 게시글을 삭제할까요? 삭제 후 복구할 수 없습니다.')) return;
+      try {
+        await remove(ref(db, `feedbackBoard/${deleteButton.dataset.feedbackDelete}`));
+      } catch (error) {
+        alert('게시글 삭제 실패: ' + error.message);
+      }
+      return;
+    }
     const button = event.target.closest('[data-feedback-action]');
     if (!button || !currentIsAdmin) return;
     try {
