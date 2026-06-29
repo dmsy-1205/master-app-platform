@@ -149,6 +149,13 @@ function renderApprovalRequests() {
   appsDashboardList.querySelectorAll('.btn-reject:not(:disabled)').forEach(btn => {
     btn.addEventListener('click', (e) => processApplication(e.target.dataset.uid, 'rejected'));
   });
+  appsDashboardList.querySelectorAll('.btn-checking:not(:disabled)').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const uid = e.target.dataset.uid;
+      await update(ref(db, `applications/${uid}`), { status: 'pending', reviewState: 'checking', updatedAt: new Date().toISOString() });
+      alert('검토중 상태로 표시했습니다. 대기 목록에는 계속 남아 있습니다.');
+    });
+  });
 }
 
 async function archiveProcessedApplications() {
@@ -163,6 +170,7 @@ async function archiveProcessedApplications() {
     updates[`applications/${uid}`] = null;
   });
   await update(ref(db), updates);
+  processed.forEach(([uid]) => { delete cachedApplications[uid]; });
 }
 
 function startApprovalRealtime() {
@@ -265,6 +273,7 @@ function renderApprovalActions(uid, status = 'pending', source = 'active') {
     return `<button class="btn-reject is-complete" data-uid="${escapeHtml(uid)}" disabled>거절 완료</button>`;
   }
   return `
+    <button class="btn-checking" data-uid="${escapeHtml(uid)}">검토중</button>
     <button class="btn-approve" data-uid="${escapeHtml(uid)}">승인 처리</button>
     <button class="btn-reject" data-uid="${escapeHtml(uid)}">거절 처리</button>
   `;

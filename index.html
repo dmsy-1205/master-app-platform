@@ -3,77 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 10 v8</title>
+  <title>Master App Platform - STEP 11 Ultimate</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 </head>
 <body>
   <main class="platform-root">
-    <section class="auth-landing login-renewal" data-auth="public">
-      <nav class="landing-nav" aria-label="서비스 안내 메뉴">
-        <div class="landing-logo"><span class="logo-mark">M</span><strong>Master App Platform</strong></div>
-        <div class="landing-links">
-          <a href="#">소개</a>
-          <a href="#">기능</a>
-          <a href="#">요금제</a>
-          <a href="#">고객지원</a>
-          <button type="button" class="theme-ghost" aria-label="화면 테마">☼</button>
-        </div>
-      </nav>
-
-      <div class="auth-hero-grid">
-        <div class="auth-brand-panel landing-hero-panel">
-          <div class="brand-badge"><span>⭐</span> 통합 앱 관리의 새로운 기준</div>
-          <h1>모든 앱을<br><span>하나의 플랫폼에서</span></h1>
-          <p>회원 승인부터 권한 관리 실행 로그까지<br>한 곳에서 관리하는 통합 SaaS 플랫폼입니다.</p>
-
-          <div class="feature-stack landing-feature-cards">
-            <div><span>⚡</span><strong>빠른 앱 실행</strong><small>등록된 모든 서비스를 원클릭으로 바로 실행</small></div>
-            <div><span>🛡️</span><strong>권한 기반 관리</strong><small>사용자 권한에 따라 안전하게 관리</small></div>
-            <div><span>📊</span><strong>실행 로그 추적</strong><small>실행 기록과 로그를 실시간으로 확인</small></div>
-          </div>
-
-          <div class="landing-trust-row landing-steps">
-            <div><strong>01</strong><span>플랫폼 코어</span><em>안정적인 시스템 운영</em></div>
-            <div><strong>02</strong><span>관리자 센터</span><em>역할 기반 관리 시스템</em></div>
-            <div><strong>03</strong><span>앱 스토어</span><em>모든 앱을 한 곳에서</em></div>
-          </div>
-
-          <div class="security-note"><span>🔒</span><p><strong>보안이 검증된 안전한 플랫폼</strong><br>최신 보안 기술로 데이터를 안전하게 보호합니다.</p></div>
-          <div class="brand-visual orbital-visual">
-            <div class="orbit orbit-one"></div>
-            <div class="orbit orbit-two"></div>
-            <div class="cube">◆</div>
-            <span class="orb orb-a"></span><span class="orb orb-b"></span><span class="orb orb-c"></span>
+    <section class="auth-landing login-gate" data-auth="public">
+      <div class="gate-brand">
+        <div class="gate-logo"><span>◆</span><strong>Master<span>OS</span></strong></div>
+        <small>UNIFIED APP CONTROL</small>
+      </div>
+      <div class="wave-layer wave-one"></div>
+      <div class="wave-layer wave-two"></div>
+      <div class="gate-card" id="authGateCard">
+        <div class="gate-mode" data-auth-mode="login">
+          <h1>로그인</h1>
+          <p>MasterOS 플랫폼에 오신 것을 환영합니다.</p>
+          <label for="loginEmail">이메일 또는 사용자명</label>
+          <div class="gate-input-row"><span>♙</span><input id="loginEmail" type="email" placeholder="이메일을 입력하세요" autocomplete="email"></div>
+          <label for="loginPassword">비밀번호</label>
+          <div class="gate-input-row password-wrap"><span>▣</span><input id="loginPassword" type="password" placeholder="비밀번호를 입력하세요" autocomplete="current-password"><button type="button" class="password-toggle" data-toggle-password="loginPassword" aria-label="비밀번호 보기">👁</button></div>
+          <label class="gate-remember"><input id="rememberLogin" type="checkbox"> 로그인 상태 유지</label>
+          <button id="loginBtn" class="gate-primary-action">로그인</button>
+          <div class="gate-divider"><span></span><em>또는</em><span></span></div>
+          <div class="gate-links">
+            <button type="button" data-auth-switch="signup">회원가입</button>
+            <i></i>
+            <button type="button" data-auth-switch="forgot">비밀번호 찾기</button>
           </div>
         </div>
 
-        <div class="auth-card-panel landing-form-panel">
-          <div class="auth-card login-card premium-auth-card">
-            <div class="card-icon">👤</div>
-            <h2>로그인</h2>
-            <p>프리미엄 앱 워크스페이스로 접속합니다.</p>
-            <label>이메일</label>
-            <input id="loginEmail" type="email" placeholder="이메일을 입력하세요">
-            <label>비밀번호</label>
-            <div class="password-wrap"><input id="loginPassword" type="password" placeholder="비밀번호를 입력하세요"><button type="button" class="password-toggle" data-toggle-password="loginPassword" aria-label="비밀번호 보기">👁</button></div>
-            <div class="login-options"><label class="remember-row"><input id="rememberLogin" type="checkbox"> 로그인 상태 유지</label><a href="#" class="forgot-link">비밀번호 찾기</a></div>
-            <button id="loginBtn" class="primary-action">로그인</button>
+        <div class="gate-mode" data-auth-mode="signup" hidden>
+          <h1>회원가입</h1>
+          <p>초대받은 사용자는 계정을 만든 뒤 승인 신청을 진행하세요.</p>
+          <label for="signupEmail">이메일</label>
+          <div class="gate-input-row"><span>♙</span><input id="signupEmail" type="email" placeholder="이메일을 입력하세요" autocomplete="email"></div>
+          <label for="signupPassword">비밀번호</label>
+          <div class="gate-input-row password-wrap"><span>▣</span><input id="signupPassword" type="password" placeholder="비밀번호를 입력하세요" autocomplete="new-password"><button type="button" class="password-toggle" data-toggle-password="signupPassword" aria-label="비밀번호 보기">👁</button></div>
+          <button id="signupBtn" class="gate-secondary-action">회원가입</button>
+          <div class="gate-divider"><span></span><em>또는</em><span></span></div>
+          <div class="gate-links single">
+            <button type="button" data-auth-switch="login">로그인으로 돌아가기</button>
           </div>
-          <div class="auth-card signup-card premium-auth-card">
-            <div class="card-icon">👥</div>
-            <h2>회원가입</h2>
-            <p>초대받은 사용자만 계정을 만들 수 있습니다.</p>
-            <label>이메일</label>
-            <input id="signupEmail" type="email" placeholder="이메일을 입력하세요">
-            <label>비밀번호</label>
-            <div class="password-wrap"><input id="signupPassword" type="password" placeholder="비밀번호를 입력하세요"><button type="button" class="password-toggle" data-toggle-password="signupPassword" aria-label="비밀번호 보기">👁</button></div>
-            <button id="signupBtn" class="secondary-action">회원가입</button>
+        </div>
+
+        <div class="gate-mode" data-auth-mode="forgot" hidden>
+          <h1>비밀번호 찾기</h1>
+          <p>가입한 이메일로 비밀번호 재설정 메일을 보냅니다.</p>
+          <label for="resetEmail">이메일</label>
+          <div class="gate-input-row"><span>✉</span><input id="resetEmail" type="email" placeholder="이메일을 입력하세요" autocomplete="email"></div>
+          <button id="resetPasswordBtn" class="gate-primary-action">재설정 메일 보내기</button>
+          <div class="gate-divider"><span></span><em>또는</em><span></span></div>
+          <div class="gate-links single">
+            <button type="button" data-auth-switch="login">로그인으로 돌아가기</button>
           </div>
         </div>
       </div>
-      <div class="scroll-cue">⌄ 스크롤하여 더 보기</div>
+      <footer class="gate-footer">© 2026 MasterOS. All rights reserved.</footer>
     </section>
 
     <section class="workspace-shell" data-auth="private" style="display:none;">
@@ -84,6 +72,7 @@
         <a href="#" data-workspace-route="runtime">My Runtime</a>
         <a href="#" data-workspace-route="request">신청 관리</a>
         <a href="#" data-workspace-route="activity">활동 로그</a>
+        <a href="#" data-workspace-route="notifications">알림 센터</a>
         <a href="#" data-workspace-route="feedback">요청 게시판</a>
         <a href="#" data-workspace-route="admin" data-auth="admin" style="display:none;">Admin Center</a>
       </aside>
@@ -91,7 +80,7 @@
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">STEP 10 v8</p>
+            <p class="eyebrow">STEP 11 Ultimate</p>
             <h1>Master App Platform</h1>
             <p id="userStatus">확인 중...</p>
           </div>
@@ -100,7 +89,7 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">Premium Control Workspace · STEP 10 v8</p>
+            <p class="eyebrow">Premium Control Workspace · STEP 11 Ultimate</p>
             <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
             <p>사용자 경험과 관리자 회원관리 Platform Launcher 실행 엔진과 생활관리 앱 테스트 실행을 더했습니다.</p>
           </div>
@@ -154,7 +143,7 @@
               <div class="widget-icon">🔔</div>
               <h3>공지 및 업데이트</h3>
               <p>새 앱 등록과 플랫폼 변경사항을 이곳에서 확인합니다.</p>
-              <span class="widget-badge live">STEP10-v8</span>
+              <span class="widget-badge live">STEP11 Ultimate</span>
             </article>
           </div>
         </section>
@@ -166,7 +155,7 @@
               <h2>내 앱 스토어</h2>
               <p>활성화된 서브 앱을 더 큰 카드와 실행 정보 중심으로 확인합니다.</p>
             </div>
-            <div class="store-tools"><input id="storeSearchInput" type="search" placeholder="앱 이름 설명 검색"><button type="button" id="storeCategoryBtn">전체 카테고리</button></div>
+            <div class="store-tools"><input id="storeSearchInput" type="search" placeholder="앱 이름 설명 검색"><select id="storeCategoryFilter"><option value="all">전체 카테고리</option><option value="Official">Official</option><option value="General">General</option><option value="Finance">Finance</option><option value="AI">AI</option><option value="Productivity">Productivity</option></select><select id="storeSortFilter"><option value="name">이름순</option><option value="latest">최신순</option><option value="popular">인기순</option></select></div>
           </div>
           <div class="featured-store-banner">
             <div><span>Featured Workspace</span><strong>승인된 앱을 바로 실행하세요</strong><small>실행 횟수와 최근 실행 시간이 자동으로 기록됩니다.</small></div>
@@ -198,6 +187,14 @@
         </section>
 
 
+        <section class="notification-center glass-card" id="notifications">
+          <div class="section-title-row">
+            <div><p class="eyebrow">Notification Center</p><h2>알림 센터</h2><p>승인 결과 업데이트 관리자 답변 플랫폼 공지를 한곳에서 확인합니다.</p></div>
+            <button type="button" id="notificationRefreshBtn">새로고침</button>
+          </div>
+          <div id="notificationCenterList" class="notification-center-list"><p class="placeholder-text">알림을 불러오는 중입니다.</p></div>
+        </section>
+
 
         <section class="feedback-board glass-card" id="feedback">
           <div class="section-title-row">
@@ -212,6 +209,9 @@
             <select id="feedbackType">
               <option value="bug">버그 신고</option>
               <option value="request">기능 요청</option>
+              <option value="question">질문</option>
+              <option value="improvement">개선사항</option>
+              <option value="notice">공지</option>
               <option value="ui">화면 개선</option>
               <option value="etc">기타</option>
             </select>
@@ -242,6 +242,7 @@
 
           <div class="admin-spa-tabs glass-card" role="tablist" aria-label="관리자 메뉴">
             <button type="button" data-admin-route="overview" class="active">Overview</button>
+            <button type="button" data-admin-route="qa">QA Dashboard</button>
             <button type="button" data-admin-route="members">회원 관리</button>
             <button type="button" data-admin-route="approval">승인 관리</button>
             <button type="button" data-admin-route="apps">앱 관리</button>
@@ -257,6 +258,19 @@
               <div><span>권한 상태</span><strong>관리자</strong><small>Firebase admins/users.role 기준</small></div>
               <div><span>콘솔 모드</span><strong>SPA</strong><small>STEP9-v1 적용</small></div>
             </div>
+          </section>
+
+
+          <section class="qa-dashboard glass-card" data-admin-panel="qa">
+            <div class="admin-card-title"><h2>QA Dashboard</h2><span>Operation Quality</span></div>
+            <p class="dashboard-help">운영자가 현재 플랫폼 상태 버그 요청 실행 로그 승인 대기를 한눈에 확인합니다.</p>
+            <div class="qa-kpi-grid">
+              <article><span>Critical</span><strong id="qaCriticalCount">0</strong><small>긴급 버그 또는 실패 가능성</small></article>
+              <article><span>Warning</span><strong id="qaWarningCount">0</strong><small>승인 대기 요청 검토중 항목</small></article>
+              <article><span>Normal</span><strong id="qaNormalCount">0</strong><small>일반 요청과 공지</small></article>
+              <article><span>Platform</span><strong id="qaPlatformState">OK</strong><small>Firebase 연결 기준</small></article>
+            </div>
+            <div id="qaChecklist" class="qa-checklist"></div>
           </section>
 
 
@@ -347,6 +361,14 @@
                 <tbody id="admin-subapp-list"></tbody>
               </table>
             </div>
+
+            <hr>
+            <div class="version-manager-panel">
+              <div class="admin-card-title"><h2>Version Manager</h2><span>Stable / Beta</span></div>
+              <p class="dashboard-help">앱 등록 정보의 버전 업데이트 노트를 기반으로 배포 상태를 관리합니다. 다음 단계에서 자동 배포와 연결합니다.</p>
+              <div id="versionManagerList" class="version-manager-list"><p class="placeholder-text">앱 버전 정보를 불러오는 중입니다.</p></div>
+            </div>
+
           </section>
 
           <details class="glass-card dev-tools-card" data-admin-panel="tools">
@@ -382,6 +404,7 @@
   <script type="module" src="./routing.js"></script>
   <script type="module" src="./dashboard.js"></script>
   <script type="module" src="./feedback.js"></script>
+  <script type="module" src="./operation.js"></script>
   <script type="module" src="./workspace.js"></script>
 </body>
 </html>

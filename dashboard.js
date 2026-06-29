@@ -22,6 +22,8 @@ const userRecentApp = document.getElementById('userRecentApp');
 const userApprovalCard = document.getElementById('userApprovalCard');
 const globalSearchInput = document.getElementById('globalSearchInput');
 const storeSearchInput = document.getElementById('storeSearchInput');
+const storeCategoryFilter = document.getElementById('storeCategoryFilter');
+const storeSortFilter = document.getElementById('storeSortFilter');
 const notificationToggleBtn = document.getElementById('notificationToggleBtn');
 const notificationBadge = document.getElementById('notificationBadge');
 const notificationPanel = document.getElementById('notificationPanel');
@@ -47,6 +49,8 @@ let currentUser = null;
 let currentApprovalStatus = 'none';
 let currentIsAdmin = false;
 let searchKeyword = '';
+let storeCategory = 'all';
+let storeSort = 'name';
 let favoriteIds = new Set();
 let cachedActivities = [];
 let currentAppAccess = {};
@@ -167,8 +171,17 @@ function renderNotifications(apps = cachedApps, approvalStatus = currentApproval
 
 function filterApps(apps = []) {
   const keyword = searchKeyword.trim().toLowerCase();
-  if (!keyword) return apps;
-  return apps.filter(app => [app.name, app.description, app.version, app.path, app.id].join(' ').toLowerCase().includes(keyword));
+  let result = [...apps];
+  if (storeCategory !== 'all') {
+    result = result.filter(app => String(app.category || 'General').toLowerCase() === storeCategory.toLowerCase());
+  }
+  if (keyword) {
+    result = result.filter(app => [app.name, app.description, app.version, app.path, app.id, app.category, app.owner].join(' ').toLowerCase().includes(keyword));
+  }
+  if (storeSort === 'latest') result.sort((a,b)=> new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0));
+  else if (storeSort === 'popular') result.sort((a,b)=> Number(b.runCount || 0) - Number(a.runCount || 0));
+  else result.sort((a,b)=> (a.name || '').localeCompare(b.name || ''));
+  return result;
 }
 
 function renderActivityList(target, activities = cachedActivities, compact = false) {
@@ -624,6 +637,19 @@ function applySearch(value) {
   if (!input) return;
   input.addEventListener('input', () => applySearch(input.value));
 });
+
+if (storeCategoryFilter) {
+  storeCategoryFilter.addEventListener('change', (event) => {
+    storeCategory = event.target.value || 'all';
+    renderApps(cachedApps, currentApprovalStatus);
+  });
+}
+if (storeSortFilter) {
+  storeSortFilter.addEventListener('change', (event) => {
+    storeSort = event.target.value || 'name';
+    renderApps(cachedApps, currentApprovalStatus);
+  });
+}
 
 if (notificationToggleBtn && notificationPanel) {
   notificationToggleBtn.addEventListener('click', () => notificationPanel.classList.toggle('workspace-hidden'));

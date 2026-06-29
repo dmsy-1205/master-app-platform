@@ -1,6 +1,6 @@
 # ProjectStatus
 
-현재 버전: master-app-platform-step10-v4
+현재 버전: master-app-platform-step10-v9
 
 ## 완료
 - STEP1 회원가입 로그인 자동 로그인
@@ -82,7 +82,7 @@
 - 처리된 신청은 applicationHistory에 보존
 - 다음 검토 대상은 게시판 관리자 필터 검색 댓글 기능입니다.
 
-## STEP10-v8 현재 상태
+## STEP10-v9 현재 상태
 
 모바일 반응형 UI 안정화가 적용되었습니다.
 
@@ -97,7 +97,7 @@
 다음 단계에서는 실제 스마트폰 테스트 결과를 기준으로 메뉴 접힘 방식과 하단 탭 네비게이션 도입 여부를 결정합니다.
 
 
-## STEP10-v8 현재 상태
+## STEP10-v9 현재 상태
 
 상태: 완료
 
@@ -105,3 +105,41 @@
 - 기존 인증 기능과 관리자 권한 판별은 유지했습니다.
 - 모바일 인증 화면도 세로형으로 대응했습니다.
 - 다음 단계는 Permission Runtime Engine 또는 App Store 3.0 고도화입니다.
+
+
+---
+
+## STEP10-v9 Login Gate Renewal
+
+- 대문 로그인 화면을 중앙형 Login Gate UI로 개편
+- 상단 소개 기능 요금제 고객지원 메뉴 제거
+- 로그인 회원가입 비밀번호 찾기를 하나의 카드 안에서 전환
+- Firebase 로그인 회원가입 비밀번호 재설정 기능 유지
+- 비밀번호 보기 로그인 상태 유지 모바일 반응형 유지
+- 기존 App Store My Runtime Admin Center 요청 게시판 기능 유지
+
+---
+
+# STEP11 Ultimate Platform Foundation 완료
+
+현재 버전
+master-app-platform-step11-ultimate-v1
+
+핵심 완료 사항
+
+- QA Dashboard 추가
+- 요청 게시판 HelpDesk 구조 개선
+- Notification Center 추가
+- App Store 검색 카테고리 정렬 필터 추가
+- 승인센터 대기 목록 정리 로직 보강
+- Version Manager 기초 추가
+- 관리자 답변 및 상태 처리 추가
+- 모바일 반응형 스타일 유지
+
+검수 기준
+
+- 기존 로그인 회원가입 비밀번호 찾기 기능 유지
+- 기존 관리자 회원관리 앱관리 승인관리 유지
+- 기존 App Store My Runtime Launcher 유지
+- Firebase 기존 경로 유지
+- 새 프로젝트 생성 없음

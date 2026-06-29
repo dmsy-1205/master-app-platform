@@ -1,6 +1,6 @@
 # Master App Platform
 
-현재 버전: `master-app-platform-step10-v4`
+현재 버전: `master-app-platform-step10-v9`
 
 ## 목적
 여러 웹 애플리케이션을 하나의 플랫폼에서 회원 승인 권한 관리 앱 등록 실행 로그와 함께 운영하는 통합 App Platform입니다.
@@ -76,7 +76,7 @@ App Store에서 앱 사용 신청 후 버튼이 승인 대기중으로 바뀌며
 일반 사용자는 요청 게시판에서 버그 신고 기능 요청 화면 개선 의견을 등록할 수 있습니다.
 관리자 계정은 요청 게시판 항목을 검토중 완료 보류 상태로 변경할 수 있습니다.
 
-## STEP10-v8 Mobile Responsive UI
+## STEP10-v9 Mobile Responsive UI
 
 스마트폰에서도 MasterOS를 사용할 수 있도록 반응형 UI를 보강했습니다.
 
@@ -94,7 +94,7 @@ App Store에서 앱 사용 신청 후 버튼이 승인 대기중으로 바뀌며
 브라우저 개발자 도구에서 모바일 화면으로 전환하거나 실제 스마트폰에서 배포 주소를 열어 확인합니다.
 
 
-## STEP10-v8 Login Landing UI Renewal
+## STEP10-v9 Login Landing UI Renewal
 
 - 로그인 첫 화면을 SaaS 랜딩형 UI로 재구성했습니다.
 - 상단 네비게이션 소개 기능 요금제 고객지원 영역을 추가했습니다.
@@ -103,3 +103,42 @@ App Store에서 앱 사용 신청 후 버튼이 승인 대기중으로 바뀌며
 - 비밀번호 보기 버튼과 로그인 상태 유지 체크박스를 추가했습니다.
 - 기존 Firebase 로그인 회원가입 관리자 권한 흐름은 유지했습니다.
 - 모바일에서는 랜딩 영역과 인증 카드가 세로로 자연스럽게 정렬됩니다.
+
+
+---
+
+## STEP10-v9 Login Gate Renewal
+
+- 대문 로그인 화면을 중앙형 Login Gate UI로 개편
+- 상단 소개 기능 요금제 고객지원 메뉴 제거
+- 로그인 회원가입 비밀번호 찾기를 하나의 카드 안에서 전환
+- Firebase 로그인 회원가입 비밀번호 재설정 기능 유지
+- 비밀번호 보기 로그인 상태 유지 모바일 반응형 유지
+- 기존 App Store My Runtime Admin Center 요청 게시판 기능 유지
+
+---
+
+# STEP11 Ultimate Platform Foundation
+
+이번 버전은 MasterOS를 단순 앱 실행기에서 운영 가능한 App Platform으로 확장하는 기반 버전입니다.
+
+추가 기능
+
+- QA Dashboard
+- HelpDesk형 요청 게시판
+- Notification Center
+- App Store 검색 카테고리 정렬 필터
+- 승인센터 대기 목록 정리 보강
+- Version Manager 기초
+- 관리자 답변 기능
+- 공통 UI 스타일 보강
+
+테스트 순서
+
+1. 로그인 회원가입 비밀번호 찾기 확인
+2. 일반 사용자 App Store 신청 승인대기 실행 흐름 확인
+3. 관리자 승인센터에서 대기 신청만 표시되는지 확인
+4. 요청 게시판에 버그 또는 요청 등록
+5. 관리자 계정으로 답변과 상태 변경
+6. 알림 센터에서 처리 결과 확인
+7. 앱 관리에서 Version Manager 목록 확인

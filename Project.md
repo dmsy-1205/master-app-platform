@@ -10,7 +10,7 @@ Master App Platform
 
 현재 버전
 
-master-app-platform-step10-v7
+master-app-platform-step10-v9
 
 ---
 
@@ -271,7 +271,7 @@ Netlify 다시 만들기
 
 현재 프로젝트는
 
-master-app-platform-step10-v7
+master-app-platform-step10-v9
 
 이다.
 
@@ -373,7 +373,7 @@ App Store는 앱 발견과 신청 공간이다
 
 ---
 
-# STEP10-v8 Mobile Responsive UI
+# STEP10-v9 Mobile Responsive UI
 
 모바일 사용을 위해 전체 화면 반응형 구조를 보강했습니다.
 
@@ -389,7 +389,7 @@ App Store는 앱 발견과 신청 공간이다
 다음 단계는 실제 스마트폰 테스트 결과를 기반으로 하단 탭 네비게이션과 알림 기능을 검토합니다.
 
 
-# STEP10-v8 Login Landing UI Renewal
+# STEP10-v9 Login Landing UI Renewal
 
 ## 작업 원칙
 
@@ -408,3 +408,36 @@ App Store는 앱 발견과 신청 공간이다
 - 관리자 권한 유지
 - Dashboard App Store My Runtime Request Board Admin Center
 - 승인 신청 실행 로그 요청 게시판 흐름
+
+
+---
+
+## STEP10-v9 Login Gate Renewal
+
+- 대문 로그인 화면을 중앙형 Login Gate UI로 개편
+- 상단 소개 기능 요금제 고객지원 메뉴 제거
+- 로그인 회원가입 비밀번호 찾기를 하나의 카드 안에서 전환
+- Firebase 로그인 회원가입 비밀번호 재설정 기능 유지
+- 비밀번호 보기 로그인 상태 유지 모바일 반응형 유지
+- 기존 App Store My Runtime Admin Center 요청 게시판 기능 유지
+
+---
+
+# STEP11 Ultimate Platform Foundation
+
+작업 원칙
+
+- 기존 STEP10-v9 프로젝트를 유지하고 새 프로젝트를 만들지 않는다.
+- 로그인 회원가입 비밀번호 찾기 관리자 사용자 앱스토어 런타임 요청게시판 기능을 보존한다.
+- 기능을 한꺼번에 추가하되 operation.js로 운영 기능을 분리하여 충돌 위험을 줄인다.
+
+추가 완료
+
+- QA Dashboard
+- 요청 게시판 고도화
+- Notification Center
+- Dashboard 운영 지표 기반
+- App Store 필터
+- 승인센터 정리 안정화
+- Version Manager 기초
+- UI Kit 기반 스타일 보강

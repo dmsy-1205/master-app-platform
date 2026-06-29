@@ -30,11 +30,11 @@ function formatDate(value) {
 }
 
 function typeLabel(type) {
-  return { bug: '버그', request: '요청', ui: '화면 개선', etc: '기타' }[type] || type || '기타';
+  return { bug: '버그', request: '기능 요청', question: '질문', improvement: '개선사항', notice: '공지', ui: '화면 개선', etc: '기타' }[type] || type || '기타';
 }
 
 function statusLabel(status) {
-  return { open: '접수', checking: '검토중', done: '완료', closed: '보류' }[status] || '접수';
+  return { open: '접수', checking: '검토중', developing: '개발중', done: '완료', closed: '보류' }[status] || '접수';
 }
 
 function renderFeedback() {
@@ -56,9 +56,12 @@ function renderFeedback() {
         <span class="member-pill status-${escapeHtml(item.status || 'open')}">${escapeHtml(statusLabel(item.status || 'open'))}</span>
       </div>
       <p>${escapeHtml(item.content || '')}</p>
+      ${item.adminReply ? `<div class="feedback-reply"><strong>관리자 답변</strong><p>${escapeHtml(item.adminReply)}</p></div>` : ''}
       <small>${escapeHtml(item.email || '알 수 없음')} · ${formatDate(item.createdAt)}</small>
       ${currentIsAdmin ? `<div class="feedback-admin-actions">
+        <input type="text" class="feedback-reply-input" data-reply-id="${escapeHtml(item.id)}" placeholder="관리자 답변 입력" value="${escapeHtml(item.adminReply || '')}">
         <button type="button" data-feedback-action="checking" data-id="${escapeHtml(item.id)}">검토중</button>
+        <button type="button" data-feedback-action="developing" data-id="${escapeHtml(item.id)}">개발중</button>
         <button type="button" data-feedback-action="done" data-id="${escapeHtml(item.id)}">완료</button>
         <button type="button" data-feedback-action="closed" data-id="${escapeHtml(item.id)}">보류</button>
       </div>` : ''}
@@ -126,8 +129,10 @@ if (feedbackList) {
     const button = event.target.closest('[data-feedback-action]');
     if (!button || !currentIsAdmin) return;
     try {
+      const replyInput = feedbackList.querySelector(`[data-reply-id="${button.dataset.id}"]`);
       await update(ref(db, `feedbackBoard/${button.dataset.id}`), {
         status: button.dataset.feedbackAction,
+        adminReply: replyInput?.value?.trim() || '',
         updatedAt: new Date().toISOString(),
         processedBy: auth.currentUser?.email || auth.currentUser?.uid || 'admin'
       });

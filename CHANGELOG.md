@@ -73,7 +73,7 @@
 - 사용자 요청사항과 버그를 등록할 수 있는 요청 게시판을 추가했습니다.
 - 요청 게시판은 버그 신고 기능 요청 화면 개선 기타 유형과 접수 검토중 완료 보류 상태를 지원합니다.
 
-## STEP10-v8 Mobile Responsive UI
+## STEP10-v9 Mobile Responsive UI
 
 - 스마트폰 사용을 위해 전체 워크스페이스 레이아웃을 반응형으로 보강했습니다.
 - 좌측 사이드바가 모바일에서 상단 2열 메뉴로 전환되도록 조정했습니다.
@@ -83,7 +83,7 @@
 - 테이블과 로그 영역은 모바일에서 가로 스크롤 또는 자동 줄바꿈으로 깨짐을 방지했습니다.
 
 
-## STEP10-v8 Login Landing UI Renewal
+## STEP10-v9 Login Landing UI Renewal
 
 ### Added
 - SaaS형 로그인 랜딩 페이지
@@ -100,3 +100,37 @@
 - Firebase 회원가입 로그인 로그아웃
 - 관리자 권한 판별
 - 기존 Workspace Dashboard App Store Runtime Admin 기능
+
+
+---
+
+## STEP10-v9 Login Gate Renewal
+
+- 대문 로그인 화면을 중앙형 Login Gate UI로 개편
+- 상단 소개 기능 요금제 고객지원 메뉴 제거
+- 로그인 회원가입 비밀번호 찾기를 하나의 카드 안에서 전환
+- Firebase 로그인 회원가입 비밀번호 재설정 기능 유지
+- 비밀번호 보기 로그인 상태 유지 모바일 반응형 유지
+- 기존 App Store My Runtime Admin Center 요청 게시판 기능 유지
+
+---
+
+## STEP11 Ultimate Platform Foundation
+
+- QA Dashboard 추가
+- 요청 게시판 고도화
+  - 버그 기능요청 질문 개선사항 공지 카테고리 추가
+  - 관리자 답변 입력 추가
+  - 접수 검토중 개발중 완료 보류 상태 흐름 추가
+- Notification Center 추가
+  - 승인 결과 요청 게시판 업데이트 앱 업데이트 공지 통합 표시
+- Dashboard 운영 지표 연동 기반 추가
+- App Store 필터 추가
+  - 검색 카테고리 정렬 최신순 인기순 이름순
+- 승인센터 정리 안정화
+  - 처리 완료 신청은 로컬 캐시에서도 즉시 제거
+  - 승인 거절 이력은 applicationHistory로 이동
+- Version Manager 기초 추가
+  - 앱별 버전 업데이트 노트 Stable 표시 기반 추가
+- UI Kit 성격의 공통 카드 버튼 배지 스타일 보강
+- 20년차 프로그래머 코딩 작업자 웹디자이너 관점 검수 기준 반영

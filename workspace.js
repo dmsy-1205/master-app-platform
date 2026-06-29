@@ -4,12 +4,14 @@ const workspaceRoutes = {
   runtime: ['#runtime'],
   request: ['#request'],
   activity: ['#activity'],
+  notifications: ['#notifications'],
   feedback: ['#feedback'],
   admin: ['#admin']
 };
 
 const adminRoutes = {
   overview: '[data-admin-panel="overview"]',
+  qa: '[data-admin-panel="qa"]',
   members: '[data-admin-panel="members"]',
   approval: '[data-admin-panel="approval"]',
   apps: '[data-admin-panel="apps"]',

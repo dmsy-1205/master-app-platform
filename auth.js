@@ -6,7 +6,8 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserSessionPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
@@ -17,6 +18,8 @@ const loginEmail = document.getElementById('loginEmail');
 const loginPassword = document.getElementById('loginPassword');
 const loginBtn = document.getElementById('loginBtn');
 const rememberLogin = document.getElementById('rememberLogin');
+const resetEmail = document.getElementById('resetEmail');
+const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 const userStatus = document.getElementById('userStatus');
 const logoutBtn = document.getElementById('logoutBtn');
 const adminDashboardSection = document.getElementById('adminDashboardSection');
@@ -24,6 +27,20 @@ const adminDashboardSection = document.getElementById('adminDashboardSection');
 const publicSections = document.querySelectorAll('[data-auth="public"]');
 const privateSections = document.querySelectorAll('[data-auth="private"]');
 const adminSections = document.querySelectorAll('[data-auth="admin"]');
+
+
+function setAuthMode(mode = 'login') {
+  const allowedMode = ['login', 'signup', 'forgot'].includes(mode) ? mode : 'login';
+  document.querySelectorAll('[data-auth-mode]').forEach((panel) => {
+    panel.hidden = panel.dataset.authMode !== allowedMode;
+  });
+  const card = document.getElementById('authGateCard');
+  if (card) card.dataset.mode = allowedMode;
+}
+
+document.querySelectorAll('[data-auth-switch]').forEach((button) => {
+  button.addEventListener('click', () => setAuthMode(button.dataset.authSwitch));
+});
 
 async function configureSessionPersistence(useLocal = false) {
   try {
@@ -124,7 +141,7 @@ if (signupBtn) {
         userStatus: 'registered',
         role: 'user'
       });
-      alert('회원가입 성공!');
+      alert('회원가입 성공! 로그인 후 신청 관리를 진행해주세요.');
     } catch (error) {
       alert('회원가입 실패: ' + error.message);
     }
@@ -142,6 +159,23 @@ if (loginBtn) {
       alert('로그인 성공!');
     } catch (error) {
       alert('로그인 실패: ' + error.message);
+    }
+  });
+}
+
+
+if (resetPasswordBtn) {
+  resetPasswordBtn.addEventListener('click', async () => {
+    const email = resetEmail?.value?.trim() || loginEmail?.value?.trim();
+    if (!email) {
+      return alert('비밀번호를 찾을 이메일을 입력해주세요.');
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert('비밀번호 재설정 메일을 보냈습니다. 메일함을 확인해주세요.');
+      setAuthMode('login');
+    } catch (error) {
+      alert('비밀번호 찾기 실패: ' + error.message);
     }
   });
 }
@@ -171,3 +205,5 @@ configureSessionPersistence().finally(() => {
     applyScreenState(user);
   });
 });
+
+setAuthMode('login');
