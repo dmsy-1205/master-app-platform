@@ -2359,3 +2359,20 @@ pre {
 .op-notice .mini-danger { margin-left: auto; min-width: 64px; }
 .edit-app-btn { background: linear-gradient(135deg, #38bdf8, #6366f1) !important; color: #fff !important; border: 0 !important; }
 #app-id[readonly] { opacity: .75; cursor: not-allowed; }
+
+/* STEP13 Service Platform */
+.service-panel { margin-top: 18px; }
+.service-toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:14px 0; }
+.service-toolbar select,.service-toolbar input { background:rgba(5,10,28,.78); border:1px solid rgba(120,150,220,.28); color:#fff; border-radius:12px; padding:12px 14px; min-width:220px; }
+.service-preview,.service-list,.service-card-grid { margin-top:14px; }
+.service-card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+.service-card,.app-detail-card,.deployment-row { border:1px solid rgba(120,150,220,.22); border-radius:18px; background:rgba(8,14,35,.58); padding:18px; }
+.service-card-icon,.app-detail-icon { display:inline-flex; width:48px; height:48px; align-items:center; justify-content:center; border-radius:16px; background:linear-gradient(135deg,#25c8ff,#a64dff); margin-bottom:10px; }
+.app-detail-head { display:flex; gap:16px; align-items:flex-start; margin-bottom:16px; }
+.service-meta-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:14px 0; }
+.service-meta-grid p,.service-note { border:1px solid rgba(120,150,220,.16); border-radius:14px; padding:12px; background:rgba(255,255,255,.03); word-break:break-word; }
+.deployment-row { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:12px; }
+.service-pre { white-space:pre-wrap; word-break:break-word; background:rgba(1,5,20,.75); color:#d9e7ff; border:1px solid rgba(120,150,220,.22); border-radius:16px; padding:16px; max-height:360px; overflow:auto; }
+.health-normal,.health-warning { border:1px solid rgba(120,150,220,.2); border-radius:14px; padding:14px; background:rgba(255,255,255,.03); }
+.health-warning { border-color:rgba(255,207,79,.45); }
+@media (max-width: 768px) { .deployment-row { flex-direction:column; align-items:stretch; } .app-detail-head { flex-direction:column; } .service-toolbar select,.service-toolbar input,.service-toolbar button { width:100%; } }

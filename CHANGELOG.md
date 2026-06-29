@@ -159,3 +159,14 @@
 - 요청 게시판 글을 관리자가 삭제할 수 있도록 삭제 버튼을 추가했습니다.
 - 알림 센터의 공지성 항목을 관리자가 삭제할 수 있도록 개선했습니다.
 - 관리자 공지 작성 영역을 추가해 플랫폼 공지를 등록할 수 있도록 했습니다.
+
+
+## STEP13 Service Platform v1
+- App Detail Center 추가
+- Official App Center 추가
+- Version Deployment Center 추가
+- Developer Center 추가
+- Health Monitor 추가
+- Backup Export Center 추가
+- 관리자 센터 탭 확장
+- 기존 로그인 앱스토어 런타임 신청 승인 게시판 공지 기능 유지

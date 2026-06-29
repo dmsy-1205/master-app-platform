@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Master App Platform - STEP 12 Platform Core</title>
+  <title>Master App Platform - STEP 13 Service Platform</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./core/ui-kit.css">
@@ -81,7 +81,7 @@
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">STEP 12 Core</p>
+            <p class="eyebrow">STEP 13 Service Platform</p>
             <h1>Master App Platform</h1>
             <p id="userStatus">확인 중...</p>
           </div>
@@ -90,7 +90,7 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">Premium Control Workspace · STEP 12 Platform Core</p>
+            <p class="eyebrow">Premium Control Workspace · STEP 13 Service Platform</p>
             <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
             <p>사용자 경험과 관리자 회원관리 Platform Launcher 실행 엔진과 생활관리 앱 테스트 실행을 더했습니다.</p>
           </div>
@@ -144,7 +144,7 @@
               <div class="widget-icon">🔔</div>
               <h3>공지 및 업데이트</h3>
               <p>새 앱 등록과 플랫폼 변경사항을 이곳에서 확인합니다.</p>
-              <span class="widget-badge live">STEP12 Core</span>
+              <span class="widget-badge live">STEP13 Service Platform</span>
             </article>
           </div>
         </section>
@@ -254,6 +254,12 @@
             <button type="button" data-admin-route="members">회원 관리</button>
             <button type="button" data-admin-route="approval">승인 관리</button>
             <button type="button" data-admin-route="apps">앱 관리</button>
+            <button type="button" data-admin-route="details">App Detail</button>
+            <button type="button" data-admin-route="official">Official Apps</button>
+            <button type="button" data-admin-route="deployment">배포 센터</button>
+            <button type="button" data-admin-route="health">Health</button>
+            <button type="button" data-admin-route="backup">Backup</button>
+            <button type="button" data-admin-route="developer">Developer</button>
             <button type="button" data-admin-route="tools">개발 도구</button>
           </div>
 
@@ -377,6 +383,47 @@
               <div id="versionManagerList" class="version-manager-list"><p class="placeholder-text">앱 버전 정보를 불러오는 중입니다.</p></div>
             </div>
 
+          </section>
+
+
+
+          <section class="glass-card service-panel" data-admin-panel="details">
+            <div class="admin-card-title"><h2>App Detail Center</h2><span>Store Detail</span></div>
+            <p class="dashboard-help">앱스토어 카드에서 한 단계 더 들어가 앱 소개 버전 권한 업데이트 내역을 관리합니다.</p>
+            <div class="service-toolbar"><select id="detailAppSelect"><option>앱을 불러오는 중입니다</option></select><button type="button" id="detailReloadBtn">새로고침</button></div>
+            <div id="appDetailPreview" class="service-preview"><p class="placeholder-text">앱을 선택하면 상세 정보가 표시됩니다.</p></div>
+          </section>
+
+          <section class="glass-card service-panel" data-admin-panel="official">
+            <div class="admin-card-title"><h2>Official App Center</h2><span>Verified Apps</span></div>
+            <p class="dashboard-help">플랫폼이 공식 인증한 앱을 관리합니다. 생활관리 앱을 시작으로 AI 메모 일정 금융앱까지 같은 기준으로 확장합니다.</p>
+            <div id="officialAppList" class="service-card-grid"><p class="placeholder-text">공식 앱 목록을 불러오는 중입니다.</p></div>
+          </section>
+
+          <section class="glass-card service-panel" data-admin-panel="deployment">
+            <div class="admin-card-title"><h2>Version Deployment Center</h2><span>Stable / Beta / Rollback</span></div>
+            <p class="dashboard-help">버전 배포 채널을 stable beta rollback 상태로 관리하고 공지와 연결합니다.</p>
+            <div id="deploymentCenterList" class="service-list"><p class="placeholder-text">배포 정보를 불러오는 중입니다.</p></div>
+          </section>
+
+          <section class="glass-card service-panel" data-admin-panel="health">
+            <div class="admin-card-title"><h2>Health Monitor</h2><span>Platform Status</span></div>
+            <p class="dashboard-help">Firebase 인증 Runtime Launcher 알림 게시판 등 핵심 모듈 상태를 점검합니다.</p>
+            <div id="healthMonitorList" class="qa-checklist"><p class="placeholder-text">상태를 점검하는 중입니다.</p></div>
+          </section>
+
+          <section class="glass-card service-panel" data-admin-panel="backup">
+            <div class="admin-card-title"><h2>Backup & Restore Center</h2><span>Export Snapshot</span></div>
+            <p class="dashboard-help">사용자 앱 공지 게시판 매니페스트 설정의 현재 스냅샷을 JSON으로 백업합니다. 복원은 보안 검토 후 다음 단계에서 활성화합니다.</p>
+            <button type="button" id="backupExportBtn">현재 데이터 백업 생성</button>
+            <pre id="backupResult" class="service-pre">아직 백업을 생성하지 않았습니다.</pre>
+          </section>
+
+          <section class="glass-card service-panel" data-admin-panel="developer">
+            <div class="admin-card-title"><h2>Developer Center</h2><span>Manifest / SDK / Runtime Test</span></div>
+            <p class="dashboard-help">앱 등록 전 매니페스트 권한 런처 버전 상태를 점검하는 개발자 모드입니다.</p>
+            <div class="service-toolbar"><select id="developerAppSelect"><option>앱을 불러오는 중입니다</option></select><button type="button" id="developerInspectBtn">앱 검사</button><button type="button" id="sdkGenerateBtn">SDK 초안 생성</button></div>
+            <pre id="developerResult" class="service-pre">앱을 선택하고 검사를 실행하세요.</pre>
           </section>
 
           <details class="glass-card dev-tools-card" data-admin-panel="tools">

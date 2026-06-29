@@ -190,3 +190,8 @@ modules/
 
 ## STEP12-v2 관리자 운영 기능
 앱 관리 화면에서 등록된 앱의 수정 버튼을 눌러 소개글 버전 Entry URL 권한 공개 여부를 다시 저장할 수 있습니다. 알림 센터에는 관리자 공지 작성 영역이 추가되었고 요청 게시판과 공지성 알림은 관리자가 삭제할 수 있습니다.
+
+
+## STEP13 Service Platform
+관리자 센터에 앱 운영을 위한 핵심 센터가 추가되었습니다.
+App Detail Center Official App Center Deployment Center Health Monitor Backup Center Developer Center를 통해 앱 생태계 운영 기반을 제공합니다.

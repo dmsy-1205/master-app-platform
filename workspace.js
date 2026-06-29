@@ -15,6 +15,12 @@ const adminRoutes = {
   members: '[data-admin-panel="members"]',
   approval: '[data-admin-panel="approval"]',
   apps: '[data-admin-panel="apps"]',
+  details: '[data-admin-panel="details"]',
+  official: '[data-admin-panel="official"]',
+  deployment: '[data-admin-panel="deployment"]',
+  health: '[data-admin-panel="health"]',
+  backup: '[data-admin-panel="backup"]',
+  developer: '[data-admin-panel="developer"]',
   tools: '[data-admin-panel="tools"]'
 };
 
