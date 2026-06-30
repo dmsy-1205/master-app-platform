@@ -21,6 +21,8 @@ const adminRoutes = {
   health: '[data-admin-panel="health"]',
   backup: '[data-admin-panel="backup"]',
   developer: '[data-admin-panel="developer"]',
+  statistics: '[data-admin-panel="statistics"]',
+  security: '[data-admin-panel="security"]',
   tools: '[data-admin-panel="tools"]'
 };
 
