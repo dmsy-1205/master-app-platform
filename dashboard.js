@@ -56,6 +56,7 @@ let favoriteIds = new Set();
 let cachedActivities = [];
 let currentAppAccess = {};
 let currentApplicationData = null;
+const ACTIVITY_VISIBLE_LIMIT = 10;
 let dashboardNotices = [];
 
 function setText(el, value) {
@@ -246,13 +247,15 @@ function renderActivityList(target, activities = cachedActivities, compact = fal
     target.innerHTML = '<p class="empty-line">아직 실행 기록이 없습니다.</p>';
     return;
   }
-  const limited = compact ? activities.slice(0, 4) : activities;
+  const limit = compact ? 4 : ACTIVITY_VISIBLE_LIMIT;
+  const limited = activities.slice(0, limit);
+  const hiddenCount = Math.max(0, activities.length - limited.length);
   target.innerHTML = limited.map(item => `
     <article class="activity-item">
       <span class="activity-dot"></span>
       <div><strong>${escapeHtml(item.appName || '이름 없는 앱')}</strong><small>${formatDate(item.launchedAt)} · ${escapeHtml(item.launchMode || 'router')}</small></div>
     </article>
-  `).join('');
+  `).join('') + (hiddenCount && !compact ? `<p class="empty-line">최근 ${ACTIVITY_VISIBLE_LIMIT}개만 표시합니다. 이전 기록 ${hiddenCount}개는 DB에는 보관됩니다.</p>` : '');
 }
 
 async function loadActivityLogs() {

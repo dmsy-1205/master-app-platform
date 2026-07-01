@@ -34,6 +34,7 @@ let users = {};
 let executionLogs = {};
 let currentIsAdmin = false;
 let currentUser = null;
+const NOTIFICATION_VISIBLE_LIMIT = 10;
 
 function escapeHtml(value = '') {
   return String(value)
@@ -83,12 +84,14 @@ function buildNotifications() {
   Object.values(apps || {}).forEach(app => {
     if (app.updateNote) list.push({ level: 'normal', title: `${app.name || '앱'} 업데이트`, text: `${app.version || 'v1.0'} · ${app.updateNote}`, at: app.updatedAt });
   });
-  return list.sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0)).slice(0, 30);
+  return list.sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0));
 }
 
 function renderNotifications() {
   if (!notificationCenterList) return;
-  const notices = buildNotifications();
+  const allNotices = buildNotifications();
+  const notices = allNotices.slice(0, NOTIFICATION_VISIBLE_LIMIT);
+  const hiddenCount = Math.max(0, allNotices.length - notices.length);
   if (!notices.length) {
     notificationCenterList.innerHTML = '<p class="placeholder-text">표시할 알림이 없습니다.</p>';
     return;
@@ -99,7 +102,7 @@ function renderNotifications() {
       <div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)} · ${fmt(item.at)}</small></div>
       ${currentIsAdmin && item.source === 'feedbackBoard' ? `<button type="button" class="mini-danger" data-notice-delete="${escapeHtml(item.id)}">삭제</button>` : ''}
     </article>
-  `).join('');
+  `).join('') + (hiddenCount ? `<p class="placeholder-text">최근 ${NOTIFICATION_VISIBLE_LIMIT}개만 표시합니다. 이전 알림 ${hiddenCount}개는 보관됩니다.</p>` : '');
 }
 
 function renderQa() {
