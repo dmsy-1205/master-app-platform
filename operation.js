@@ -34,8 +34,6 @@ let users = {};
 let executionLogs = {};
 let currentIsAdmin = false;
 let currentUser = null;
-let dismissedNotificationIds = new Set();
-const NOTIFICATION_VISIBLE_LIMIT = 10;
 
 function escapeHtml(value = '') {
   return String(value)
@@ -67,87 +65,30 @@ function flatValues(obj = {}) {
   return Object.values(obj || {}).flatMap(v => (v && typeof v === 'object') ? Object.values(v) : []);
 }
 
-function notificationStorageKey() {
-  return `masterosDismissedNotifications:${currentUser?.uid || 'guest'}`;
-}
-
-function loadDismissedNotifications() {
-  try {
-    dismissedNotificationIds = new Set(JSON.parse(localStorage.getItem(notificationStorageKey()) || '[]'));
-  } catch {
-    dismissedNotificationIds = new Set();
-  }
-}
-
-function saveDismissedNotifications() {
-  try {
-    localStorage.setItem(notificationStorageKey(), JSON.stringify([...dismissedNotificationIds]));
-  } catch {
-    // localStorage가 막힌 환경에서는 화면 갱신만 유지합니다.
-  }
-}
-
-function makeNotificationId(source, key, at = '') {
-  return `${source}:${key || 'item'}:${at || ''}`;
-}
-
 function buildNotifications() {
   const myUid = currentUser?.uid;
   const list = [];
   Object.entries(applications || {}).forEach(([uid, item]) => {
     if (!currentIsAdmin && uid !== myUid) return;
-    const at = item.submittedAt || item.requestedAt || item.updatedAt || '';
-    list.push({
-      id: makeNotificationId('applications', uid, at),
-      level: 'warning',
-      title: `${item.requestedAppName || '앱'} ${statusLabel(item.status || 'pending')}`,
-      text: item.email || uid,
-      at
-    });
+    list.push({ level: 'warning', title: `${item.requestedAppName || '앱'} ${statusLabel(item.status || 'pending')}`, text: item.email || uid, at: item.submittedAt || item.requestedAt });
   });
-  Object.entries(history || {}).forEach(([id, item]) => {
+  Object.values(history || {}).forEach(item => {
     if (!currentIsAdmin && item.uid !== myUid) return;
-    const at = item.reviewedAt || item.processedAt || item.archivedAt || item.updatedAt || '';
-    list.push({
-      id: makeNotificationId('applicationHistory', id, at),
-      level: item.status === 'approved' ? 'normal' : 'warning',
-      title: `${item.requestedAppName || '앱'} ${statusLabel(item.status)}`,
-      text: item.reason || item.email || '',
-      at
-    });
+    list.push({ level: item.status === 'approved' ? 'normal' : 'warning', title: `${item.requestedAppName || '앱'} ${statusLabel(item.status)}`, text: item.reason || item.email || '', at: item.reviewedAt || item.processedAt || item.archivedAt });
   });
   Object.entries(feedback || {}).forEach(([id, item]) => {
     if (!currentIsAdmin && item.uid !== myUid && item.type !== 'notice') return;
-    const at = item.updatedAt || item.createdAt || '';
-    list.push({
-      id: makeNotificationId('feedbackBoard', id, at),
-      level: item.type === 'bug' ? 'critical' : 'normal',
-      title: `${typeLabel(item.type)} · ${item.title || '제목 없음'}`,
-      text: `${statusLabel(item.status || 'open')} ${item.adminReply ? '· 관리자 답변 있음' : ''}`,
-      at
-    });
+    list.push({ source: 'feedbackBoard', id, level: item.type === 'bug' ? 'critical' : 'normal', title: `${typeLabel(item.type)} · ${item.title || '제목 없음'}`, text: `${statusLabel(item.status || 'open')} ${item.adminReply ? '· 관리자 답변 있음' : ''}`, at: item.updatedAt || item.createdAt });
   });
-  Object.entries(apps || {}).forEach(([appId, app]) => {
-    if (!app.updateNote) return;
-    const at = app.updatedAt || app.createdAt || app.version || '';
-    list.push({
-      id: makeNotificationId('apps', appId, at),
-      level: 'normal',
-      title: `${app.name || '앱'} 업데이트`,
-      text: `${app.version || 'v1.0'} · ${app.updateNote}`,
-      at
-    });
+  Object.values(apps || {}).forEach(app => {
+    if (app.updateNote) list.push({ level: 'normal', title: `${app.name || '앱'} 업데이트`, text: `${app.version || 'v1.0'} · ${app.updateNote}`, at: app.updatedAt });
   });
-  return list
-    .filter(item => !dismissedNotificationIds.has(item.id))
-    .sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0));
+  return list.sort((a, b) => new Date(b.at || 0) - new Date(a.at || 0)).slice(0, 30);
 }
 
 function renderNotifications() {
   if (!notificationCenterList) return;
-  const allNotices = buildNotifications();
-  const notices = allNotices.slice(0, NOTIFICATION_VISIBLE_LIMIT);
-  const hiddenCount = Math.max(0, allNotices.length - notices.length);
+  const notices = buildNotifications();
   if (!notices.length) {
     notificationCenterList.innerHTML = '<p class="placeholder-text">표시할 알림이 없습니다.</p>';
     return;
@@ -156,9 +97,9 @@ function renderNotifications() {
     <article class="op-notice level-${escapeHtml(item.level)}">
       <span>${item.level === 'critical' ? '🚨' : item.level === 'warning' ? '⚠️' : '🔔'}</span>
       <div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)} · ${fmt(item.at)}</small></div>
-      <button type="button" class="mini-danger" data-notice-hide="${escapeHtml(item.id)}">삭제</button>
+      ${currentIsAdmin && item.source === 'feedbackBoard' ? `<button type="button" class="mini-danger" data-notice-delete="${escapeHtml(item.id)}">삭제</button>` : ''}
     </article>
-  `).join('') + (hiddenCount ? `<p class="placeholder-text">최근 ${NOTIFICATION_VISIBLE_LIMIT}개만 표시합니다. 이전 알림 ${hiddenCount}개는 보관됩니다.</p>` : '');
+  `).join('');
 }
 
 function renderQa() {
@@ -308,7 +249,8 @@ function renderDeveloperInspector() {
 App ID: ${id}
 App Name: ${app.name || '-'}
 
-` + checks.map(([name, ok]) => `${ok ? 'PASS' : 'WARN'}  ${name}`).join('\n');
+` + checks.map(([name, ok]) => `${ok ? 'PASS' : 'WARN'}  ${name}`).join('
+');
 }
 
 function renderSdkDraft() {
@@ -354,7 +296,6 @@ window.addEventListener('master-auth-role-changed', (event) => {
 
 auth.onAuthStateChanged(user => {
   currentUser = user;
-  loadDismissedNotifications();
   refreshAll();
 });
 
@@ -367,12 +308,15 @@ onValue(ref(db, 'executionLogs'), snap => { executionLogs = snap.val() || {}; re
 
 if (notificationRefreshBtn) notificationRefreshBtn.addEventListener('click', refreshAll);
 if (notificationCenterList) {
-  notificationCenterList.addEventListener('click', (event) => {
-    const btn = event.target.closest('[data-notice-hide]');
-    if (!btn) return;
-    dismissedNotificationIds.add(btn.dataset.noticeHide);
-    saveDismissedNotifications();
-    renderNotifications();
+  notificationCenterList.addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-notice-delete]');
+    if (!btn || !currentIsAdmin) return;
+    if (!confirm('이 알림 또는 공지 항목을 삭제할까요?')) return;
+    try {
+      await remove(ref(db, `feedbackBoard/${btn.dataset.noticeDelete}`));
+    } catch (error) {
+      alert('삭제 실패: ' + error.message);
+    }
   });
 }
 if (adminNoticeSubmitBtn) {

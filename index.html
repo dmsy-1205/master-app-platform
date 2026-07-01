@@ -8,51 +8,6 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./core/ui-kit.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
-
-  <style>
-    .dashboard-notification-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 12px;
-      max-height: 220px;
-      overflow: auto;
-    }
-    .dashboard-notice-row {
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 12px;
-      background: rgba(255,255,255,.04);
-      padding: 0;
-    }
-    .dashboard-notice-row summary {
-      cursor: pointer;
-      list-style: none;
-      display: grid;
-      grid-template-columns: 22px minmax(0, 1fr) auto;
-      gap: 8px;
-      align-items: center;
-      padding: 10px 12px;
-    }
-    .dashboard-notice-row summary::-webkit-details-marker { display: none; }
-    .dashboard-notice-row summary strong {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: .92rem;
-    }
-    .dashboard-notice-row summary small {
-      white-space: nowrap;
-      opacity: .72;
-      font-size: .72rem;
-    }
-    .dashboard-notice-row p {
-      margin: 0;
-      padding: 0 12px 12px 42px;
-      font-size: .85rem;
-      line-height: 1.55;
-      opacity: .86;
-    }
-  </style>
 </head>
 <body>
   <main class="platform-root">
@@ -185,14 +140,11 @@
                 <span class="widget-badge">아직 없음</span>
               </div>
             </article>
-            <article class="home-widget dashboard-notice-widget">
+            <article class="home-widget">
               <div class="widget-icon">🔔</div>
               <h3>공지 및 업데이트</h3>
-              <p>관리자 공지와 플랫폼 변경사항을 이곳에서 확인합니다.</p>
-              <div id="dashboardNotificationList" class="dashboard-notification-list">
-                <p class="placeholder-text">공지와 업데이트를 불러오는 중입니다.</p>
-              </div>
-              <span class="widget-badge live">STEP16 Notice Sync</span>
+              <p>새 앱 등록과 플랫폼 변경사항을 이곳에서 확인합니다.</p>
+              <span class="widget-badge live">STEP13 Service Platform</span>
             </article>
           </div>
         </section>
@@ -308,8 +260,6 @@
             <button type="button" data-admin-route="health">Health</button>
             <button type="button" data-admin-route="backup">Backup</button>
             <button type="button" data-admin-route="developer">Developer</button>
-            <button type="button" data-admin-route="statistics">Statistics</button>
-            <button type="button" data-admin-route="security">Security Scan</button>
             <button type="button" data-admin-route="tools">개발 도구</button>
           </div>
 
@@ -476,20 +426,6 @@
             <pre id="developerResult" class="service-pre">앱을 선택하고 검사를 실행하세요.</pre>
           </section>
 
-          <section class="glass-card service-panel" data-admin-panel="statistics">
-            <div class="admin-card-title"><h2>Statistics Dashboard</h2><span>Realtime Metrics</span></div>
-            <p class="dashboard-help">사용자 앱 실행 승인 거절 오류 데이터를 Firebase 기준으로 집계합니다.</p>
-            <div id="statisticsKpiGrid" class="step14-kpi-grid"><p class="placeholder-text">통계를 불러오는 중입니다.</p></div>
-            <div id="statisticsDetailList" class="service-list"><p class="placeholder-text">앱별 실행 통계를 기다리는 중입니다.</p></div>
-          </section>
-
-          <section class="glass-card service-panel" data-admin-panel="security">
-            <div class="admin-card-title"><h2>Security Scan Center</h2><span>Entry / Manifest / Permission</span></div>
-            <p class="dashboard-help">등록된 앱의 Entry URL Manifest Permission Launch Token 준비 상태를 자동 검사합니다.</p>
-            <div class="service-toolbar"><select id="securityAppSelect"><option>앱을 불러오는 중입니다</option></select><button type="button" id="securityScanBtn">보안 검사</button><button type="button" id="securityScanAllBtn">전체 검사</button></div>
-            <div id="securityScanResult" class="service-list"><p class="placeholder-text">검사를 실행하면 보안 점수가 표시됩니다.</p></div>
-          </section>
-
           <details class="glass-card dev-tools-card" data-admin-panel="tools">
             <summary>개발 테스트 도구 열기</summary>
             <div class="dev-tools-grid">
@@ -525,7 +461,6 @@
   <script type="module" src="./dashboard.js"></script>
   <script type="module" src="./feedback.js"></script>
   <script type="module" src="./operation.js"></script>
-  <script type="module" src="./step14.js"></script>
   <script type="module" src="./workspace.js"></script>
 </body>
 </html>
