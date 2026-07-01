@@ -249,8 +249,7 @@ function renderDeveloperInspector() {
 App ID: ${id}
 App Name: ${app.name || '-'}
 
-` + checks.map(([name, ok]) => `${ok ? 'PASS' : 'WARN'}  ${name}`).join('
-');
+` + checks.map(([name, ok]) => `${ok ? 'PASS' : 'WARN'}  ${name}`).join('\n');
 }
 
 function renderSdkDraft() {
