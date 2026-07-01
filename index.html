@@ -8,6 +8,51 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./core/ui-kit.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
+
+  <style>
+    .dashboard-notification-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+      max-height: 220px;
+      overflow: auto;
+    }
+    .dashboard-notice-row {
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      background: rgba(255,255,255,.04);
+      padding: 0;
+    }
+    .dashboard-notice-row summary {
+      cursor: pointer;
+      list-style: none;
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+    }
+    .dashboard-notice-row summary::-webkit-details-marker { display: none; }
+    .dashboard-notice-row summary strong {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: .92rem;
+    }
+    .dashboard-notice-row summary small {
+      white-space: nowrap;
+      opacity: .72;
+      font-size: .72rem;
+    }
+    .dashboard-notice-row p {
+      margin: 0;
+      padding: 0 12px 12px 42px;
+      font-size: .85rem;
+      line-height: 1.55;
+      opacity: .86;
+    }
+  </style>
 </head>
 <body>
   <main class="platform-root">

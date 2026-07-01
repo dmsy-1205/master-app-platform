@@ -173,12 +173,32 @@ function buildNotifications(apps = [], approvalStatus = 'none') {
   return notices;
 }
 
+function renderDashboardNoticeWidget() {
+  if (!dashboardNotificationList) return;
+
+  if (!dashboardNotices.length) {
+    dashboardNotificationList.innerHTML = '<p class="placeholder-text">등록된 공지가 아직 없습니다.</p>';
+    return;
+  }
+
+  dashboardNotificationList.innerHTML = dashboardNotices.map((item, index) => `
+    <details class="dashboard-notice-row" ${index === 0 ? 'open' : ''}>
+      <summary>
+        <span class="notice-row-icon">📢</span>
+        <strong>${escapeHtml(item.title || '공지')}</strong>
+        <small>${formatDate(item.createdAt || item.updatedAt)}</small>
+      </summary>
+      <p>${escapeHtml(item.content || '공지 내용이 없습니다.')}</p>
+    </details>
+  `).join('');
+}
+
 function renderNotifications(apps = cachedApps, approvalStatus = currentApprovalStatus) {
   const notices = buildNotifications(apps, approvalStatus);
   if (notificationBadge) notificationBadge.textContent = String(notices.length);
   const html = notices.map(item => `<article class="notice-item"><span>${item.icon}</span><div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}${item.at ? ` · ${formatDate(item.at)}` : ''}</small></div></article>`).join('');
   if (notificationList) notificationList.innerHTML = html;
-  if (dashboardNotificationList) dashboardNotificationList.innerHTML = html;
+  renderDashboardNoticeWidget();
 }
 
 function syncDashboardNotices() {
