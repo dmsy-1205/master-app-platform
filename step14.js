@@ -3,6 +3,7 @@ import { ref, get, onValue, update } from "https://www.gstatic.com/firebasejs/10
 import { buildAppManifest } from './security.js';
 
 const state = { apps: {}, users: {}, applications: {}, applicationHistory: {}, notices: {}, feedback: {}, executionLogs: {}, launchTokens: {} };
+const realtimeErrors = {};
 
 const $ = (id) => document.getElementById(id);
 const esc = (value = '') => String(value ?? '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[ch]));
@@ -173,9 +174,34 @@ function bindEvents() {
   $('securityScanAllBtn')?.addEventListener('click', () => renderSecurityScan(''));
 }
 
+function renderRealtimeErrors() {
+  const message = Object.entries(realtimeErrors).map(([key, msg]) => `${key}: ${msg}`).join('\n');
+  if (!message) return;
+  ['statisticsDetailList', 'securityScanResult', 'developerResult'].forEach((id) => {
+    const target = $(id);
+    if (!target) return;
+    if (id === 'developerResult') target.textContent = `Firebase 읽기 권한 또는 연결 확인이 필요합니다.\n${message}`;
+    else target.innerHTML = `<p class="placeholder-text">Firebase 읽기 권한 또는 연결 확인이 필요합니다.<br>${esc(message).replace(/\n/g, '<br>')}</p>`;
+  });
+}
+
 function startRealtime() {
   const map = { apps: 'apps', users: 'users', applications: 'applications', applicationHistory: 'applicationHistory', notices: 'notices', feedback: 'feedback', executionLogs: 'executionLogs', launchTokens: 'launchTokens' };
-  Object.entries(map).forEach(([key, path]) => onValue(ref(db, path), snap => { state[key] = snap.val() || {}; refreshAll(); }));
+  Object.entries(map).forEach(([key, path]) => onValue(
+    ref(db, path),
+    snap => {
+      delete realtimeErrors[key];
+      state[key] = snap.val() || {};
+      refreshAll();
+    },
+    err => {
+      realtimeErrors[key] = err?.message || 'unknown error';
+      console.warn(`[STEP14] ${path} realtime listener skipped:`, err);
+      state[key] = {};
+      refreshAll();
+      renderRealtimeErrors();
+    }
+  ));
 }
 
 document.addEventListener('DOMContentLoaded', () => { bindEvents(); startRealtime(); });

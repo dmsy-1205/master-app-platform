@@ -14,6 +14,7 @@ const adminRoutes = {
   qa: '[data-admin-panel="qa"]',
   members: '[data-admin-panel="members"]',
   approval: '[data-admin-panel="approval"]',
+  data: '[data-admin-panel="data"]',
   apps: '[data-admin-panel="apps"]',
   details: '[data-admin-panel="details"]',
   official: '[data-admin-panel="official"]',
@@ -47,15 +48,9 @@ function showWorkspaceRoute(route = 'dashboard') {
 function showAdminRoute(route = 'overview') {
   const selected = adminRoutes[route] ? route : 'overview';
   Object.values(adminRoutes).forEach((selector) => {
-    document.querySelectorAll(selector).forEach((el) => {
-      el.classList.add('admin-panel-hidden');
-      el.classList.remove('admin-panel-active');
-    });
+    document.querySelectorAll(selector).forEach((el) => el.classList.add('admin-panel-hidden'));
   });
-  document.querySelectorAll(adminRoutes[selected]).forEach((el) => {
-    el.classList.remove('admin-panel-hidden');
-    el.classList.add('admin-panel-active');
-  });
+  document.querySelectorAll(adminRoutes[selected]).forEach((el) => el.classList.remove('admin-panel-hidden'));
   document.querySelectorAll('[data-admin-route]').forEach((button) => {
     button.classList.toggle('active', button.dataset.adminRoute === selected);
   });

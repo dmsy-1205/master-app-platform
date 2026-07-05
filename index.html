@@ -112,7 +112,7 @@
 
     <section class="workspace-shell" data-auth="private" style="display:none;">
       <aside class="side-nav">
-        <div class="side-logo"><span>◆</span><strong>HearU<span>2nite</span></strong></div><div class="side-caption">Admin Center</div>
+        <div class="side-logo"><span>◆</span><strong>Master<span>OS</span></strong></div><div class="side-caption">Unified App Control</div>
         <a href="#" data-workspace-route="dashboard">Dashboard</a>
         <a href="#" data-workspace-route="appstore">App Store</a>
         <a href="#" data-workspace-route="runtime">My Runtime</a>
@@ -126,8 +126,8 @@
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">HearU2nite Platform · Admin Center</p>
-            <h1>HearU2nite 운영센터</h1>
+            <p class="eyebrow">STEP 13 Service Platform</p>
+            <h1>Master App Platform</h1>
             <p id="userStatus">확인 중...</p>
           </div>
           <button id="logoutBtn" class="logout-action">로그아웃</button>
@@ -135,9 +135,9 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">HearMe2nite Service Operation Center</p>
-            <h2>HearMe2nite 전체 서비스를 관리하는 운영센터</h2>
-            <p>사용자 앱은 기록에 집중하고, 운영 기능은 HearU2nite에서 분리 관리합니다.</p>
+            <p class="eyebrow">Premium Control Workspace · STEP 13 Service Platform</p>
+            <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
+            <p>사용자 경험과 관리자 회원관리 Platform Launcher 실행 엔진과 생활관리 앱 테스트 실행을 더했습니다.</p>
           </div>
           <div class="hero-metrics">
             <div><strong id="dashboardRole">-</strong><span>권한</span></div>
@@ -291,61 +291,37 @@
 
         <section class="admin-center" id="admin" data-auth="admin" style="display:none;">
           <div class="admin-center-head glass-card">
-            <p class="eyebrow">HearU2nite Admin Center · v1.1 STEP1</p>
-            <h2>운영센터 Dashboard</h2>
-            <p>회원가입 승인 구조는 유지하고, HearMe2nite 서비스 운영 현황을 한눈에 보는 Admin Center로 확장합니다.</p>
+            <p class="eyebrow">Admin Center · SPA</p>
+            <h2>관리자 센터</h2>
+            <p>관리자 기능을 메뉴별 화면으로 분리했습니다. 필요한 관리 작업만 선택해 집중할 수 있습니다.</p>
           </div>
 
           <div class="admin-spa-tabs glass-card" role="tablist" aria-label="관리자 메뉴">
-            <button type="button" data-admin-route="overview" class="active">Dashboard</button>
-            <button type="button" data-admin-route="approval">승인관리</button>
-            <button type="button" data-admin-route="members">회원관리</button>
-            <button type="button" data-admin-route="qa">운영로그</button>
-            <button type="button" data-admin-route="official">공지사항</button>
-            <button type="button" data-admin-route="statistics">통계</button>
-            <button type="button" data-admin-route="health">설정</button>
+            <button type="button" data-admin-route="overview" class="active">Overview</button>
+            <button type="button" data-admin-route="qa">QA Dashboard</button>
+            <button type="button" data-admin-route="members">회원 관리</button>
+            <button type="button" data-admin-route="approval">승인 관리</button>
+            <button type="button" data-admin-route="data">데이터 관리</button>
             <button type="button" data-admin-route="apps">앱 관리</button>
             <button type="button" data-admin-route="details">App Detail</button>
+            <button type="button" data-admin-route="official">Official Apps</button>
             <button type="button" data-admin-route="deployment">배포 센터</button>
+            <button type="button" data-admin-route="health">Health</button>
             <button type="button" data-admin-route="backup">Backup</button>
             <button type="button" data-admin-route="developer">Developer</button>
+            <button type="button" data-admin-route="statistics">Statistics</button>
             <button type="button" data-admin-route="security">Security Scan</button>
             <button type="button" data-admin-route="tools">개발 도구</button>
           </div>
 
-          <section class="admin-overview glass-card admin-dashboard-v11" data-admin-panel="overview">
-            <div class="admin-dashboard-title-row">
-              <div>
-                <p class="eyebrow">Admin Dashboard · STEP1</p>
-                <h2>오늘의 운영 현황</h2>
-                <p class="dashboard-help">이번 단계는 UI 리모델링 전용입니다. Firebase 데이터 집계와 실제 삭제 처리는 이후 STEP에서 연결합니다.</p>
-              </div>
-              <span class="admin-step-badge">v1.1 STEP1</span>
-            </div>
-
-            <div class="admin-kpi-grid admin-kpi-grid-v11">
-              <div><span>오늘 가입</span><strong>0</strong><small>신규 가입자</small></div>
-              <div><span>승인 대기</span><strong id="adminPendingKpi">0</strong><small>승인관리에서 확인</small></div>
-              <div><span>삭제 요청</span><strong>0</strong><small>STEP2 데이터관리 예정</small></div>
-              <div><span>문의</span><strong>0</strong><small>문의관리 예정</small></div>
-              <div><span>온라인 사용자</span><strong>0</strong><small>실시간 접속 통계 예정</small></div>
-              <div><span>최근 활동</span><strong>0</strong><small>운영로그 예정</small></div>
-            </div>
-
-            <div class="admin-dashboard-split">
-              <article class="admin-dashboard-panel">
-                <div class="admin-panel-head"><strong>최근 활동</strong><span>Activity</span></div>
-                <p class="placeholder-text">아직 활동 내역이 없습니다.</p>
-              </article>
-              <article class="admin-dashboard-panel">
-                <div class="admin-panel-head"><strong>빠른 메뉴</strong><span>Quick Menu</span></div>
-                <div class="admin-quick-grid">
-                  <button type="button" data-admin-route="approval">승인관리</button>
-                  <button type="button" data-admin-route="members">회원관리</button>
-                  <button type="button" data-admin-route="official">공지사항</button>
-                  <button type="button" data-admin-route="qa">운영로그</button>
-                </div>
-              </article>
+          <section class="admin-overview glass-card" data-admin-panel="overview">
+            <p class="eyebrow">Admin Overview</p>
+            <h2>관리자 작업 현황</h2>
+            <div class="admin-kpi-grid">
+              <div><span>승인 대기</span><strong id="adminPendingKpi">실시간 동기화</strong><small>승인 대시보드에서 확인</small></div>
+              <div><span>등록 앱</span><strong id="adminAppsKpi">라우팅 테이블</strong><small>앱 관리 메뉴에서 관리</small></div>
+              <div><span>권한 상태</span><strong>관리자</strong><small>Firebase admins/users.role 기준</small></div>
+              <div><span>콘솔 모드</span><strong>SPA</strong><small>STEP9-v1 적용</small></div>
             </div>
           </section>
 
@@ -387,6 +363,59 @@
             <button id="loadAppsBtn">전체 신청 내역 실시간 동기화</button>
             <div id="appsDashboardList" class="apps-list-container">
               <p class="placeholder-text">동기화 버튼을 누르거나 내역을 기다려주세요.</p>
+            </div>
+          </section>
+
+
+
+          <section class="glass-card data-management-panel" data-admin-panel="data">
+            <div class="admin-card-title">
+              <div>
+                <p class="eyebrow">HearMe2nite Data Admin · STEP2</p>
+                <h2>데이터 관리</h2>
+              </div>
+              <span>Delete Request Control</span>
+            </div>
+            <p class="dashboard-help">HearMe2nite 사용자는 삭제를 직접 실행하지 않고 요청만 보냅니다. HearU2nite 관리자는 이 화면에서 삭제 요청을 검토하고 승인 또는 보류합니다.</p>
+            <div class="data-admin-tabs" aria-label="데이터 관리 하위 메뉴">
+              <button type="button" class="active">삭제 요청</button>
+              <button type="button" disabled>삭제 로그</button>
+              <button type="button" disabled>데이터 조회</button>
+            </div>
+            <div class="data-admin-summary">
+              <article><span>삭제 요청</span><strong>0</strong><small>Firebase 연동 예정</small></article>
+              <article><span>검토 중</span><strong>0</strong><small>UNDER_REVIEW</small></article>
+              <article><span>승인 대기</span><strong>0</strong><small>APPROVED 전 단계</small></article>
+              <article><span>완료</span><strong>0</strong><small>실제 삭제는 다음 STEP</small></article>
+            </div>
+            <div class="delete-request-layout">
+              <div class="delete-request-list">
+                <div class="delete-request-head">
+                  <strong>삭제 요청 목록</strong>
+                  <small>사용자 · Room · 요청일 · 상태</small>
+                </div>
+                <div class="delete-request-empty">
+                  <strong>현재 삭제 요청이 없습니다.</strong>
+                  <p>다음 STEP에서 Firebase <code>deleteRequests</code>를 연결하면 요청 목록이 이곳에 표시됩니다.</p>
+                </div>
+              </div>
+              <div class="delete-request-detail">
+                <div class="delete-request-head">
+                  <strong>요청 상세</strong>
+                  <small>관리자 전용 검토 영역</small>
+                </div>
+                <label>삭제 사유</label>
+                <div class="readonly-box">요청을 선택하면 사용자가 작성한 삭제 사유가 표시됩니다.</div>
+                <label>관리자 메모 <span>내부 전용</span></label>
+                <textarea placeholder="관리자만 확인하는 내부 메모입니다." disabled></textarea>
+                <label>사용자에게 전달할 메시지</label>
+                <textarea placeholder="사용자에게 표시될 답변 메시지입니다." disabled></textarea>
+                <div class="delete-request-actions">
+                  <button type="button" disabled>승인</button>
+                  <button type="button" disabled class="hold-action">보류</button>
+                </div>
+                <p class="data-admin-warning">이번 STEP에서는 UI 구조만 준비합니다. 실제 삭제 실행은 아직 구현하지 않습니다.</p>
+              </div>
             </div>
           </section>
 
