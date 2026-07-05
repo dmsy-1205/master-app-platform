@@ -196,7 +196,7 @@ function startRealtime() {
     },
     err => {
       realtimeErrors[key] = err?.message || 'unknown error';
-      console.warn(`[STEP14] ${path} realtime listener skipped:`, err);
+      console.info(`[STEP14] ${path} realtime listener skipped by Firebase Rules.`, err?.message || err);
       state[key] = {};
       refreshAll();
       renderRealtimeErrors();

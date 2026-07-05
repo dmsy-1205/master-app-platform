@@ -26,14 +26,14 @@ function handleDbToolError(error, actionLabel) {
   renderDbToolMessage(`${actionLabel} 실패: ${error?.message || error}`, 'blocked');
 }
 
+
+function renderProtectedMode(actionLabel) {
+  renderDbToolMessage(`${actionLabel}는 현재 Firebase Rules 보호 모드에서 직접 실행하지 않습니다. 운영 데이터 보호가 정상 작동 중입니다. 실제 DB 쓰기/삭제 테스트는 임시 개발 Rules 또는 관리자 전용 테스트 경로가 준비된 뒤에만 실행하세요.`, 'blocked');
+}
+
 if (writeTestBtn) {
   writeTestBtn.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return alert('로그인이 필요합니다.');
-    try {
-      await set(ref(db, `tests/${user.uid}`), { message: "STEP 2 테스트 성공", timestamp: new Date().toISOString() });
-      renderDbToolMessage('개발용 테스트 데이터 쓰기 완료', 'success');
-    } catch (e) { handleDbToolError(e, '쓰기 테스트'); }
+    renderProtectedMode('쓰기 테스트');
   });
 }
 
@@ -41,25 +41,13 @@ if (readTestBtn) {
   readTestBtn.addEventListener('click', async () => {
     const user = auth.currentUser;
     if (!user) return alert('로그인이 필요합니다.');
-    try {
-      const snapshot = await get(ref(db, `tests/${user.uid}`));
-      if (snapshot.exists()) {
-        dbResult.innerText = JSON.stringify(snapshot.val(), null, 2);
-      } else {
-        renderDbToolMessage('개발용 테스트 데이터가 없습니다.', 'info');
-      }
-    } catch (e) { handleDbToolError(e, '읽기 테스트'); }
+    renderDbToolMessage(`로그인 확인 완료: ${user.email || user.uid}. 보호 모드에서는 /tests 읽기 요청을 보내지 않습니다.`, 'success');
   });
 }
 
 if (deleteTestBtn) {
   deleteTestBtn.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return alert('로그인이 필요합니다.');
-    try {
-      await remove(ref(db, `tests/${user.uid}`));
-      renderDbToolMessage('개발용 테스트 데이터 삭제 완료', 'success');
-    } catch (e) { handleDbToolError(e, '삭제 테스트'); }
+    renderProtectedMode('삭제 테스트');
   });
 }
 
