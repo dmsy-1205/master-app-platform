@@ -186,8 +186,19 @@ function renderRealtimeErrors() {
 }
 
 function startRealtime() {
-  const map = { apps: 'apps', users: 'users', applications: 'applications', applicationHistory: 'applicationHistory', notices: 'notices', feedback: 'feedback', executionLogs: 'executionLogs', launchTokens: 'launchTokens' };
-  Object.entries(map).forEach(([key, path]) => onValue(
+  // STEP2 LOGIN HOTFIX
+  // 로그인 직후 Firebase Rules가 차단하는 운영 확장 경로(notices, feedback, launchTokens)는
+  // 초기 realtime listener에서 제외한다. 기능은 삭제하지 않고, 권한이 확정된 이후 단계에서
+  // 각 메뉴/모듈에서 필요한 시점에 연결한다.
+  const coreMap = {
+    apps: 'apps',
+    users: 'users',
+    applications: 'applications',
+    applicationHistory: 'applicationHistory',
+    executionLogs: 'executionLogs'
+  };
+
+  Object.entries(coreMap).forEach(([key, path]) => onValue(
     ref(db, path),
     snap => {
       delete realtimeErrors[key];
@@ -195,11 +206,17 @@ function startRealtime() {
       refreshAll();
     },
     err => {
-      realtimeErrors[key] = err?.message || 'unknown error';
-      console.info(`[STEP14] ${path} realtime listener skipped by Firebase Rules.`, err?.message || err);
+      const message = err?.message || 'unknown error';
       state[key] = {};
       refreshAll();
-      renderRealtimeErrors();
+
+      // permission_denied는 운영 보안 정책에 의해 차단된 상태이므로
+      // 콘솔 오류처럼 노출하지 않는다. 실제 연결 문제만 개발 콘솔에 남긴다.
+      if (!/permission_denied|Permission denied/i.test(message)) {
+        realtimeErrors[key] = message;
+        console.warn(`[STEP14] ${path} realtime listener failed:`, message);
+        renderRealtimeErrors();
+      }
     }
   ));
 }
