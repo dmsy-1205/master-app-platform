@@ -5,6 +5,26 @@ import { registerSubApp, updateSubApp, listenSubApps, updateAppStatus, normalize
 const makeAdminBtn = document.getElementById('makeAdminBtn');
 const checkAdminBtn = document.getElementById('checkAdminBtn');
 const adminResult = document.getElementById('adminResult');
+
+function renderAdminToolMessage(message, type = 'info') {
+  if (!adminResult) return;
+  const prefix = type === 'blocked' ? '보안 차단' : type === 'success' ? '정상' : '안내';
+  adminResult.innerText = `${prefix}: ${message}`;
+}
+
+function isPermissionDenied(error) {
+  const text = String(error?.code || error?.message || error || '').toLowerCase();
+  return text.includes('permission_denied') || text.includes('permission denied') || text.includes('permission-denied');
+}
+
+function handleAdminToolError(error, actionLabel) {
+  console.warn(`[MasterOS AdminTool] ${actionLabel} blocked or failed`, error);
+  if (isPermissionDenied(error)) {
+    renderAdminToolMessage('Firebase Rules가 수동 관리자 등록을 차단했습니다. 운영 보호가 작동 중인 정상 상태입니다. 관리자 권한은 기존 승인 구조와 Rules 기준으로 유지하세요.', 'blocked');
+    return;
+  }
+  renderAdminToolMessage(`${actionLabel} 실패: ${error?.message || error}`, 'blocked');
+}
 const adminDashboardSection = document.getElementById('adminDashboardSection');
 const loadAppsBtn = document.getElementById('loadAppsBtn');
 const appsDashboardList = document.getElementById('appsDashboardList');
@@ -25,11 +45,11 @@ if (makeAdminBtn) {
     try {
       await set(ref(db, `admins/${user.uid}`), true);
       await update(ref(db, `users/${user.uid}`), { role: 'admin', updatedAt: new Date().toISOString() });
-      adminResult.innerText = `현재 계정(${user.email})을 시스템 관리자로 등록 완료! 로그아웃 후 재로그인해도 관리자 권한이 유지됩니다.`;
+      renderAdminToolMessage(`현재 계정(${user.email})을 시스템 관리자로 등록 완료! 로그아웃 후 재로그인해도 관리자 권한이 유지됩니다.`, 'success');
       document.querySelectorAll('[data-auth="admin"]').forEach(el => { el.style.display = ''; });
       if (adminDashboardSection) adminDashboardSection.style.display = '';
       window.dispatchEvent(new CustomEvent('master-auth-role-refresh-request'));
-    } catch (e) { adminResult.innerText = "에러: " + e.message; }
+    } catch (e) { handleAdminToolError(e, '현재 계정 관리자 등록'); }
   });
 }
 
@@ -45,15 +65,15 @@ if (checkAdminBtn) {
       const userData = userSnap.exists() ? userSnap.val() : {};
       const isAdmin = (adminSnap.exists() && adminSnap.val() === true) || userData.role === 'admin';
       if (isAdmin) {
-        adminResult.innerText = "권한 검증 결과: [최고 관리자 권한 확인됨]";
+        renderAdminToolMessage('권한 검증 결과: 최고 관리자 권한 확인됨', 'success');
         document.querySelectorAll('[data-auth="admin"]').forEach(el => { el.style.display = ''; });
         if (adminDashboardSection) adminDashboardSection.style.display = '';
       } else {
-        adminResult.innerText = "권한 검증 결과: [일반 사용자 계정 - 권한 없음]";
+        renderAdminToolMessage('권한 검증 결과: 일반 사용자 계정 - 권한 없음', 'info');
         document.querySelectorAll('[data-auth="admin"]').forEach(el => { el.style.display = 'none'; });
         if (adminDashboardSection) adminDashboardSection.style.display = 'none';
       }
-    } catch (e) { adminResult.innerText = "검증 에러: " + e.message; }
+    } catch (e) { handleAdminToolError(e, '관리자 권한 확인'); }
   });
 }
 

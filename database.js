@@ -6,14 +6,34 @@ const readTestBtn = document.getElementById('readTestBtn');
 const deleteTestBtn = document.getElementById('deleteTestBtn');
 const dbResult = document.getElementById('dbResult');
 
+function renderDbToolMessage(message, type = 'info') {
+  if (!dbResult) return;
+  const prefix = type === 'blocked' ? '보안 차단' : type === 'success' ? '정상' : '안내';
+  dbResult.innerText = `${prefix}: ${message}`;
+}
+
+function isPermissionDenied(error) {
+  const text = String(error?.code || error?.message || error || '').toLowerCase();
+  return text.includes('permission_denied') || text.includes('permission denied') || text.includes('permission-denied');
+}
+
+function handleDbToolError(error, actionLabel) {
+  console.warn(`[MasterOS DevTool] ${actionLabel} blocked or failed`, error);
+  if (isPermissionDenied(error)) {
+    renderDbToolMessage('Firebase Rules가 개발용 DB 테스트를 차단했습니다. 운영 데이터 보호가 작동 중인 정상 상태입니다. 실제 기능 검수는 승인관리/데이터관리 화면에서 진행하세요.', 'blocked');
+    return;
+  }
+  renderDbToolMessage(`${actionLabel} 실패: ${error?.message || error}`, 'blocked');
+}
+
 if (writeTestBtn) {
   writeTestBtn.addEventListener('click', async () => {
     const user = auth.currentUser;
     if (!user) return alert('로그인이 필요합니다.');
     try {
       await set(ref(db, `tests/${user.uid}`), { message: "STEP 2 테스트 성공", timestamp: new Date().toISOString() });
-      dbResult.innerText = "데이터 쓰기 완료!";
-    } catch (e) { dbResult.innerText = "에러: " + e.message; }
+      renderDbToolMessage('개발용 테스트 데이터 쓰기 완료', 'success');
+    } catch (e) { handleDbToolError(e, '쓰기 테스트'); }
   });
 }
 
@@ -23,8 +43,12 @@ if (readTestBtn) {
     if (!user) return alert('로그인이 필요합니다.');
     try {
       const snapshot = await get(ref(db, `tests/${user.uid}`));
-      dbResult.innerText = snapshot.exists() ? JSON.stringify(snapshot.val(), null, 2) : "데이터가 없습니다.";
-    } catch (e) { dbResult.innerText = "에러: " + e.message; }
+      if (snapshot.exists()) {
+        dbResult.innerText = JSON.stringify(snapshot.val(), null, 2);
+      } else {
+        renderDbToolMessage('개발용 테스트 데이터가 없습니다.', 'info');
+      }
+    } catch (e) { handleDbToolError(e, '읽기 테스트'); }
   });
 }
 
@@ -34,8 +58,8 @@ if (deleteTestBtn) {
     if (!user) return alert('로그인이 필요합니다.');
     try {
       await remove(ref(db, `tests/${user.uid}`));
-      dbResult.innerText = "데이터 삭제 완료!";
-    } catch (e) { dbResult.innerText = "에러: " + e.message; }
+      renderDbToolMessage('개발용 테스트 데이터 삭제 완료', 'success');
+    } catch (e) { handleDbToolError(e, '삭제 테스트'); }
   });
 }
 
