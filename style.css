@@ -2569,3 +2569,92 @@ pre {
     grid-template-columns: 1fr;
   }
 }
+
+
+.delete-request-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(125, 160, 240, .22);
+  border-radius: 18px;
+  background: rgba(7, 13, 34, .58);
+  padding: 14px 16px;
+}
+.delete-request-toolbar small {
+  display: block;
+  margin-top: 4px;
+  color: #aebbd2;
+  font-weight: 800;
+}
+.delete-request-toolbar button,
+.delete-request-detail select {
+  border: 1px solid rgba(125, 160, 240, .24);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, .88);
+  color: #eef6ff;
+  padding: 10px 12px;
+}
+.delete-request-items {
+  display: grid;
+  gap: 10px;
+}
+.delete-request-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(125, 160, 240, .2);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, .72);
+  color: #eef6ff;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+}
+.delete-request-item:hover,
+.delete-request-item.active {
+  border-color: rgba(34, 211, 238, .7);
+  background: rgba(14, 116, 144, .22);
+}
+.delete-request-item-top,
+.delete-request-item-bottom,
+.delete-request-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.delete-request-item small,
+.delete-request-meta span {
+  color: #aebbd2;
+  font-weight: 800;
+}
+.delete-request-status {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: .76rem;
+  font-weight: 900;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(59, 130, 246, .22);
+  color: #dbeafe;
+}
+.delete-request-status[data-status="UNDER_REVIEW"] { background: rgba(245, 158, 11, .22); color: #fde68a; }
+.delete-request-status[data-status="APPROVED"] { background: rgba(34, 197, 94, .2); color: #bbf7d0; }
+.delete-request-status[data-status="ON_HOLD"] { background: rgba(234, 179, 8, .2); color: #fef08a; }
+.delete-request-status[data-status="COMPLETED"] { background: rgba(148, 163, 184, .18); color: #e2e8f0; }
+.delete-request-status[data-status="CANCELLED"] { background: rgba(239, 68, 68, .2); color: #fecaca; }
+.delete-request-detail select {
+  width: 100%;
+}
+.delete-request-detail select:disabled,
+.delete-request-detail textarea:disabled,
+.delete-request-actions button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+@media (max-width: 640px) {
+  .delete-request-toolbar { align-items: stretch; flex-direction: column; }
+  .delete-request-toolbar button { width: 100%; }
+}
