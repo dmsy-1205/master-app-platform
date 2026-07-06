@@ -15,6 +15,7 @@ const adminRoutes = {
   members: '[data-admin-panel="members"]',
   approval: '[data-admin-panel="approval"]',
   data: '[data-admin-panel="data"]',
+  logs: '[data-admin-panel="logs"]',
   apps: '[data-admin-panel="apps"]',
   details: '[data-admin-panel="details"]',
   official: '[data-admin-panel="official"]',
@@ -54,6 +55,15 @@ function showAdminRoute(route = 'overview') {
   document.querySelectorAll('[data-admin-route]').forEach((button) => {
     button.classList.toggle('active', button.dataset.adminRoute === selected);
   });
+
+  const toolRoutes = new Set(['qa', 'details', 'official', 'deployment', 'health', 'backup', 'developer', 'statistics', 'security', 'tools']);
+  document.querySelectorAll('[data-admin-tools-menu]').forEach((menu) => {
+    menu.classList.toggle('active', toolRoutes.has(selected));
+    if (!toolRoutes.has(selected)) menu.removeAttribute('open');
+  });
+
+  const activePanel = document.querySelector(adminRoutes[selected]);
+  activePanel?.scrollIntoView({ block: 'start', behavior: 'smooth' });
 }
 
 document.addEventListener('click', (event) => {
