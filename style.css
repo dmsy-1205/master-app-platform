@@ -2658,3 +2658,48 @@ pre {
   .delete-request-toolbar { align-items: stretch; flex-direction: column; }
   .delete-request-toolbar button { width: 100%; }
 }
+
+
+/* HearU2nite Platform v1.1 - Admin Center quality layer */
+.admin-surface,
+.admin-ux-card {
+  border: 1px solid rgba(125, 160, 240, .18);
+  border-radius: 20px;
+  background: rgba(7, 13, 34, .72);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, .18);
+}
+.data-management-panel .dashboard-help {
+  max-width: 920px;
+  line-height: 1.75;
+}
+.delete-request-empty {
+  border: 1px dashed rgba(125, 160, 240, .35);
+  border-radius: 16px;
+  padding: 18px;
+  background: rgba(15, 23, 42, .52);
+  color: #eaf2ff;
+}
+.delete-request-empty p {
+  margin: 10px 0 0;
+  color: #aebbd2;
+  line-height: 1.65;
+}
+.delete-request-detail.is-empty {
+  opacity: .86;
+}
+.delete-request-detail.is-empty textarea,
+.delete-request-detail.is-empty select {
+  background: rgba(7, 13, 34, .55);
+}
+.delete-request-actions .danger-action {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+.data-admin-warning {
+  border: 1px solid rgba(245, 158, 11, .25);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(245, 158, 11, .08);
+  color: #fde68a;
+  font-weight: 800;
+  line-height: 1.55;
+}

@@ -1,6 +1,17 @@
 import { db, auth } from './firebase.js';
 import { ref, onValue, update, push, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+
+const H2N_PLATFORM_VERSION = 'HearU2nite Platform v1.1 Admin Center';
+function h2nLog(level = 'info', message = '', meta) {
+  const prefix = `[${H2N_PLATFORM_VERSION}]`;
+  if (level === 'error') return console.error(prefix, message, meta || '');
+  if (level === 'warn') return console.warn(prefix, message, meta || '');
+  if (level === 'debug') return console.debug(prefix, message, meta || '');
+  return console.info(prefix, message, meta || '');
+}
+h2nLog('info', 'Operation module initialized');
+
 const qaCriticalCount = document.getElementById('qaCriticalCount');
 const qaWarningCount = document.getElementById('qaWarningCount');
 const qaNormalCount = document.getElementById('qaNormalCount');
@@ -484,6 +495,7 @@ const deleteRequestAdminMessage = document.getElementById('deleteRequestAdminMes
 const deleteRequestSaveBtn = document.getElementById('deleteRequestSaveBtn');
 const deleteRequestApproveBtn = document.getElementById('deleteRequestApproveBtn');
 const deleteRequestHoldBtn = document.getElementById('deleteRequestHoldBtn');
+const deleteRequestCancelBtn = document.getElementById('deleteRequestCancelBtn');
 
 let deleteRequests = {};
 let selectedDeleteRequestId = '';
@@ -523,7 +535,7 @@ function sortedDeleteRequests() {
 }
 
 function setDeleteDetailEnabled(enabled) {
-  [deleteRequestStatusSelect, deleteRequestInternalMemo, deleteRequestAdminMessage, deleteRequestSaveBtn, deleteRequestApproveBtn, deleteRequestHoldBtn]
+  [deleteRequestStatusSelect, deleteRequestInternalMemo, deleteRequestAdminMessage, deleteRequestSaveBtn, deleteRequestApproveBtn, deleteRequestHoldBtn, deleteRequestCancelBtn]
     .forEach((el) => { if (el) el.disabled = !enabled; });
 }
 
@@ -548,7 +560,7 @@ function renderDeleteRequestList() {
     return;
   }
   if (!list.length) {
-    deleteRequestList.innerHTML = '<div class="delete-request-empty"><strong>현재 삭제 요청이 없습니다.</strong><p>HearMe2nite에서 사용자가 삭제 요청을 보내면 Firebase <code>deleteRequests</code> 기준으로 이곳에 표시됩니다.</p></div>';
+    deleteRequestList.innerHTML = '<div class="delete-request-empty"><strong>삭제 요청이 아직 없습니다.</strong><p>사용자가 HearMe2nite에서 삭제 요청을 보내면 이곳에서 승인 또는 보류를 처리할 수 있습니다.</p></div>';
     renderDeleteRequestDetail('');
     return;
   }
@@ -577,7 +589,9 @@ function renderDeleteRequestDetail(id) {
       ? `<span>사용자: ${escapeHtml(item.requestUser)}</span><span>Room: ${escapeHtml(item.roomCode)}</span><span>상태: ${escapeHtml(deleteStatusLabel(item.status))}</span><span>요청일: ${escapeHtml(fmt(item.requestedAt))}</span>`
       : '<span>사용자: -</span><span>Room: -</span><span>상태: -</span><span>요청일: -</span>';
   }
-  if (deleteRequestReason) deleteRequestReason.textContent = item ? item.reason : '요청을 선택하면 사용자가 작성한 삭제 사유가 표시됩니다.';
+  if (deleteRequestReason) deleteRequestReason.textContent = item ? item.reason : '삭제 요청을 선택하면 상세 정보가 표시됩니다.';
+  const detailBox = deleteRequestReason?.closest('.delete-request-detail');
+  if (detailBox) detailBox.classList.toggle('is-empty', !item);
   if (deleteRequestStatusSelect) deleteRequestStatusSelect.value = item?.status || 'REQUESTED';
   if (deleteRequestInternalMemo) deleteRequestInternalMemo.value = item?.internalMemo || '';
   if (deleteRequestAdminMessage) deleteRequestAdminMessage.value = item?.adminMessage || '';
@@ -597,16 +611,19 @@ function startDeleteRequestsListener() {
     return;
   }
   if (deleteRequestsUnsubscribe) return;
-  if (deleteRequestSyncState) deleteRequestSyncState.textContent = 'Firebase deleteRequests 연결 중';
+  if (deleteRequestSyncState) deleteRequestSyncState.textContent = '삭제 요청 목록을 확인하는 중';
   deleteRequestsUnsubscribe = onValue(ref(db, 'deleteRequests'), (snapshot) => {
     deleteRequests = snapshot.val() || {};
-    if (deleteRequestSyncState) deleteRequestSyncState.textContent = `Firebase 연결 완료 · ${new Date().toLocaleTimeString('ko-KR')}`;
+    if (deleteRequestSyncState) deleteRequestSyncState.textContent = `요청 목록 동기화 완료 · ${new Date().toLocaleTimeString('ko-KR')}`;
     renderDeleteRequestList();
   }, (error) => {
-    console.warn('[HearU2nite DataAdmin] deleteRequests listener skipped by Firebase Rules.', error?.message || error);
+    // Firebase Rules가 deleteRequests 읽기를 막는 경우 콘솔 오류로 남기지 않고 화면 안내만 표시한다.
+    if (error?.code !== 'PERMISSION_DENIED' && !String(error?.message || '').toLowerCase().includes('permission_denied')) {
+      console.warn('[HearU2nite DataAdmin] deleteRequests listener failed.', error?.message || error);
+    }
     deleteRequests = {};
-    if (deleteRequestSyncState) deleteRequestSyncState.textContent = 'Firebase Rules가 deleteRequests 읽기를 차단했습니다.';
-    if (deleteRequestList) deleteRequestList.innerHTML = '<div class="delete-request-empty"><strong>deleteRequests 읽기 권한이 필요합니다.</strong><p>관리자 Rules에 <code>/deleteRequests</code> 읽기 권한을 추가하면 목록이 표시됩니다. 기존 승인 기능에는 영향이 없습니다.</p></div>';
+    if (deleteRequestSyncState) deleteRequestSyncState.textContent = '요청 목록을 표시할 수 없습니다.';
+    if (deleteRequestList) deleteRequestList.innerHTML = '<div class="delete-request-empty"><strong>삭제 요청이 아직 없습니다.</strong><p>사용자 요청이 들어오면 이곳에 표시됩니다. 관리자 설정이 필요한 경우 개발 도구에서 확인합니다.</p></div>';
     renderDeleteRequestSummary([]);
     renderDeleteRequestDetail('');
   });
@@ -616,9 +633,27 @@ async function updateDeleteRequest(id, patch = {}) {
   if (!currentIsAdmin) return alert('관리자만 삭제 요청 상태를 변경할 수 있습니다.');
   if (!id) return alert('먼저 삭제 요청을 선택하세요.');
   const now = new Date().toISOString();
-  const payload = { ...patch, updatedAt: now, reviewedBy: currentUser?.uid || 'admin' };
-  if (patch.status === 'APPROVED') payload.approvedAt = now;
+  const historyKey = now.replace(/[.#$\[\]/:]/g, '-');
+  const payload = {
+    ...patch,
+    updatedAt: now,
+    reviewedBy: currentUser?.uid || 'admin',
+    targetProject: 'HearMe2nite',
+    actualDeleteExecuted: false,
+    [`statusHistory/${historyKey}`]: {
+      status: patch.status || deleteRequestStatusSelect?.value || 'UNDER_REVIEW',
+      at: now,
+      by: currentUser?.uid || 'admin',
+      memo: patch.internalMemo || ''
+    }
+  };
+  if (patch.status === 'APPROVED') {
+    payload.approvedAt = now;
+    payload.executionMode = 'SAFE_MANUAL_REVIEW';
+    payload.integrationStatus = 'READY_FOR_HEARME2NITE_REVIEW';
+  }
   await update(ref(db, `deleteRequests/${id}`), payload);
+  h2nLog('info', `Delete request updated: ${id}`, { status: payload.status });
 }
 
 if (deleteRequestRefreshBtn) {
@@ -658,7 +693,7 @@ if (deleteRequestApproveBtn) {
       await updateDeleteRequest(selectedDeleteRequestId, {
         status: 'APPROVED',
         internalMemo: deleteRequestInternalMemo?.value || '',
-        adminMessage: deleteRequestAdminMessage?.value || '삭제 요청이 승인되었습니다. 실제 삭제 처리 단계는 운영자가 별도로 진행합니다.'
+        adminMessage: deleteRequestAdminMessage?.value || '삭제 요청이 승인되었습니다. 실제 데이터 삭제는 안전 확인 후 운영 절차에 따라 진행됩니다.'
       });
     } catch (error) {
       alert('삭제 요청 승인 실패: ' + (error?.message || error));
@@ -676,6 +711,21 @@ if (deleteRequestHoldBtn) {
       });
     } catch (error) {
       alert('삭제 요청 보류 실패: ' + (error?.message || error));
+    }
+  });
+}
+
+
+if (deleteRequestCancelBtn) {
+  deleteRequestCancelBtn.addEventListener('click', async () => {
+    try {
+      await updateDeleteRequest(selectedDeleteRequestId, {
+        status: 'CANCELLED',
+        internalMemo: deleteRequestInternalMemo?.value || '',
+        adminMessage: deleteRequestAdminMessage?.value || '삭제 요청이 취소되었습니다. 필요한 경우 다시 요청해 주세요.'
+      });
+    } catch (error) {
+      alert('삭제 요청 취소 실패: ' + (error?.message || error));
     }
   });
 }

@@ -1,8 +1,8 @@
-/* MasterOS Platform Core - STEP12
+/* HearU2nite Platform Core - v1.1
    공통 상수와 안전 유틸리티 모음입니다.
    기존 화면 로직을 깨뜨리지 않기 위해 전역 오염을 최소화하고 window.MasterOSCore로만 노출합니다.
 */
-export const MASTEROS_VERSION = 'STEP12 Platform Core v1';
+export const MASTEROS_VERSION = 'HearU2nite Platform Core v1.1';
 
 export function safeText(value, fallback = '-') {
   if (value === null || value === undefined || value === '') return fallback;
@@ -46,4 +46,4 @@ export function setLoading(element, isLoading, label = '처리 중') {
 }
 
 window.MasterOSCore = { MASTEROS_VERSION, safeText, safeKey, showToast, setLoading };
-console.info(`[MasterOS] ${MASTEROS_VERSION} loaded`);
+console.info(`[HearU2nite Platform] ${MASTEROS_VERSION} initialized`);
