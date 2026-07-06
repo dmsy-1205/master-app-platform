@@ -1,5 +1,5 @@
 import { db, auth } from './firebase.js';
-import { ref, onValue, update, push, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { ref, onValue, update, push, set, remove, limitToLast, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
 const H2N_PLATFORM_VERSION = 'HearU2nite Platform v1.1 Admin Center';
@@ -497,9 +497,136 @@ const deleteRequestApproveBtn = document.getElementById('deleteRequestApproveBtn
 const deleteRequestHoldBtn = document.getElementById('deleteRequestHoldBtn');
 const deleteRequestCancelBtn = document.getElementById('deleteRequestCancelBtn');
 
+const operationLogTodayCount = document.getElementById('operationLogTodayCount');
+const operationLogDeleteCount = document.getElementById('operationLogDeleteCount');
+const operationLogWarnCount = document.getElementById('operationLogWarnCount');
+const operationLogSyncState = document.getElementById('operationLogSyncState');
+const operationLogSearchInput = document.getElementById('operationLogSearchInput');
+const operationLogTypeFilter = document.getElementById('operationLogTypeFilter');
+const operationLogRefreshBtn = document.getElementById('operationLogRefreshBtn');
+const operationLogList = document.getElementById('operationLogList');
+
 let deleteRequests = {};
 let selectedDeleteRequestId = '';
 let deleteRequestsUnsubscribe = null;
+let operationLogs = {};
+let operationLogsUnsubscribe = null;
+
+
+function normalizeOperationLog(id, item = {}) {
+  return {
+    id,
+    type: item.type || 'SYSTEM',
+    level: item.level || 'info',
+    action: item.action || '-',
+    target: item.target || item.targetId || '-',
+    message: item.message || '',
+    actor: item.actorEmail || item.actor || item.actorUid || '-',
+    actorUid: item.actorUid || '',
+    createdAt: item.createdAt || item.at || item.updatedAt || '',
+    meta: item.meta || {}
+  };
+}
+
+function sortedOperationLogs() {
+  const keyword = (operationLogSearchInput?.value || '').trim().toLowerCase();
+  const typeFilter = operationLogTypeFilter?.value || 'all';
+  return Object.entries(operationLogs || {})
+    .map(([id, item]) => normalizeOperationLog(id, item))
+    .filter((item) => typeFilter === 'all' || item.type === typeFilter)
+    .filter((item) => {
+      if (!keyword) return true;
+      return [item.type, item.level, item.action, item.target, item.message, item.actor, item.actorUid]
+        .join(' ')
+        .toLowerCase()
+        .includes(keyword);
+    })
+    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+}
+
+function renderOperationLogSummary(list) {
+  const today = new Date().toLocaleDateString('ko-KR');
+  const todayCount = list.filter((item) => item.createdAt && new Date(item.createdAt).toLocaleDateString('ko-KR') === today).length;
+  const deleteCount = list.filter((item) => item.type === 'DELETE_REQUEST').length;
+  const warnCount = list.filter((item) => ['warn', 'warning', 'error'].includes(String(item.level || '').toLowerCase())).length;
+  if (operationLogTodayCount) operationLogTodayCount.textContent = String(todayCount);
+  if (operationLogDeleteCount) operationLogDeleteCount.textContent = String(deleteCount);
+  if (operationLogWarnCount) operationLogWarnCount.textContent = String(warnCount);
+}
+
+function renderOperationLogs() {
+  if (!operationLogList) return;
+  const list = sortedOperationLogs();
+  renderOperationLogSummary(list);
+  if (!currentIsAdmin) {
+    operationLogList.innerHTML = '<div class="operation-log-empty"><strong>관리자 권한 확인 대기 중입니다.</strong><p>관리자 계정으로 로그인하면 운영 로그가 표시됩니다.</p></div>';
+    return;
+  }
+  if (!list.length) {
+    operationLogList.innerHTML = '<div class="operation-log-empty"><strong>아직 운영 로그가 없습니다.</strong><p>삭제 요청 승인/보류/취소 같은 관리자 작업이 발생하면 이곳에 기록됩니다.</p></div>';
+    return;
+  }
+  operationLogList.innerHTML = list.slice(0, 80).map((item) => `
+    <article class="operation-log-item level-${escapeHtml(item.level)}">
+      <div class="operation-log-time"><strong>${escapeHtml(fmt(item.createdAt))}</strong><small>${escapeHtml(item.type)}</small></div>
+      <div class="operation-log-body"><strong>${escapeHtml(item.action)}</strong><p>${escapeHtml(item.message || '운영 작업이 기록되었습니다.')}</p><small>대상: ${escapeHtml(item.target)} · 작업자: ${escapeHtml(item.actor)}</small></div>
+      <span class="operation-log-level">${escapeHtml(item.level)}</span>
+    </article>
+  `).join('');
+}
+
+function startOperationLogsListener() {
+  if (!operationLogList) return;
+  if (!currentIsAdmin) {
+    if (operationLogsUnsubscribe) {
+      operationLogsUnsubscribe();
+      operationLogsUnsubscribe = null;
+    }
+    operationLogs = {};
+    if (operationLogSyncState) operationLogSyncState.textContent = '권한 대기';
+    renderOperationLogs();
+    return;
+  }
+  if (operationLogsUnsubscribe) return;
+  if (operationLogSyncState) operationLogSyncState.textContent = '동기화 중';
+  operationLogsUnsubscribe = onValue(query(ref(db, 'operationLogs'), limitToLast(100)), (snapshot) => {
+    operationLogs = snapshot.val() || {};
+    if (operationLogSyncState) operationLogSyncState.textContent = '정상';
+    renderOperationLogs();
+  }, (error) => {
+    if (error?.code !== 'PERMISSION_DENIED' && !String(error?.message || '').toLowerCase().includes('permission_denied')) {
+      h2nLog('warn', 'operationLogs listener failed', error?.message || error);
+    }
+    operationLogs = {};
+    if (operationLogSyncState) operationLogSyncState.textContent = '보류';
+    renderOperationLogs();
+  });
+}
+
+async function createOperationLog(entry = {}) {
+  if (!currentIsAdmin || !currentUser) return;
+  const now = new Date().toISOString();
+  const payload = {
+    type: entry.type || 'SYSTEM',
+    level: entry.level || 'info',
+    action: entry.action || 'OPERATION',
+    target: entry.target || '-',
+    message: entry.message || '',
+    actorUid: currentUser.uid,
+    actorEmail: currentUser.email || '',
+    createdAt: now,
+    platform: 'HearU2nite',
+    version: 'v1.1',
+    meta: entry.meta || {}
+  };
+  try {
+    await set(push(ref(db, 'operationLogs')), payload);
+  } catch (error) {
+    if (error?.code !== 'PERMISSION_DENIED' && !String(error?.message || '').toLowerCase().includes('permission_denied')) {
+      h2nLog('warn', 'operation log write failed', error?.message || error);
+    }
+  }
+}
 
 function deleteStatusLabel(status = 'REQUESTED') {
   return {
@@ -653,6 +780,14 @@ async function updateDeleteRequest(id, patch = {}) {
     payload.integrationStatus = 'READY_FOR_HEARME2NITE_REVIEW';
   }
   await update(ref(db, `deleteRequests/${id}`), payload);
+  await createOperationLog({
+    type: 'DELETE_REQUEST',
+    level: patch.status === 'APPROVED' ? 'warning' : 'info',
+    action: `DELETE_REQUEST_${payload.status || 'UPDATED'}`,
+    target: id,
+    message: `삭제 요청 상태가 ${deleteStatusLabel(payload.status || 'UNDER_REVIEW')} 상태로 변경되었습니다.`,
+    meta: { status: payload.status || 'UNDER_REVIEW', actualDeleteExecuted: false }
+  });
   h2nLog('info', `Delete request updated: ${id}`, { status: payload.status });
 }
 
@@ -730,11 +865,26 @@ if (deleteRequestCancelBtn) {
   });
 }
 
+[operationLogSearchInput, operationLogTypeFilter].forEach((el) => {
+  if (el) el.addEventListener('input', renderOperationLogs);
+  if (el) el.addEventListener('change', renderOperationLogs);
+});
+if (operationLogRefreshBtn) {
+  operationLogRefreshBtn.addEventListener('click', () => {
+    renderOperationLogs();
+    startOperationLogsListener();
+  });
+}
+
 window.addEventListener('master-auth-role-changed', () => {
   startDeleteRequestsListener();
   renderDeleteRequestList();
+  startOperationLogsListener();
+  renderOperationLogs();
 });
 auth.onAuthStateChanged(() => {
   startDeleteRequestsListener();
   renderDeleteRequestList();
+  startOperationLogsListener();
+  renderOperationLogs();
 });
