@@ -296,28 +296,35 @@
             <p>관리자 기능을 메뉴별 화면으로 분리했습니다. 필요한 관리 작업만 선택해 집중할 수 있습니다.</p>
           </div>
 
-          <div class="admin-spa-tabs glass-card" role="tablist" aria-label="관리자 메뉴">
-            <button type="button" data-admin-route="overview" class="active">Overview</button>
-            <button type="button" data-admin-route="qa">QA Dashboard</button>
-            <button type="button" data-admin-route="members">회원 관리</button>
-            <button type="button" data-admin-route="approval">승인 관리</button>
-            <button type="button" data-admin-route="data">데이터 관리</button>
-            <button type="button" data-admin-route="logs">운영 로그</button>
-            <button type="button" data-admin-route="apps">앱 관리</button>
-            <button type="button" data-admin-route="details">App Detail</button>
-            <button type="button" data-admin-route="official">Official Apps</button>
-            <button type="button" data-admin-route="deployment">배포 센터</button>
-            <button type="button" data-admin-route="health">Health</button>
-            <button type="button" data-admin-route="backup">Backup</button>
-            <button type="button" data-admin-route="developer">Developer</button>
-            <button type="button" data-admin-route="statistics">Statistics</button>
-            <button type="button" data-admin-route="security">Security Scan</button>
-            <button type="button" data-admin-route="tools">개발 도구</button>
+          <div class="admin-spa-tabs glass-card admin-nav-refined" role="tablist" aria-label="관리자 메뉴">
+            <div class="admin-menu-group admin-menu-primary" aria-label="운영 메뉴">
+              <button type="button" data-admin-route="overview" class="active">Dashboard</button>
+              <button type="button" data-admin-route="members">회원 관리</button>
+              <button type="button" data-admin-route="approval">승인 관리</button>
+              <button type="button" data-admin-route="data">데이터 관리</button>
+              <button type="button" data-admin-route="logs">운영 로그</button>
+              <button type="button" data-admin-route="apps">앱 관리</button>
+            </div>
+            <details class="admin-tools-menu" data-admin-tools-menu>
+              <summary>도구</summary>
+              <div class="admin-tools-grid" aria-label="관리 도구 메뉴">
+                <button type="button" data-admin-route="qa">QA Dashboard</button>
+                <button type="button" data-admin-route="details">App Detail</button>
+                <button type="button" data-admin-route="official">Official Apps</button>
+                <button type="button" data-admin-route="deployment">배포 센터</button>
+                <button type="button" data-admin-route="health">Health</button>
+                <button type="button" data-admin-route="backup">Backup</button>
+                <button type="button" data-admin-route="developer">Developer</button>
+                <button type="button" data-admin-route="statistics">Statistics</button>
+                <button type="button" data-admin-route="security">Security Scan</button>
+                <button type="button" data-admin-route="tools">개발 도구</button>
+              </div>
+            </details>
           </div>
 
           <section class="admin-overview glass-card" data-admin-panel="overview">
-            <p class="eyebrow">Admin Overview</p>
-            <h2>관리자 작업 현황</h2>
+            <p class="eyebrow">HEARU2NITE ADMIN CENTER · STEP6</p>
+            <h2>Dashboard</h2>
             <div class="admin-kpi-grid">
               <div><span>승인 대기</span><strong id="adminPendingKpi">실시간 동기화</strong><small>승인 대시보드에서 확인</small></div>
               <div><span>등록 앱</span><strong id="adminAppsKpi">라우팅 테이블</strong><small>앱 관리 메뉴에서 관리</small></div>
