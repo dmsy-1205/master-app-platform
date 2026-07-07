@@ -7,7 +7,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./core/ui-kit.css">
-  <link rel="stylesheet" href="./assets/css/hearu-step7-identity.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 
   <style>
@@ -59,15 +58,15 @@
   <main class="platform-root">
     <section class="auth-landing login-gate" data-auth="public">
       <div class="gate-brand">
-        <div class="gate-logo"><span>◆</span><strong>HearU<span>2nite</span></strong></div>
-        <small>MULTI-APP PLATFORM</small>
+        <div class="gate-logo"><span>◆</span><strong>Master<span>OS</span></strong></div>
+        <small>UNIFIED APP CONTROL</small>
       </div>
       <div class="wave-layer wave-one"></div>
       <div class="wave-layer wave-two"></div>
       <div class="gate-card" id="authGateCard">
         <div class="gate-mode" data-auth-mode="login">
           <h1>로그인</h1>
-          <p>HearU2nite Platform에 오신 것을 환영합니다.</p>
+          <p>MasterOS 플랫폼에 오신 것을 환영합니다.</p>
           <label for="loginEmail">이메일 또는 사용자명</label>
           <div class="gate-input-row"><span>♙</span><input id="loginEmail" type="email" placeholder="이메일을 입력하세요" autocomplete="email"></div>
           <label for="loginPassword">비밀번호</label>
@@ -108,12 +107,12 @@
           </div>
         </div>
       </div>
-      <footer class="gate-footer">© 2026 HearU2nite Platform. All rights reserved.</footer>
+      <footer class="gate-footer">© 2026 MasterOS. All rights reserved.</footer>
     </section>
 
     <section class="workspace-shell" data-auth="private" style="display:none;">
       <aside class="side-nav">
-        <div class="side-logo"><span>◆</span><strong>HearU<span>2nite</span></strong></div><div class="side-caption">Multi-App Platform</div>
+        <div class="side-logo"><span>◆</span><strong>Master<span>OS</span></strong></div><div class="side-caption">Unified App Control</div>
         <a href="#" data-workspace-route="dashboard">Dashboard</a>
         <a href="#" data-workspace-route="appstore">App Store</a>
         <a href="#" data-workspace-route="runtime">My Runtime</a>
@@ -127,8 +126,8 @@
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">Multi-App Platform Console</p>
-            <h1>HearU2nite Platform</h1>
+            <p class="eyebrow">STEP 13 Service Platform</p>
+            <h1>Master App Platform</h1>
             <p id="userStatus">확인 중...</p>
           </div>
           <button id="logoutBtn" class="logout-action">로그아웃</button>
@@ -136,9 +135,9 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">Premium Control Workspace · Multi-App Platform Console</p>
-            <h2>당신의 앱을 발견하고 실행하는 멀티앱 플랫폼</h2>
-            <p>앱을 발견하고, 신청하고, 승인받은 서비스를 안전하게 실행하세요.</p>
+            <p class="eyebrow">Premium Control Workspace · STEP 13 Service Platform</p>
+            <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
+            <p>사용자 경험과 관리자 회원관리 Platform Launcher 실행 엔진과 생활관리 앱 테스트 실행을 더했습니다.</p>
           </div>
           <div class="hero-metrics">
             <div><strong id="dashboardRole">-</strong><span>권한</span></div>
@@ -201,9 +200,9 @@
         <section class="appstore-section glass-card" id="appstore">
           <div class="store-headline">
             <div>
-              <p class="eyebrow">Applications</p>
-              <h2>앱 둘러보기</h2>
-              <p>사용 가능한 앱과 승인 상태를 한눈에 확인합니다.</p>
+              <p class="eyebrow">App Store 2.0</p>
+              <h2>내 앱 스토어</h2>
+              <p>활성화된 서브 앱을 더 큰 카드와 실행 정보 중심으로 확인합니다.</p>
             </div>
             <div class="store-tools"><input id="storeSearchInput" type="search" placeholder="앱 이름 설명 검색"><select id="storeCategoryFilter"><option value="all">전체 카테고리</option><option value="Official">Official</option><option value="General">General</option><option value="Finance">Finance</option><option value="AI">AI</option><option value="Productivity">Productivity</option></select><select id="storeSortFilter"><option value="name">이름순</option><option value="latest">최신순</option><option value="popular">인기순</option></select></div>
           </div>
@@ -222,7 +221,7 @@
             <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu"></ul>
           </div>
           <div id="main-runtime-view" class="glass-card runtime-view">
-            <h3>HearU2nite Platform Runtime</h3>
+            <h3>Master App Platform Runtime</h3>
             <p>좌측 메뉴 또는 App Store의 실행 버튼에서 서브 애플리케이션을 선택하세요.</p>
           </div>
         </section>
@@ -303,7 +302,6 @@
             <button type="button" data-admin-route="members">회원 관리</button>
             <button type="button" data-admin-route="approval">승인 관리</button>
             <button type="button" data-admin-route="data">데이터 관리</button>
-            <button type="button" data-admin-route="logs">운영 로그</button>
             <button type="button" data-admin-route="apps">앱 관리</button>
             <button type="button" data-admin-route="details">App Detail</button>
             <button type="button" data-admin-route="official">Official Apps</button>
@@ -447,39 +445,6 @@
             </div>
           </section>
 
-          <section class="glass-card operation-log-panel" data-admin-panel="logs">
-            <div class="admin-card-title">
-              <div>
-                <p class="eyebrow">HearU2nite Operation Log · STEP5</p>
-                <h2>운영 로그</h2>
-              </div>
-              <span>Audit Trail</span>
-            </div>
-            <p class="dashboard-help">관리자가 처리한 승인/보류/취소/메모 저장 같은 운영 행동을 기록합니다. 사용자의 감정 기록 데이터는 이 화면에서 직접 수정하거나 삭제하지 않습니다.</p>
-            <div class="operation-log-summary">
-              <article><span>오늘 로그</span><strong id="operationLogTodayCount">0</strong><small>오늘 발생한 운영 기록</small></article>
-              <article><span>삭제 요청 관련</span><strong id="operationLogDeleteCount">0</strong><small>데이터 관리 작업</small></article>
-              <article><span>경고</span><strong id="operationLogWarnCount">0</strong><small>주의가 필요한 기록</small></article>
-              <article><span>상태</span><strong id="operationLogSyncState">대기</strong><small>Firebase 동기화</small></article>
-            </div>
-            <div class="operation-log-toolbar">
-              <input id="operationLogSearchInput" type="search" placeholder="작업자, 대상, 메시지 검색">
-              <select id="operationLogTypeFilter">
-                <option value="all">전체 유형</option>
-                <option value="DELETE_REQUEST">삭제 요청</option>
-                <option value="SYSTEM">시스템</option>
-                <option value="APPROVAL">승인</option>
-              </select>
-              <button type="button" id="operationLogRefreshBtn">로그 새로고침</button>
-            </div>
-            <div id="operationLogList" class="operation-log-list">
-              <div class="operation-log-empty">
-                <strong>운영 로그를 불러오는 중입니다.</strong>
-                <p>관리자 작업 이력이 이곳에 시간순으로 표시됩니다.</p>
-              </div>
-            </div>
-          </section>
-
           <section id="step6-app-manager" class="glass-card app-manager-card" data-admin-panel="apps">
             <div class="admin-card-title"><h2>관리자 앱 등록 및 실행 연결</h2><span>Routing Manager</span></div>
             <div class="app-register-guide">
@@ -508,7 +473,7 @@
               <strong>생활관리 앱 보호 체크리스트</strong>
               <ul>
                 <li>외부 Netlify 주소를 직접 공개하지 않기</li>
-                <li>HearU2nite Platform 승인 사용자만 App Store에서 실행</li>
+                <li>Master App Platform 승인 사용자만 App Store에서 실행</li>
                 <li>공유 코드 입력 방식은 추측 불가능한 코드로 교체</li>
                 <li>다음 보안 단계에서 Firebase Rules 적용</li>
               </ul>
@@ -521,7 +486,7 @@
               <div class="col-md-2"><label class="form-label">아이콘</label><input type="text" id="app-icon" class="form-control" placeholder="💰"><small>이모지 1개 추천</small></div>
               <div class="col-md-2"><label class="form-label">앱 버전</label><input type="text" id="app-version" class="form-control" placeholder="v1.0"></div>
               <div class="col-md-3"><label class="form-label">실행 방식</label><select id="app-launch-mode" class="form-control"><option value="router">플랫폼 내부 실행</option><option value="newTab">새 탭 실행</option><option value="sameTab">현재 창 이동</option></select><small>내부 HTML은 플랫폼 내부 실행 추천</small></div>
-              <div class="col-md-2"><label class="form-label">Owner</label><input type="text" id="app-owner" class="form-control" placeholder="HearU2nite"></div>
+              <div class="col-md-2"><label class="form-label">Owner</label><input type="text" id="app-owner" class="form-control" placeholder="MasterOS"></div>
               <div class="col-md-2"><label class="form-label">Category</label><input type="text" id="app-category" class="form-control" placeholder="Official"></div>
               <div class="col-md-3"><label class="form-label">권한 모드</label><select id="app-permission-mode" class="form-control"><option value="approved">승인 사용자</option><option value="official">Official App</option><option value="custom">사용자별 허용</option><option value="public">공개 앱</option></select><small>실행 전 Permission Engine에서 검사</small></div>
               <div class="col-md-3"><label class="form-label">권한 태그</label><input type="text" id="app-permissions" class="form-control" placeholder="approved-user,official-app"></div>
