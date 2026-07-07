@@ -1,41 +1,32 @@
-# HearU2nite STEP7-1 Platform Identity Foundation
+# HearU2nite STEP7-1 적용 가이드
 
-## 적용 기준
-- 기준 파일: `HearU2nite_v1.1_STEP5_ROLLBACK_BASE_FULL.zip`
-- 목적: 기존 MasterOS 다크 콘솔 화면을 HearU2nite 밝은 플랫폼 UI 방향으로 전환
-
-## 포함 파일
+## 적용 파일
 - `index.html`
-- `style.css`
+- `assets/css/hearu-step7-identity.css`
 
-## 유지한 것
-- Firebase 초기화 구조
-- Auth / 승인 / Access Gate
-- Runtime / Manifest / SDK
-- 기존 Router 및 JS 모듈 로딩 순서
-- 기존 UID / 로그인 방식
+## 적용 방법
+1. GitHub Desktop에서 `Repository → Show in Explorer`로 프로젝트 루트를 엽니다.
+2. ZIP 안의 파일을 프로젝트 루트에 그대로 덮어씁니다.
+3. 반드시 `index.html` 안에 `hearu-step7-identity.css`가 들어갔는지 확인합니다.
+4. 브라우저에서 `Ctrl + F5`로 강력 새로고침합니다.
 
-## 변경한 것
-- 사용자 노출 브랜드 문구: MasterOS → HearU2nite Platform
-- 로그인 화면 브랜드 문구 변경
-- 로그인 후 Sidebar / Topbar / Dashboard 문구 변경
-- 기존 다크 UI를 밝은 플랫폼 UI로 override
-- 노트북 / Android / iPhone / Galaxy Fold 접힘 / 펼침 반응형 기반 추가
+## 변경 범위
+- MasterOS 사용자 노출 문구를 HearU2nite Platform으로 교체
+- 기존 CSS보다 나중에 로드되는 STEP7 override CSS 추가
+- 밝은 플랫폼 디자인, 카드, 버튼, 반응형 navigation 적용
 
-## GitHub Desktop Summary
-`feat: apply HearU2nite STEP7 platform identity foundation`
+## 절대 건드리지 않은 영역
+- Firebase
+- Auth
+- Approval Engine
+- Access Gate
+- Runtime
+- Router
+- UID 구조
+- 앱 실행 로직
 
-## GitHub Desktop Description
-`Rebrand MasterOS UI to HearU2nite and introduce the responsive bright platform design foundation while preserving existing authentication, approval, Firebase, router, runtime, and platform engine behavior.`
+## GitHub Summary
+`feat: apply HearU2nite STEP7-1 identity override layer`
 
-## QA 체크
-1. 로그인 화면에서 MasterOS 문구가 사용자에게 보이지 않는지 확인
-2. 로그인 가능 여부 확인
-3. 로그인 후 기존 승인 상태/앱 실행/관리자 메뉴 동작 확인
-4. 노트북 화면 확인
-5. Android 화면 확인
-6. iPhone 화면 확인
-7. Galaxy Fold 접힘/펼침 화면 확인
-
-## 주의
-Firebase Hosting 설정 파일(`.firebaserc`, `firebase.json`, `.github/workflows/...`)은 이 패키지에 포함하지 않았습니다. Hosting 설정은 별도 커밋으로 관리하세요.
+## Description
+`Add a safe post-loaded HearU2nite identity CSS layer and rebrand visible MasterOS labels while preserving Firebase, authentication, approval, runtime, router, and UID behavior.`
