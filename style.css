@@ -2822,65 +2822,278 @@ pre {
   .operation-log-level { justify-self: start; }
 }
 
+/* =========================================================
+   STEP7-1 HearU2nite Platform Identity Foundation
+   목표: 기존 Engine/Firebase/Approval/Router는 유지하고 화면 정체성만
+   MasterOS Dark Console → HearU2nite Bright Multi-App Platform으로 전환
+   ========================================================= */
+:root {
+  --h2n-bg: #f6f8fc;
+  --h2n-bg-soft: #eef4ff;
+  --h2n-surface: rgba(255,255,255,.92);
+  --h2n-surface-solid: #ffffff;
+  --h2n-line: rgba(30, 41, 59, .10);
+  --h2n-text: #172033;
+  --h2n-muted: #64748b;
+  --h2n-primary: #4f7cff;
+  --h2n-primary2: #7c8bff;
+  --h2n-sky: #38bdf8;
+  --h2n-success: #16a34a;
+  --h2n-warning: #f59e0b;
+  --h2n-danger: #ef4444;
+  --h2n-radius-sm: 12px;
+  --h2n-radius-md: 18px;
+  --h2n-radius-lg: 24px;
+  --h2n-shadow: 0 22px 60px rgba(31, 49, 88, .12);
+  --h2n-shadow-soft: 0 12px 34px rgba(31, 49, 88, .08);
+}
 
-/* STEP6 - Admin Center structure refactor: single screen router + grouped navigation */
-.admin-nav-refined {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: start;
-  gap: 12px;
+html, body { min-height: 100%; }
+body {
+  color: var(--h2n-text) !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(79,124,255,.14), transparent 28%),
+    radial-gradient(circle at 86% 10%, rgba(56,189,248,.13), transparent 26%),
+    linear-gradient(135deg, #f9fbff 0%, #f6f8fc 48%, #eef4ff 100%) !important;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-.admin-menu-group,
-.admin-tools-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+body::before {
+  background:
+    linear-gradient(90deg, rgba(79,124,255,.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(79,124,255,.028) 1px, transparent 1px) !important;
+  background-size: 44px 44px !important;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.45), transparent 82%) !important;
 }
-.admin-tools-menu {
-  position: relative;
-  min-width: 116px;
+body::after { display: none !important; }
+
+.platform-root {
+  width: min(100% - 48px, 1440px) !important;
+  margin-inline: auto !important;
+  padding: 24px 0 34px !important;
 }
-.admin-tools-menu summary {
-  list-style: none;
-  cursor: pointer;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(148,163,184,.2);
-  background: rgba(15,23,42,.72);
-  color: #cbd5e1;
-  font-weight: 900;
-  user-select: none;
+
+/* Login / public gate */
+.login-gate,
+.auth-landing {
+  min-height: calc(100vh - 48px) !important;
+  display: grid !important;
+  place-items: center !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
-.admin-tools-menu summary::-webkit-details-marker { display: none; }
-.admin-tools-menu summary::after { content: '▾'; font-size: .8rem; opacity: .8; }
-.admin-tools-menu[open] summary,
-.admin-tools-menu.active summary {
-  color: #fff;
-  background: linear-gradient(135deg, #22d3ee, #8b5cf6);
-  box-shadow: 0 16px 34px rgba(139,92,246,.22);
+.gate-brand {
+  position: absolute !important;
+  left: 26px !important;
+  top: 26px !important;
+  z-index: 3 !important;
+  color: var(--h2n-text) !important;
 }
-.admin-tools-grid {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 10px);
-  z-index: 20;
-  width: min(460px, calc(100vw - 42px));
-  padding: 14px;
-  border-radius: 18px;
-  border: 1px solid rgba(148,163,184,.24);
-  background: rgba(9, 14, 31, .98);
-  box-shadow: 0 24px 60px rgba(0,0,0,.45);
+.gate-logo, .side-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  color: var(--h2n-text) !important;
 }
-.admin-panel-hidden { display: none !important; }
-[data-admin-panel]:not(.admin-panel-hidden) { animation: panelFadeIn .18s ease-out; }
-@media (max-width: 860px) {
-  .admin-nav-refined { grid-template-columns: 1fr; }
-  .admin-tools-menu { width: 100%; }
-  .admin-tools-menu summary { width: 100%; }
-  .admin-tools-grid { position: static; width: 100%; margin-top: 10px; }
+.gate-logo span, .side-logo > span {
+  width: 40px !important;
+  height: 40px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 14px !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--h2n-primary), var(--h2n-sky)) !important;
+  box-shadow: 0 12px 26px rgba(79,124,255,.24) !important;
+}
+.gate-logo strong, .side-logo strong { font-size: 1.25rem !important; letter-spacing: -.04em !important; }
+.gate-logo strong span, .side-logo strong span { color: var(--h2n-primary) !important; }
+.gate-brand small, .side-caption {
+  color: var(--h2n-muted) !important;
+  letter-spacing: .12em !important;
+  font-weight: 900 !important;
+}
+.wave-layer { opacity: .14 !important; filter: saturate(.8) blur(.2px) !important; }
+.gate-card, .auth-card {
+  color: var(--h2n-text) !important;
+  background: rgba(255,255,255,.88) !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--h2n-shadow) !important;
+  backdrop-filter: blur(22px) !important;
+}
+.gate-card h1, .auth-card h2 { color: var(--h2n-text) !important; letter-spacing: -.05em !important; }
+.gate-card p, .auth-card p { color: var(--h2n-muted) !important; }
+.gate-input-row, .auth-card input, input, select, textarea, .form-control {
+  color: var(--h2n-text) !important;
+  background: #f8fbff !important;
+  border-color: var(--h2n-line) !important;
+}
+input::placeholder { color: #94a3b8 !important; }
+.gate-primary-action,
+.gate-secondary-action,
+button,
+.primary-action,
+.secondary-action {
+  border: none !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, var(--h2n-primary), var(--h2n-primary2)) !important;
+  color: #fff !important;
+  box-shadow: 0 14px 30px rgba(79,124,255,.18) !important;
+}
+.logout-action { background: linear-gradient(135deg, #fb7185, var(--h2n-danger)) !important; }
+.gate-footer { color: var(--h2n-muted) !important; }
+
+/* Private workspace shell */
+.workspace-shell {
+  grid-template-columns: 250px minmax(0, 1fr) !important;
+  gap: 20px !important;
+}
+.side-nav {
+  min-height: calc(100vh - 48px) !important;
+  border: 1px solid rgba(255,255,255,.82) !important;
+  background: rgba(255,255,255,.78) !important;
+  box-shadow: var(--h2n-shadow-soft) !important;
+  backdrop-filter: blur(22px) !important;
+}
+.side-logo { margin-bottom: 10px !important; }
+.side-caption { margin: 0 0 24px 50px !important; font-size: .68rem !important; }
+.side-nav a {
+  color: var(--h2n-muted) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 16px !important;
+  padding: 12px 14px !important;
+}
+.side-nav a:hover,
+.side-nav a.active,
+.side-nav a[aria-current="page"] {
+  color: var(--h2n-primary) !important;
+  background: rgba(79,124,255,.10) !important;
+  border-color: rgba(79,124,255,.16) !important;
+  transform: translateX(2px) !important;
+}
+.side-nav a::before { background: rgba(79,124,255,.45) !important; }
+
+.glass-card,
+.topbar,
+.hero-strip,
+.user-dashboard-box,
+.appstore-section,
+.apply-box,
+.admin-center-head,
+.approval-box,
+.app-manager-card,
+.dev-tools-card,
+.service-panel {
+  color: var(--h2n-text) !important;
+  background: var(--h2n-surface) !important;
+  border: 1px solid rgba(255,255,255,.9) !important;
+  border-radius: 24px !important;
+  box-shadow: var(--h2n-shadow-soft) !important;
+  backdrop-filter: blur(20px) !important;
+}
+.topbar {
+  align-items: center !important;
+  background: rgba(255,255,255,.84) !important;
+}
+.eyebrow, .brand-badge { color: var(--h2n-primary) !important; }
+.topbar h1, .hero-strip h2, .user-dashboard-box h2, .appstore-section h2 { color: var(--h2n-text) !important; }
+.topbar p:not(.eyebrow),
+.hero-strip p,
+.dashboard-help,
+.store-headline p,
+.user-app-body p,
+.user-app-meta,
+.user-app-run-info,
+.dashboard-profile-grid span,
+.admin-card-title span,
+.placeholder-text { color: var(--h2n-muted) !important; }
+.hero-strip {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(79,124,255,.16), transparent 28%),
+    linear-gradient(135deg, rgba(255,255,255,.94), rgba(238,244,255,.88)) !important;
+  color: var(--h2n-text) !important;
+}
+.hero-metrics div,
+.dashboard-profile-grid p,
+.user-kpi-grid article,
+.home-widget,
+.app-dashboard-card,
+.apps-list-container,
+.dev-tools-grid section,
+.service-list,
+.qa-checklist {
+  color: var(--h2n-text) !important;
+  background: rgba(255,255,255,.82) !important;
+  border: 1px solid var(--h2n-line) !important;
+  border-radius: 18px !important;
+  box-shadow: none !important;
+}
+.hero-metrics span { color: var(--h2n-muted) !important; }
+.user-kpi-grid article strong,
+.dashboard-profile-grid strong { color: var(--h2n-text) !important; }
+.appstore-grid { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important; }
+.user-app-card {
+  color: var(--h2n-text) !important;
+  background: rgba(255,255,255,.9) !important;
+  border: 1px solid var(--h2n-line) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 12px 28px rgba(31,49,88,.07) !important;
+}
+.user-app-icon {
+  background: linear-gradient(135deg, #eef4ff, #f6f1ff) !important;
+  border: 1px solid rgba(79,124,255,.12) !important;
+}
+.user-app-status, .badge {
+  border-radius: 999px !important;
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+.table { color: var(--h2n-text) !important; }
+pre { color: var(--h2n-text) !important; background: #f8fbff !important; border-color: var(--h2n-line) !important; }
+
+/* Mobile / iPhone / Android */
+@media (max-width: 767px) {
+  .platform-root { width: min(100% - 18px, 100%) !important; padding: 10px 0 86px !important; }
+  .workspace-shell { display: block !important; }
+  .side-nav {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    top: auto !important;
+    z-index: 100 !important;
+    min-height: 0 !important;
+    height: 64px !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 4px !important;
+    padding: 8px !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+  }
+  .side-logo, .side-caption { display: none !important; }
+  .side-nav a { margin: 0 !important; padding: 8px 4px !important; text-align: center !important; font-size: 0 !important; }
+  .side-nav a:nth-of-type(n+5) { display: none !important; }
+  .side-nav a::before { display: block !important; width: 8px !important; height: 8px !important; margin: 0 auto 4px !important; }
+  .side-nav a::after { content: attr(data-mobile-label); font-size: 11px; font-weight: 900; }
+  .side-nav a[data-workspace-route="dashboard"]::after { content: "홈"; }
+  .side-nav a[data-workspace-route="appstore"]::after { content: "앱"; }
+  .side-nav a[data-workspace-route="runtime"]::after { content: "내 앱"; }
+  .side-nav a[data-workspace-route="request"]::after { content: "신청"; }
+  .workspace-main { gap: 14px !important; }
+  .topbar, .dashboard-title-row, .store-headline { flex-direction: column !important; align-items: stretch !important; }
+  .topbar h1 { font-size: 1.35rem !important; }
+  .hero-strip h2 { font-size: 1.55rem !important; }
+  .hero-metrics, .user-kpi-grid, .dashboard-profile-grid, .appstore-grid, .user-home-grid, .dev-tools-grid { grid-template-columns: 1fr !important; }
+  .glass-card, .gate-card, .auth-card { border-radius: 20px !important; padding: 18px !important; }
+  .gate-brand { left: 18px !important; top: 18px !important; }
+}
+
+/* Fold open / tablet */
+@media (min-width: 768px) and (max-width: 1180px) {
+  .platform-root { width: min(100% - 28px, 100%) !important; }
+  .workspace-shell { grid-template-columns: 210px minmax(0,1fr) !important; gap: 14px !important; }
+  .appstore-grid, .user-home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .user-kpi-grid, .dashboard-profile-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
+  .hero-strip { grid-template-columns: 1fr !important; }
 }
