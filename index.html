@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HearU2nite Platform - Admin Center v1.1</title>
+  <title>HearU2nite Platform - Multi-App Platform Console</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./core/ui-kit.css">
+  <link rel="stylesheet" href="./assets/css/hearu-step7-design-system.css">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 
   <style>
@@ -58,15 +59,15 @@
   <main class="platform-root">
     <section class="auth-landing login-gate" data-auth="public">
       <div class="gate-brand">
-        <div class="gate-logo"><span>◆</span><strong>Master<span>OS</span></strong></div>
-        <small>UNIFIED APP CONTROL</small>
+        <div class="gate-logo"><span>◆</span><strong>HearU<span>2nite</span></strong></div>
+        <small>MULTI-APP PLATFORM CONSOLE</small>
       </div>
       <div class="wave-layer wave-one"></div>
       <div class="wave-layer wave-two"></div>
       <div class="gate-card" id="authGateCard">
         <div class="gate-mode" data-auth-mode="login">
           <h1>로그인</h1>
-          <p>MasterOS 플랫폼에 오신 것을 환영합니다.</p>
+          <p>HearU2nite Platform에 오신 것을 환영합니다.</p>
           <label for="loginEmail">이메일 또는 사용자명</label>
           <div class="gate-input-row"><span>♙</span><input id="loginEmail" type="email" placeholder="이메일을 입력하세요" autocomplete="email"></div>
           <label for="loginPassword">비밀번호</label>
@@ -107,12 +108,12 @@
           </div>
         </div>
       </div>
-      <footer class="gate-footer">© 2026 MasterOS. All rights reserved.</footer>
+      <footer class="gate-footer">© 2026 HearU2nite Platform. All rights reserved.</footer>
     </section>
 
     <section class="workspace-shell" data-auth="private" style="display:none;">
       <aside class="side-nav">
-        <div class="side-logo"><span>◆</span><strong>Master<span>OS</span></strong></div><div class="side-caption">Unified App Control</div>
+        <div class="side-logo"><span>◆</span><strong>HearU<span>2nite</span></strong></div><div class="side-caption">Multi-App Platform Console</div>
         <a href="#" data-workspace-route="dashboard">Dashboard</a>
         <a href="#" data-workspace-route="appstore">App Store</a>
         <a href="#" data-workspace-route="runtime">My Runtime</a>
@@ -126,8 +127,8 @@
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">STEP 13 Service Platform</p>
-            <h1>Master App Platform</h1>
+            <p class="eyebrow">HearU2nite Platform</p>
+            <h1>Multi-App Platform Console</h1>
             <p id="userStatus">확인 중...</p>
           </div>
           <button id="logoutBtn" class="logout-action">로그아웃</button>
@@ -135,9 +136,9 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">Premium Control Workspace · STEP 13 Service Platform</p>
-            <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
-            <p>사용자 경험과 관리자 회원관리 Platform Launcher 실행 엔진과 생활관리 앱 테스트 실행을 더했습니다.</p>
+            <p class="eyebrow">Premium Multi-App Workspace</p>
+            <h2>하나의 플랫폼에서 여러 앱을 발견하고 실행하세요</h2>
+            <p>HearMe2nite를 대표앱으로 시작해 BabyCare와 Future Apps까지 확장되는 플랫폼 경험입니다.</p>
           </div>
           <div class="hero-metrics">
             <div><strong id="dashboardRole">-</strong><span>권한</span></div>
@@ -221,8 +222,8 @@
             <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu"></ul>
           </div>
           <div id="main-runtime-view" class="glass-card runtime-view">
-            <h3>Master App Platform Runtime</h3>
-            <p>좌측 메뉴 또는 App Store의 실행 버튼에서 서브 애플리케이션을 선택하세요.</p>
+            <h3>HearU2nite Platform Runtime</h3>
+            <p>메뉴 또는 App Store의 실행 버튼에서 승인된 애플리케이션을 선택하세요.</p>
           </div>
         </section>
 
@@ -296,35 +297,28 @@
             <p>관리자 기능을 메뉴별 화면으로 분리했습니다. 필요한 관리 작업만 선택해 집중할 수 있습니다.</p>
           </div>
 
-          <div class="admin-spa-tabs glass-card admin-nav-refined" role="tablist" aria-label="관리자 메뉴">
-            <div class="admin-menu-group admin-menu-primary" aria-label="운영 메뉴">
-              <button type="button" data-admin-route="overview" class="active">Dashboard</button>
-              <button type="button" data-admin-route="members">회원 관리</button>
-              <button type="button" data-admin-route="approval">승인 관리</button>
-              <button type="button" data-admin-route="data">데이터 관리</button>
-              <button type="button" data-admin-route="logs">운영 로그</button>
-              <button type="button" data-admin-route="apps">앱 관리</button>
-            </div>
-            <details class="admin-tools-menu" data-admin-tools-menu>
-              <summary>도구</summary>
-              <div class="admin-tools-grid" aria-label="관리 도구 메뉴">
-                <button type="button" data-admin-route="qa">QA Dashboard</button>
-                <button type="button" data-admin-route="details">App Detail</button>
-                <button type="button" data-admin-route="official">Official Apps</button>
-                <button type="button" data-admin-route="deployment">배포 센터</button>
-                <button type="button" data-admin-route="health">Health</button>
-                <button type="button" data-admin-route="backup">Backup</button>
-                <button type="button" data-admin-route="developer">Developer</button>
-                <button type="button" data-admin-route="statistics">Statistics</button>
-                <button type="button" data-admin-route="security">Security Scan</button>
-                <button type="button" data-admin-route="tools">개발 도구</button>
-              </div>
-            </details>
+          <div class="admin-spa-tabs glass-card" role="tablist" aria-label="관리자 메뉴">
+            <button type="button" data-admin-route="overview" class="active">Overview</button>
+            <button type="button" data-admin-route="qa">QA Dashboard</button>
+            <button type="button" data-admin-route="members">회원 관리</button>
+            <button type="button" data-admin-route="approval">승인 관리</button>
+            <button type="button" data-admin-route="data">데이터 관리</button>
+            <button type="button" data-admin-route="logs">운영 로그</button>
+            <button type="button" data-admin-route="apps">앱 관리</button>
+            <button type="button" data-admin-route="details">App Detail</button>
+            <button type="button" data-admin-route="official">Official Apps</button>
+            <button type="button" data-admin-route="deployment">배포 센터</button>
+            <button type="button" data-admin-route="health">Health</button>
+            <button type="button" data-admin-route="backup">Backup</button>
+            <button type="button" data-admin-route="developer">Developer</button>
+            <button type="button" data-admin-route="statistics">Statistics</button>
+            <button type="button" data-admin-route="security">Security Scan</button>
+            <button type="button" data-admin-route="tools">개발 도구</button>
           </div>
 
           <section class="admin-overview glass-card" data-admin-panel="overview">
-            <p class="eyebrow">HEARU2NITE ADMIN CENTER · STEP6</p>
-            <h2>Dashboard</h2>
+            <p class="eyebrow">Admin Overview</p>
+            <h2>관리자 작업 현황</h2>
             <div class="admin-kpi-grid">
               <div><span>승인 대기</span><strong id="adminPendingKpi">실시간 동기화</strong><small>승인 대시보드에서 확인</small></div>
               <div><span>등록 앱</span><strong id="adminAppsKpi">라우팅 테이블</strong><small>앱 관리 메뉴에서 관리</small></div>
@@ -514,7 +508,7 @@
               <strong>생활관리 앱 보호 체크리스트</strong>
               <ul>
                 <li>외부 Netlify 주소를 직접 공개하지 않기</li>
-                <li>Master App Platform 승인 사용자만 App Store에서 실행</li>
+                <li>HearU2nite 승인 사용자만 App Store에서 실행</li>
                 <li>공유 코드 입력 방식은 추측 불가능한 코드로 교체</li>
                 <li>다음 보안 단계에서 Firebase Rules 적용</li>
               </ul>
@@ -527,7 +521,7 @@
               <div class="col-md-2"><label class="form-label">아이콘</label><input type="text" id="app-icon" class="form-control" placeholder="💰"><small>이모지 1개 추천</small></div>
               <div class="col-md-2"><label class="form-label">앱 버전</label><input type="text" id="app-version" class="form-control" placeholder="v1.0"></div>
               <div class="col-md-3"><label class="form-label">실행 방식</label><select id="app-launch-mode" class="form-control"><option value="router">플랫폼 내부 실행</option><option value="newTab">새 탭 실행</option><option value="sameTab">현재 창 이동</option></select><small>내부 HTML은 플랫폼 내부 실행 추천</small></div>
-              <div class="col-md-2"><label class="form-label">Owner</label><input type="text" id="app-owner" class="form-control" placeholder="MasterOS"></div>
+              <div class="col-md-2"><label class="form-label">Owner</label><input type="text" id="app-owner" class="form-control" placeholder="HearU2nite"></div>
               <div class="col-md-2"><label class="form-label">Category</label><input type="text" id="app-category" class="form-control" placeholder="Official"></div>
               <div class="col-md-3"><label class="form-label">권한 모드</label><select id="app-permission-mode" class="form-control"><option value="approved">승인 사용자</option><option value="official">Official App</option><option value="custom">사용자별 허용</option><option value="public">공개 앱</option></select><small>실행 전 Permission Engine에서 검사</small></div>
               <div class="col-md-3"><label class="form-label">권한 태그</label><input type="text" id="app-permissions" class="form-control" placeholder="approved-user,official-app"></div>
