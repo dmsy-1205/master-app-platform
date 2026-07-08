@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./style.css?v=step7-1-6">
   <link rel="stylesheet" href="./core/ui-kit.css?v=step7-1-6">
   <link rel="stylesheet" href="./assets/css/login-identity.css?v=step7-1-6">
+  <link rel="stylesheet" href="./assets/css/platform-shell.css?v=step7-2-1">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 
   <style>
@@ -113,22 +114,22 @@
 
     <section class="workspace-shell" data-auth="private" style="display:none;">
       <aside class="side-nav">
-        <div class="side-logo"><span>◆</span><strong>Master<span>OS</span></strong></div><div class="side-caption">Unified App Control</div>
-        <a href="#" data-workspace-route="dashboard">Dashboard</a>
-        <a href="#" data-workspace-route="appstore">App Store</a>
-        <a href="#" data-workspace-route="runtime">My Runtime</a>
-        <a href="#" data-workspace-route="request">신청 관리</a>
-        <a href="#" data-workspace-route="activity">활동 로그</a>
-        <a href="#" data-workspace-route="notifications">알림 센터</a>
-        <a href="#" data-workspace-route="feedback">요청 게시판</a>
+        <div class="side-logo"><span>H</span><strong>HearU2nite</strong></div><div class="side-caption">Multi-App Platform Console</div>
+        <a href="#" data-workspace-route="dashboard">Home</a>
+        <a href="#" data-workspace-route="appstore">앱 둘러보기</a>
+        <a href="#" data-workspace-route="runtime">내 앱</a>
+        <a href="#" data-workspace-route="request">승인 현황</a>
+        <a href="#" data-workspace-route="activity">활동 기록</a>
+        <a href="#" data-workspace-route="notifications">공지사항</a>
+        <a href="#" data-workspace-route="feedback">고객지원</a>
         <a href="#" data-workspace-route="admin" data-auth="admin" style="display:none;">Admin Center</a>
       </aside>
 
       <div class="workspace-main">
         <header class="topbar glass-card">
           <div>
-            <p class="eyebrow">STEP 13 Service Platform</p>
-            <h1>Master App Platform</h1>
+            <p class="eyebrow">HearU2nite Platform</p>
+            <h1>Multi-App Platform Console</h1>
             <p id="userStatus">확인 중...</p>
           </div>
           <button id="logoutBtn" class="logout-action">로그아웃</button>
@@ -136,9 +137,9 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">Premium Control Workspace · STEP 13 Service Platform</p>
-            <h2>하나의 계정으로 모든 앱을 실행하는 프리미엄 콘솔</h2>
-            <p>사용자 경험과 관리자 회원관리 Platform Launcher 실행 엔진과 생활관리 앱 테스트 실행을 더했습니다.</p>
+            <p class="eyebrow">User Portal · Approved App Access</p>
+            <h2>필요한 앱을 신청하고 승인된 서비스를 실행하세요</h2>
+            <p>HearU2nite는 여러 앱을 발견하고 신청하고 승인 상태를 확인한 뒤 안전하게 실행하는 Multi-App Platform입니다.</p>
           </div>
           <div class="hero-metrics">
             <div><strong id="dashboardRole">-</strong><span>권한</span></div>
@@ -150,8 +151,8 @@
         <section class="user-dashboard-box glass-card" id="userDashboardSection">
           <div class="dashboard-title-row">
             <div>
-              <p class="eyebrow">User Dashboard</p>
-              <h2>내 플랫폼 현황</h2>
+              <p class="eyebrow">Platform Home</p>
+              <h2>내 앱과 승인 현황</h2>
               <p class="dashboard-help">승인 상태와 사용 가능한 앱을 확인하고 실행합니다.</p>
             </div>
             <div class="dashboard-actions">
@@ -222,8 +223,8 @@
             <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu"></ul>
           </div>
           <div id="main-runtime-view" class="glass-card runtime-view">
-            <h3>Master App Platform Runtime</h3>
-            <p>좌측 메뉴 또는 App Store의 실행 버튼에서 서브 애플리케이션을 선택하세요.</p>
+            <h3>HearU2nite App Runtime</h3>
+            <p>좌측 메뉴 또는 앱 둘러보기의 실행 버튼에서 승인된 앱을 선택하세요.</p>
           </div>
         </section>
 
@@ -515,7 +516,7 @@
               <strong>생활관리 앱 보호 체크리스트</strong>
               <ul>
                 <li>외부 Netlify 주소를 직접 공개하지 않기</li>
-                <li>Master App Platform 승인 사용자만 App Store에서 실행</li>
+                <li>HearU2nite 승인 사용자만 앱 둘러보기에서 실행</li>
                 <li>공유 코드 입력 방식은 추측 불가능한 코드로 교체</li>
                 <li>다음 보안 단계에서 Firebase Rules 적용</li>
               </ul>
@@ -528,7 +529,7 @@
               <div class="col-md-2"><label class="form-label">아이콘</label><input type="text" id="app-icon" class="form-control" placeholder="💰"><small>이모지 1개 추천</small></div>
               <div class="col-md-2"><label class="form-label">앱 버전</label><input type="text" id="app-version" class="form-control" placeholder="v1.0"></div>
               <div class="col-md-3"><label class="form-label">실행 방식</label><select id="app-launch-mode" class="form-control"><option value="router">플랫폼 내부 실행</option><option value="newTab">새 탭 실행</option><option value="sameTab">현재 창 이동</option></select><small>내부 HTML은 플랫폼 내부 실행 추천</small></div>
-              <div class="col-md-2"><label class="form-label">Owner</label><input type="text" id="app-owner" class="form-control" placeholder="MasterOS"></div>
+              <div class="col-md-2"><label class="form-label">Owner</label><input type="text" id="app-owner" class="form-control" placeholder="HearU2nite"></div>
               <div class="col-md-2"><label class="form-label">Category</label><input type="text" id="app-category" class="form-control" placeholder="Official"></div>
               <div class="col-md-3"><label class="form-label">권한 모드</label><select id="app-permission-mode" class="form-control"><option value="approved">승인 사용자</option><option value="official">Official App</option><option value="custom">사용자별 허용</option><option value="public">공개 앱</option></select><small>실행 전 Permission Engine에서 검사</small></div>
               <div class="col-md-3"><label class="form-label">권한 태그</label><input type="text" id="app-permissions" class="form-control" placeholder="approved-user,official-app"></div>
