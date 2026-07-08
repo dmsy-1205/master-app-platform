@@ -1,0 +1,26 @@
+# HearU2nite Platform - Firebase Hosting production deploy
+# Runs when changes are pushed to the main branch.
+# Requires the GitHub secret created by Firebase CLI:
+# FIREBASE_SERVICE_ACCOUNT_MASTER_APP_PLATFORM
+
+name: Deploy to Firebase Hosting on merge
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  deploy_live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MASTER_APP_PLATFORM }}
+          channelId: live
+          projectId: master-app-platform

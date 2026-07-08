@@ -1,16 +1,46 @@
-/* HearU2nite STEP7-1.1 Login Identity Cache & Polish Fix
-   Scope: public login gate only. Auth/Firebase/Router logic is untouched. */
+/* HearU2nite STEP7-1.2 Login Viewport & Firebase Auto Deploy Fix
+   Scope: public login gate only. Auth/Firebase/Router logic is untouched.
+   Fix: detach login gate from legacy parent width constraints and cover the full viewport. */
+
+html:has(.login-gate.auth-landing),
+body:has(.login-gate.auth-landing) {
+  width: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+}
+
+body:has(.login-gate.auth-landing) {
+  background: #f8fbff !important;
+}
+
+body:has(.login-gate.auth-landing) .platform-root {
+  width: 100vw !important;
+  max-width: none !important;
+  min-width: 100vw !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
 
 .login-gate.auth-landing,
 .auth-landing.login-gate {
-  position: relative !important;
+  position: fixed !important;
+  inset: 0 !important;
   isolation: isolate !important;
   min-height: 100vh !important;
-  width: 100% !important;
+  min-height: 100dvh !important;
+  width: 100vw !important;
+  max-width: none !important;
+  min-width: 100vw !important;
   display: grid !important;
   place-items: center !important;
   padding: 96px 24px 56px !important;
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   color: #172033 !important;
   background:
     radial-gradient(circle at 12% 14%, rgba(66, 153, 225, .28), transparent 30%),
@@ -345,4 +375,60 @@
 
 @media (min-width: 721px) and (max-width: 1180px) {
   .login-gate .gate-card { transform: translateY(12px) !important; }
+}
+
+@media (min-width: 1181px) {
+  .login-gate.auth-landing,
+  .auth-landing.login-gate {
+    padding-left: clamp(24px, 4vw, 72px) !important;
+    padding-right: clamp(24px, 4vw, 72px) !important;
+  }
+
+  .login-gate .gate-card {
+    transform: translateY(8px) !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .login-gate.auth-landing,
+  .auth-landing.login-gate {
+    padding: 92px 12px 44px !important;
+  }
+
+  .login-gate .gate-card {
+    padding: 26px 16px 22px !important;
+  }
+
+  .login-gate .gate-input-row {
+    grid-template-columns: 36px 1fr auto !important;
+    min-height: 54px !important;
+  }
+
+  .login-gate .gate-input-row input,
+  .login-gate .gate-input-row input.form-control {
+    height: 52px !important;
+    font-size: .94rem !important;
+  }
+
+  .login-gate .gate-mode h1 {
+    font-size: 1.62rem !important;
+  }
+}
+
+@media (min-width: 540px) and (max-width: 920px) and (orientation: landscape) {
+  .login-gate.auth-landing,
+  .auth-landing.login-gate {
+    place-items: start center !important;
+    padding-top: 86px !important;
+  }
+
+  .login-gate .gate-brand {
+    top: 16px !important;
+  }
+
+  .login-gate .gate-card {
+    width: min(480px, calc(100vw - 28px)) !important;
+    padding-top: 28px !important;
+    padding-bottom: 24px !important;
+  }
 }
