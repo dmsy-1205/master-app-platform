@@ -528,3 +528,38 @@ body:has(.login-gate.auth-landing) .platform-root {
   .login-gate .gate-secondary-action { min-height: 44px !important; margin-top: 10px !important; }
   .login-gate .gate-divider { margin: 12px 0 8px !important; }
 }
+
+
+/* STEP7-1.6 Login Auth Visibility Fix
+   auth.js hides [data-auth=public] after successful login.
+   Earlier login CSS used display:grid!important, which overrode inline display:none.
+   These rules make the authenticated workspace visible again without changing Firebase/Auth logic. */
+.login-gate.auth-landing[hidden],
+.auth-landing.login-gate[hidden],
+.login-gate.auth-landing[style*="display: none"],
+.auth-landing.login-gate[style*="display: none"],
+body.auth-private-active .login-gate.auth-landing,
+body.auth-private-active .auth-landing.login-gate {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.auth-private-active {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  background: #050816 !important;
+}
+
+body.auth-private-active .platform-root {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+body.auth-private-active .workspace-shell[data-auth="private"] {
+  display: grid !important;
+}

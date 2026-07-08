@@ -53,7 +53,14 @@ async function configureSessionPersistence(useLocal = false) {
 function setVisible(elements, visible) {
   elements.forEach((el) => {
     el.style.display = visible ? '' : 'none';
+    el.hidden = !visible;
+    el.setAttribute('aria-hidden', visible ? 'false' : 'true');
   });
+}
+
+function setAuthShellMode(isLoggedIn) {
+  document.body.classList.toggle('auth-public-active', !isLoggedIn);
+  document.body.classList.toggle('auth-private-active', Boolean(isLoggedIn));
 }
 
 function publishAuthState(user, roleInfo) {
@@ -98,6 +105,7 @@ async function resolveRoleInfo(user) {
 
 async function applyScreenState(user) {
   if (!user) {
+    setAuthShellMode(false);
     setVisible(publicSections, true);
     setVisible(privateSections, false);
     setVisible(adminSections, false);
@@ -107,6 +115,7 @@ async function applyScreenState(user) {
     return;
   }
 
+  setAuthShellMode(true);
   setVisible(publicSections, false);
   setVisible(privateSections, true);
 
