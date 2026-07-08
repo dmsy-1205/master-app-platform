@@ -1,7 +1,6 @@
-/* HearU2nite STEP7-1.4 Cross-Device Login CSS Rebuild
-   Scope: public login gate only.
-   Auth/Firebase/Router logic is untouched.
-   Goal: rebuild login-only layout for Desktop, Tablet, Fold Open, Fold Cover, and Mobile.
+/* HearU2nite STEP7-1.5 Cross-Device Size Tuning
+   Scope: public login gate only. Auth/Firebase/Router logic is untouched.
+   Based on STEP7-1.4 screenshots: desktop card was too small; mobile/Fold cover was too large.
 */
 
 html,
@@ -37,12 +36,12 @@ body:has(.login-gate.auth-landing) .platform-root {
 .auth-landing.login-gate {
   --brand-top: clamp(24px, 4.2vh, 46px);
   --brand-left: clamp(28px, 5.2vw, 108px);
-  --card-width: 486px;
-  --card-radius: 26px;
-  --card-pad-x: 34px;
+  --page-x: clamp(16px, 3.2vw, 56px);
+  --card-width: 510px;
+  --card-radius: 27px;
+  --card-pad-x: 38px;
   --card-pad-y: 34px;
   --input-h: 54px;
-  --footer-h: 32px;
   position: relative !important;
   isolation: isolate !important;
   box-sizing: border-box !important;
@@ -53,7 +52,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   display: grid !important;
   grid-template-rows: auto 1fr auto !important;
   place-items: stretch center !important;
-  padding: var(--brand-top) clamp(16px, 3.2vw, 56px) 18px !important;
+  padding: var(--brand-top) var(--page-x) 18px !important;
   color: #172033 !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
@@ -82,7 +81,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   z-index: 3 !important;
   justify-self: start !important;
   align-self: start !important;
-  margin-left: max(0px, calc(var(--brand-left) - clamp(16px, 3.2vw, 56px))) !important;
+  margin-left: max(0px, calc(var(--brand-left) - var(--page-x))) !important;
   display: grid !important;
   gap: 8px !important;
 }
@@ -111,7 +110,7 @@ body:has(.login-gate.auth-landing) .platform-root {
 .login-gate .gate-logo strong {
   display: block !important;
   margin: 0 !important;
-  font-size: 1.38rem !important;
+  font-size: 1.42rem !important;
   line-height: 1 !important;
   letter-spacing: -.045em !important;
   color: #172033 !important;
@@ -161,7 +160,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   justify-self: center !important;
   align-self: center !important;
   width: min(var(--card-width), calc(100vw - 32px)) !important;
-  margin: clamp(18px, 3.2vh, 34px) auto clamp(14px, 2.4vh, 24px) !important;
+  margin: clamp(18px, 3vh, 32px) auto clamp(14px, 2.4vh, 24px) !important;
   border-radius: var(--card-radius) !important;
   padding: var(--card-pad-y) var(--card-pad-x) calc(var(--card-pad-y) - 4px) !important;
   color: #172033 !important;
@@ -175,7 +174,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   margin: 0 0 8px !important;
   text-align: center !important;
   color: #111827 !important;
-  font-size: clamp(1.72rem, 2.5vw, 2.02rem) !important;
+  font-size: clamp(1.84rem, 2.45vw, 2.18rem) !important;
   line-height: 1.16 !important;
   font-weight: 950 !important;
   letter-spacing: -.055em !important;
@@ -183,10 +182,10 @@ body:has(.login-gate.auth-landing) .platform-root {
 
 .login-gate .gate-mode p {
   margin: 0 auto 24px !important;
-  max-width: 360px !important;
+  max-width: 380px !important;
   text-align: center !important;
   color: #66728a !important;
-  font-size: .93rem !important;
+  font-size: .96rem !important;
   line-height: 1.58 !important;
   font-weight: 700 !important;
   word-break: keep-all !important;
@@ -198,7 +197,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   display: block !important;
   margin: 14px 0 7px !important;
   color: #172033 !important;
-  font-size: .90rem !important;
+  font-size: .92rem !important;
   font-weight: 900 !important;
 }
 
@@ -239,7 +238,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   border-radius: 0 !important;
   background: transparent !important;
   color: #172033 !important;
-  font-size: .94rem !important;
+  font-size: .95rem !important;
   font-weight: 700 !important;
   box-shadow: none !important;
 }
@@ -276,7 +275,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   margin: 14px 0 0 !important;
   color: #66728a !important;
   font-weight: 850 !important;
-  font-size: .88rem !important;
+  font-size: .89rem !important;
 }
 
 .login-gate .gate-remember input {
@@ -289,14 +288,14 @@ body:has(.login-gate.auth-landing) .platform-root {
 .login-gate .gate-primary-action,
 .login-gate .gate-secondary-action {
   width: 100% !important;
-  min-height: 52px !important;
+  min-height: 53px !important;
   margin-top: 18px !important;
   border: 0 !important;
   border-radius: 15px !important;
   color: #fff !important;
   background: linear-gradient(135deg, #3267ff, #1da7e8) !important;
   box-shadow: 0 16px 32px rgba(50,103,255,.22) !important;
-  font-size: .96rem !important;
+  font-size: .98rem !important;
   font-weight: 950 !important;
 }
 
@@ -334,7 +333,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   color: #0f62d6 !important;
   box-shadow: none !important;
   font-weight: 950 !important;
-  font-size: .92rem !important;
+  font-size: .94rem !important;
 }
 
 .login-gate .gate-links i { width: 1px !important; height: 27px !important; background: rgba(114,135,170,.24) !important; }
@@ -355,7 +354,7 @@ body:has(.login-gate.auth-landing) .platform-root {
   white-space: normal !important;
 }
 
-/* Desktop and laptop: one-screen composition, no visual clipping. */
+/* Desktop and laptop: PC card restored 10-15% from STEP7-1.4 while keeping one-screen composition. */
 @media (min-width: 1025px) and (min-height: 760px) {
   body:has(.login-gate.auth-landing) { overflow-y: hidden !important; }
 
@@ -365,10 +364,10 @@ body:has(.login-gate.auth-landing) .platform-root {
     min-height: 100svh !important;
     max-height: 100svh !important;
     overflow: hidden !important;
-    --card-width: 470px;
-    --card-pad-x: 32px;
-    --card-pad-y: 30px;
-    --input-h: 52px;
+    --card-width: 515px;
+    --card-pad-x: 38px;
+    --card-pad-y: 32px;
+    --input-h: 54px;
   }
 
   .login-gate .gate-card {
@@ -376,8 +375,12 @@ body:has(.login-gate.auth-landing) .platform-root {
     margin-bottom: 10px !important;
   }
 
-  .login-gate .gate-mode p { margin-bottom: 20px !important; }
-  .login-gate .gate-divider { margin-top: 22px !important; margin-bottom: 14px !important; }
+  .login-gate .gate-footer {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+  }
 }
 
 /* Short laptop windows: keep all controls usable; footer remains centered but page may scroll. */
@@ -385,86 +388,93 @@ body:has(.login-gate.auth-landing) .platform-root {
   .login-gate.auth-landing,
   .auth-landing.login-gate {
     --brand-top: 20px;
-    --card-width: 450px;
-    --card-pad-x: 30px;
-    --card-pad-y: 24px;
-    --input-h: 48px;
+    --card-width: 480px;
+    --card-pad-x: 32px;
+    --card-pad-y: 25px;
+    --input-h: 49px;
     padding-top: 20px !important;
   }
 
-  .login-gate .gate-mode h1 { font-size: 1.66rem !important; }
-  .login-gate .gate-mode p { font-size: .86rem !important; margin-bottom: 14px !important; }
+  .login-gate .gate-mode h1 { font-size: 1.74rem !important; }
+  .login-gate .gate-mode p { font-size: .88rem !important; margin-bottom: 14px !important; }
   .login-gate .gate-mode label:not(.gate-remember) { margin-top: 10px !important; }
   .login-gate .gate-primary-action,
-  .login-gate .gate-secondary-action { min-height: 48px !important; margin-top: 14px !important; }
+  .login-gate .gate-secondary-action { min-height: 49px !important; margin-top: 14px !important; }
   .login-gate .gate-divider { margin: 18px 0 10px !important; }
 }
 
-/* Tablet and Fold Open: avoid oversized mobile UI. */
+/* Tablet and Fold Open: balanced, not phone-scaled and not desktop-large. */
 @media (min-width: 721px) and (max-width: 1024px) {
   .login-gate.auth-landing,
   .auth-landing.login-gate {
     --brand-top: 26px;
     --brand-left: 40px;
-    --card-width: 486px;
-    --card-pad-x: 34px;
-    --card-pad-y: 32px;
-    --input-h: 53px;
+    --card-width: 470px;
+    --card-pad-x: 30px;
+    --card-pad-y: 28px;
+    --input-h: 50px;
     padding-left: 22px !important;
     padding-right: 22px !important;
   }
+
+  .login-gate .gate-mode h1 { font-size: 1.78rem !important; }
+  .login-gate .gate-mode p { font-size: .90rem !important; margin-bottom: 18px !important; }
 }
 
-/* Phones and Fold Cover: compact card, smaller typography, natural vertical scroll. */
+/* Phones and Fold Cover: compact width, smaller typography, natural vertical scroll. */
 @media (max-width: 720px) {
   body:has(.login-gate.auth-landing) { overflow-y: auto !important; }
 
   .login-gate.auth-landing,
   .auth-landing.login-gate {
-    --brand-top: 22px;
-    --brand-left: 18px;
-    --card-width: 100%;
-    --card-radius: 22px;
-    --card-pad-x: 18px;
-    --card-pad-y: 24px;
-    --input-h: 50px;
+    --brand-top: 18px;
+    --brand-left: 14px;
+    --card-width: 360px;
+    --card-radius: 20px;
+    --card-pad-x: 16px;
+    --card-pad-y: 20px;
+    --input-h: 44px;
     min-height: 100svh !important;
     grid-template-rows: auto auto auto !important;
     align-content: start !important;
-    padding: 22px 14px max(18px, env(safe-area-inset-bottom)) !important;
+    padding: 18px 12px max(16px, env(safe-area-inset-bottom)) !important;
     overflow-y: auto !important;
   }
 
   .login-gate .gate-brand {
     margin-left: 0 !important;
-    margin-bottom: 34px !important;
+    margin-bottom: 24px !important;
   }
 
-  .login-gate .gate-logo { gap: 10px !important; }
-  .login-gate .gate-logo > span { width: 38px !important; height: 38px !important; border-radius: 13px !important; font-size: .92rem !important; }
-  .login-gate .gate-logo strong { font-size: 1.22rem !important; }
-  .login-gate .gate-brand small { margin-left: 48px !important; font-size: .60rem !important; letter-spacing: .11em !important; }
+  .login-gate .gate-logo { gap: 9px !important; }
+  .login-gate .gate-logo > span { width: 34px !important; height: 34px !important; border-radius: 12px !important; font-size: .84rem !important; }
+  .login-gate .gate-logo strong { font-size: 1.06rem !important; }
+  .login-gate .gate-brand small { margin-left: 43px !important; font-size: .52rem !important; letter-spacing: .10em !important; }
 
   .login-gate .gate-card {
-    width: min(100%, 420px) !important;
-    margin: 0 auto 22px !important;
-    padding: var(--card-pad-y) var(--card-pad-x) 22px !important;
+    width: min(100%, var(--card-width)) !important;
+    margin: 0 auto 18px !important;
+    padding: var(--card-pad-y) var(--card-pad-x) 19px !important;
     border-radius: var(--card-radius) !important;
   }
 
-  .login-gate .gate-mode h1 { font-size: clamp(1.56rem, 7.1vw, 1.86rem) !important; }
-  .login-gate .gate-mode p { font-size: .88rem !important; line-height: 1.5 !important; margin-bottom: 20px !important; }
-  .login-gate .gate-mode label:not(.gate-remember) { font-size: .88rem !important; margin: 12px 0 7px !important; }
-  .login-gate .gate-input-row { grid-template-columns: 38px 1fr auto !important; border-radius: 14px !important; }
+  .login-gate .gate-mode h1 { font-size: clamp(1.34rem, 5.4vw, 1.58rem) !important; }
+  .login-gate .gate-mode p { font-size: .78rem !important; line-height: 1.46 !important; margin-bottom: 16px !important; }
+  .login-gate .gate-mode label:not(.gate-remember) { font-size: .80rem !important; margin: 10px 0 6px !important; }
+  .login-gate .gate-input-row { grid-template-columns: 34px 1fr auto !important; border-radius: 13px !important; }
+  .login-gate .gate-input-row > span { font-size: .82rem !important; }
   .login-gate .gate-input-row input,
-  .login-gate .gate-input-row input.form-control { font-size: .90rem !important; padding-left: 8px !important; }
-  .login-gate .password-toggle { width: 38px !important; height: 38px !important; margin-right: 4px !important; }
-  .login-gate .gate-remember { font-size: .84rem !important; margin-top: 13px !important; }
+  .login-gate .gate-input-row input.form-control { font-size: .80rem !important; padding-left: 6px !important; }
+  .login-gate .password-toggle { width: 34px !important; height: 34px !important; margin-right: 3px !important; font-size: .84rem !important; }
+  .login-gate .gate-remember { font-size: .76rem !important; margin-top: 11px !important; }
+  .login-gate .gate-remember input { width: 15px !important; height: 15px !important; }
   .login-gate .gate-primary-action,
-  .login-gate .gate-secondary-action { min-height: 50px !important; margin-top: 16px !important; font-size: .94rem !important; }
-  .login-gate .gate-divider { margin: 22px 0 14px !important; gap: 12px !important; }
-  .login-gate .gate-links button { font-size: .88rem !important; }
-  .login-gate .gate-footer { font-size: .70rem !important; padding-bottom: 0 !important; }
+  .login-gate .gate-secondary-action { min-height: 44px !important; margin-top: 14px !important; border-radius: 13px !important; font-size: .84rem !important; }
+  .login-gate .gate-divider { margin: 18px 0 12px !important; gap: 10px !important; }
+  .login-gate .gate-divider em { font-size: .78rem !important; }
+  .login-gate .gate-links button { font-size: .78rem !important; padding: 7px 6px !important; }
+  .login-gate .gate-links i { height: 22px !important; }
+  .login-gate .gate-footer { font-size: .62rem !important; padding-bottom: 0 !important; }
 
   .login-gate .wave-layer { width: 190vw !important; left: -45vw !important; height: 23vh !important; opacity: .14 !important; }
   .login-gate .wave-layer.wave-one { top: 31% !important; }
@@ -475,19 +485,20 @@ body:has(.login-gate.auth-landing) .platform-root {
 @media (max-width: 390px) {
   .login-gate.auth-landing,
   .auth-landing.login-gate {
-    --card-pad-x: 15px;
-    --card-pad-y: 22px;
-    --input-h: 48px;
+    --card-width: 344px;
+    --card-pad-x: 14px;
+    --card-pad-y: 18px;
+    --input-h: 42px;
     padding-left: 10px !important;
     padding-right: 10px !important;
   }
 
-  .login-gate .gate-brand { margin-bottom: 28px !important; }
-  .login-gate .gate-logo > span { width: 36px !important; height: 36px !important; }
-  .login-gate .gate-logo strong { font-size: 1.12rem !important; }
-  .login-gate .gate-brand small { margin-left: 46px !important; font-size: .55rem !important; }
-  .login-gate .gate-mode h1 { font-size: 1.44rem !important; }
-  .login-gate .gate-mode p { font-size: .82rem !important; }
+  .login-gate .gate-brand { margin-bottom: 22px !important; }
+  .login-gate .gate-logo > span { width: 32px !important; height: 32px !important; }
+  .login-gate .gate-logo strong { font-size: 1rem !important; }
+  .login-gate .gate-brand small { margin-left: 41px !important; font-size: .50rem !important; }
+  .login-gate .gate-mode h1 { font-size: 1.28rem !important; }
+  .login-gate .gate-mode p { font-size: .74rem !important; }
   .login-gate .gate-links { gap: 8px !important; }
 }
 
