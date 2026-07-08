@@ -44,6 +44,7 @@ const applyReason = document.getElementById('applyReason');
 let appsUnsubscribeRef = null;
 let appAccessUnsubscribeRef = null;
 let applicationUnsubscribeRef = null;
+let feedbackBoardUnsubscribeRef = null;
 let cachedApps = [];
 let currentUser = null;
 let currentApprovalStatus = 'none';
@@ -55,6 +56,8 @@ let favoriteIds = new Set();
 let cachedActivities = [];
 let currentAppAccess = {};
 let currentApplicationData = null;
+const ACTIVITY_VISIBLE_LIMIT = 10;
+let dashboardNotices = [];
 
 function setText(el, value) {
   if (el) el.textContent = value;
@@ -155,18 +158,72 @@ function renderFavoriteWidget(apps = cachedApps) {
 
 function buildNotifications(apps = [], approvalStatus = 'none') {
   const notices = [];
+
+  dashboardNotices.forEach(item => {
+    notices.push({
+      icon: '📢',
+      title: item.title || '공지',
+      text: item.content || '공지 내용이 없습니다.',
+      at: item.createdAt || item.updatedAt || ''
+    });
+  });
+
   notices.push({ icon: '✅', title: `승인 상태 ${statusLabel(approvalStatus)}`, text: approvalStatus === 'approved' ? '현재 플랫폼 앱 실행이 가능합니다.' : '승인 완료 후 앱 실행 권한이 열립니다.' });
   notices.push({ icon: '📦', title: `사용 가능 앱 ${apps.length}개`, text: apps.length ? 'App Store에서 앱을 실행할 수 있습니다.' : '관리자가 앱을 등록하면 이곳에 표시됩니다.' });
   if (favoriteIds.size) notices.push({ icon: '⭐', title: `즐겨찾기 ${favoriteIds.size}개`, text: '자주 쓰는 앱을 빠르게 찾을 수 있습니다.' });
   return notices;
 }
 
+function renderDashboardNoticeWidget() {
+  if (!dashboardNotificationList) return;
+
+  if (!dashboardNotices.length) {
+    dashboardNotificationList.innerHTML = '<p class="placeholder-text">등록된 공지가 아직 없습니다.</p>';
+    return;
+  }
+
+  dashboardNotificationList.innerHTML = dashboardNotices.map((item, index) => `
+    <details class="dashboard-notice-row" ${index === 0 ? 'open' : ''}>
+      <summary>
+        <span class="notice-row-icon">📢</span>
+        <strong>${escapeHtml(item.title || '공지')}</strong>
+        <small>${formatDate(item.createdAt || item.updatedAt)}</small>
+      </summary>
+      <p>${escapeHtml(item.content || '공지 내용이 없습니다.')}</p>
+    </details>
+  `).join('');
+}
+
 function renderNotifications(apps = cachedApps, approvalStatus = currentApprovalStatus) {
   const notices = buildNotifications(apps, approvalStatus);
   if (notificationBadge) notificationBadge.textContent = String(notices.length);
-  const html = notices.map(item => `<article class="notice-item"><span>${item.icon}</span><div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}</small></div></article>`).join('');
+  const html = notices.map(item => `<article class="notice-item"><span>${item.icon}</span><div><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.text)}${item.at ? ` · ${formatDate(item.at)}` : ''}</small></div></article>`).join('');
   if (notificationList) notificationList.innerHTML = html;
-  if (dashboardNotificationList) dashboardNotificationList.innerHTML = html;
+  renderDashboardNoticeWidget();
+}
+
+function syncDashboardNotices() {
+  if (!currentUser) {
+    dashboardNotices = [];
+    renderNotifications(cachedApps, currentApprovalStatus);
+    return;
+  }
+
+  if (feedbackBoardUnsubscribeRef) off(feedbackBoardUnsubscribeRef);
+  feedbackBoardUnsubscribeRef = ref(db, 'feedbackBoard');
+
+  onValue(feedbackBoardUnsubscribeRef, (snapshot) => {
+    const raw = snapshot.val() || {};
+    dashboardNotices = Object.values(raw)
+      .filter(item => item && item.type === 'notice')
+      .sort((a, b) => new Date(b.createdAt || b.updatedAt || 0) - new Date(a.createdAt || a.updatedAt || 0))
+      .slice(0, 5);
+    renderNotifications(cachedApps, currentApprovalStatus);
+  }, (error) => {
+    console.warn('Dashboard 공지 불러오기 실패:', error);
+    dashboardNotices = [];
+    renderNotifications(cachedApps, currentApprovalStatus);
+  });
 }
 
 function filterApps(apps = []) {
@@ -190,13 +247,15 @@ function renderActivityList(target, activities = cachedActivities, compact = fal
     target.innerHTML = '<p class="empty-line">아직 실행 기록이 없습니다.</p>';
     return;
   }
-  const limited = compact ? activities.slice(0, 4) : activities;
+  const limit = compact ? 4 : ACTIVITY_VISIBLE_LIMIT;
+  const limited = activities.slice(0, limit);
+  const hiddenCount = Math.max(0, activities.length - limited.length);
   target.innerHTML = limited.map(item => `
     <article class="activity-item">
       <span class="activity-dot"></span>
       <div><strong>${escapeHtml(item.appName || '이름 없는 앱')}</strong><small>${formatDate(item.launchedAt)} · ${escapeHtml(item.launchMode || 'router')}</small></div>
     </article>
-  `).join('');
+  `).join('') + (hiddenCount && !compact ? `<p class="empty-line">최근 ${ACTIVITY_VISIBLE_LIMIT}개만 표시합니다. 이전 기록 ${hiddenCount}개는 DB에는 보관됩니다.</p>` : '');
 }
 
 async function loadActivityLogs() {
@@ -485,6 +544,9 @@ async function loadUserDashboard(user) {
     if (applicationUnsubscribeRef) off(applicationUnsubscribeRef);
     appAccessUnsubscribeRef = null;
     applicationUnsubscribeRef = null;
+    if (feedbackBoardUnsubscribeRef) off(feedbackBoardUnsubscribeRef);
+    feedbackBoardUnsubscribeRef = null;
+    dashboardNotices = [];
     updateUserStats([], 'none');
     favoriteIds = new Set();
     updateFavoriteCount();
@@ -502,6 +564,7 @@ async function loadUserDashboard(user) {
   if (profileInitial) profileInitial.textContent = (user.email || 'U').charAt(0).toUpperCase();
   await loadFavorites();
   loadActivityLogs();
+  syncDashboardNotices();
 
   try {
     const [adminSnap, userSnap, applicationSnap, appAccessSnap] = await Promise.all([

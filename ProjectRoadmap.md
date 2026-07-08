@@ -171,3 +171,31 @@ STEP14 Plugin SDK 고도화
 - 앱 패키지 검사
 - 배포 롤백 실제 이력화
 - 백업 복원 관리자 보안 확인 절차
+
+---
+
+# Roadmap Update - STEP14 이후
+
+## STEP14-v1
+
+Web OS 운영센터의 기본 뼈대를 실제 Firebase 데이터와 연결한다.
+
+- App Detail Center
+- Official App Center
+- Plugin SDK Generator
+- Deployment Center
+- Health Monitor
+- Backup Center Export
+- Developer Center 검사
+- Statistics Dashboard
+- Security Scan Center
+
+## STEP15 후보
+
+- Backup Restore 관리자 승인 플로우
+- Organization / Team / Role 구조
+- Plugin Marketplace 등록 심사
+- Package(.masterapp) 업로드/검사
+- Sandbox Runtime 격리
+- Webhook / API Token Center
+- AI Assistant 운영 로그 요약
