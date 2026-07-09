@@ -32,24 +32,17 @@ function setActiveLink(route) {
   document.querySelectorAll('[data-workspace-route]').forEach((link) => {
     link.classList.toggle('active', link.dataset.workspaceRoute === route);
   });
-  updateMobileNavLabel(route);
-}
-
-function updateMobileNavLabel(route) {
-  const activeLink = document.querySelector(`[data-workspace-route="${route}"]`);
-  const toggle = document.querySelector('.nav-toggle');
-  if (!toggle) return;
-  const label = activeLink?.textContent?.trim() || '메뉴';
-  toggle.textContent = '메뉴';
-  toggle.setAttribute('aria-label', `메뉴 열기 · 현재 위치 ${label}`);
 }
 
 function closeMobileNav() {
-  const nav = document.querySelector('.side-nav');
-  const toggle = document.querySelector('.nav-toggle');
-  if (!nav || !toggle) return;
-  nav.classList.remove('nav-open');
-  toggle.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('hu-mobile-nav-open');
+  document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', 'false');
+}
+
+function toggleMobileNav() {
+  const willOpen = !document.body.classList.contains('hu-mobile-nav-open');
+  document.body.classList.toggle('hu-mobile-nav-open', willOpen);
+  document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', String(willOpen));
 }
 
 function showWorkspaceRoute(route = 'dashboard') {
@@ -85,13 +78,16 @@ function showAdminRoute(route = 'overview') {
 }
 
 document.addEventListener('click', (event) => {
-  const navToggle = event.target.closest('.nav-toggle');
+  const navToggle = event.target.closest('.mobile-nav-toggle');
   if (navToggle) {
     event.preventDefault();
-    const nav = document.querySelector('.side-nav');
-    if (!nav) return;
-    const isOpen = nav.classList.toggle('nav-open');
-    navToggle.setAttribute('aria-expanded', String(isOpen));
+    toggleMobileNav();
+    return;
+  }
+
+  if (event.target.closest('[data-mobile-nav-close]')) {
+    event.preventDefault();
+    closeMobileNav();
     return;
   }
 
@@ -120,3 +116,8 @@ window.addEventListener('master-auth-role-changed', (event) => {
 window.MasterWorkspace = { showRoute: showWorkspaceRoute, showAdminRoute };
 showWorkspaceRoute('dashboard');
 showAdminRoute('overview');
+
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 980) closeMobileNav();
+});

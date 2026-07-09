@@ -830,38 +830,219 @@ pre,
 }
 
 
-/* STEP7-6 Visual System & Mobile Navigation Recovery
-   Scope: Cross-device navigation, legacy gray cleanup, readable card text only.
-   Firebase/Auth/Router/App launch logic untouched. */
+/* =========================================================
+   STEP8 Twitter-like Platform Frame Renewal
+   Scope: Layout architecture + global visual contrast only.
+   Firebase/Auth/Router data logic untouched.
+   ========================================================= */
 :root {
-  --hu-bg-clean: #f7fbff;
-  --hu-bg-clean-2: #f3f7ff;
-  --hu-card-clean: rgba(255,255,255,.90);
-  --hu-card-clean-strong: rgba(255,255,255,.96);
-  --hu-card-tint: rgba(239,248,255,.72);
-  --hu-line-clean: rgba(90,119,160,.18);
-  --hu-text-strong: #142033;
-  --hu-text-body: #43536b;
-  --hu-text-muted: #6c7a90;
+  --hu-page: #edf5fb;
+  --hu-frame: #f8fbff;
+  --hu-card: #ffffff;
+  --hu-card-soft: #f6faff;
+  --hu-border: #d8e5f3;
+  --hu-border-strong: #c7d9eb;
+  --hu-text: #132033;
+  --hu-subtext: #52637a;
+  --hu-faint: #718198;
+  --hu-blue: #2387f5;
+  --hu-cyan: #18b8df;
+  --hu-violet: #7a5cff;
+  --hu-pink: #eb4fa3;
+  --hu-good: #18b985;
+  --hu-warn: #f59e0b;
+  --hu-danger: #ef4444;
+  --hu-shadow-card: 0 14px 34px rgba(34, 56, 92, .08);
+  --hu-shadow-soft: 0 8px 22px rgba(34, 56, 92, .06);
 }
 
-/* Trend-clean background: remove old gray/washed panels. */
-body:has(.workspace-shell:not([style*="display:none"])),
-.platform-root:has(.workspace-shell:not([style*="display:none"])) {
+html, body {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+body:has(.workspace-shell:not([style*="display:none"])) {
   background:
-    radial-gradient(circle at 10% 8%, rgba(56,189,248,.14), transparent 28%),
-    radial-gradient(circle at 92% 12%, rgba(129,140,248,.12), transparent 30%),
-    linear-gradient(135deg, var(--hu-bg-clean) 0%, #eef8ff 48%, var(--hu-bg-clean-2) 100%) !important;
-  color: var(--hu-text-strong) !important;
+    radial-gradient(circle at 12% 0%, rgba(24,184,223,.12), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(122,92,255,.10), transparent 30%),
+    linear-gradient(135deg, #eef8fd 0%, #f7fbff 46%, #f4f0ff 100%) !important;
+  color: var(--hu-text) !important;
 }
 
-/* Universal readable surface cleanup. */
-.side-nav,
-.topbar,
+.platform-root:has(.workspace-shell:not([style*="display:none"])) {
+  background: transparent !important;
+}
+
+.workspace-shell {
+  width: min(100%, 1360px) !important;
+  margin: 0 auto !important;
+  padding: 22px 18px !important;
+  display: grid !important;
+  grid-template-columns: 232px minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  color: var(--hu-text) !important;
+}
+
+.workspace-main {
+  width: 100% !important;
+  max-width: 1060px !important;
+  margin: 0 !important;
+  display: grid !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+}
+
+.side-nav {
+  position: sticky !important;
+  top: 18px !important;
+  min-height: calc(100vh - 36px) !important;
+  border-radius: 24px !important;
+  border: 1px solid var(--hu-border) !important;
+  background: rgba(255,255,255,.92) !important;
+  box-shadow: var(--hu-shadow-soft) !important;
+  backdrop-filter: blur(18px) !important;
+  padding: 18px 14px !important;
+  overflow: hidden !important;
+}
+
+.side-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 0 10px !important;
+  color: var(--hu-text) !important;
+}
+
+.side-logo > span {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 13px !important;
+  display: grid !important;
+  place-items: center !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--hu-cyan), var(--hu-blue) 55%, var(--hu-violet)) !important;
+  box-shadow: 0 12px 24px rgba(35,135,245,.18) !important;
+}
+
+.side-logo strong { color: var(--hu-text) !important; }
+.side-caption {
+  margin: 0 0 28px 48px !important;
+  color: #52637a !important;
+  font-size: .68rem !important;
+  font-weight: 950 !important;
+  letter-spacing: .12em !important;
+}
+
+.side-nav a {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 42px !important;
+  padding: 10px 12px !important;
+  margin: 0 0 7px !important;
+  border-radius: 999px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #26364e !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+.side-nav a::before {
+  content: "" !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 999px !important;
+  flex: 0 0 auto !important;
+  background: var(--hu-blue) !important;
+  opacity: .9 !important;
+}
+
+.side-nav a:hover,
+.side-nav a.active {
+  color: #075fc8 !important;
+  background: #eef5ff !important;
+  border-color: #cfe0f7 !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.72) !important;
+  transform: none !important;
+}
+
+.mobile-nav-toggle,
+.mobile-nav-backdrop { display: none; }
+
+.topbar {
+  min-height: 106px !important;
+  padding: 22px 24px !important;
+  border-radius: 24px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: rgba(255,255,255,.92) !important;
+  border: 1px solid var(--hu-border) !important;
+  box-shadow: var(--hu-shadow-soft) !important;
+}
+
+.topbar h1,
+.hero-strip h2,
+.dashboard-title-row h2,
+.store-headline h2,
+.section-title-row h2,
+.admin-center h2,
+.admin-overview h2,
+.member-management h2,
+.approval-box h2,
+.data-management-panel h2,
+.qa-dashboard h2,
+.feedback-board h2,
+.notification-center h2,
+.activity-page h2 {
+  color: var(--hu-text) !important;
+  letter-spacing: -.045em !important;
+}
+
+.topbar p,
+.dashboard-help,
+.info-text,
+.placeholder-text,
+.store-headline p,
+.section-title-row p,
+.user-app-body p,
+.hero-strip p,
+.feedback-board p,
+.notification-center p,
+.activity-page p {
+  color: var(--hu-subtext) !important;
+}
+
+.eyebrow {
+  color: #0968d7 !important;
+  font-weight: 950 !important;
+  letter-spacing: .12em !important;
+}
+
+.logout-action,
+.dashboard-actions button,
+.home-widget button,
+#storeFeaturedLaunchBtn,
+.launch-app-btn,
+#loadAppsBtn,
+#refreshMembersBtn,
+#deleteRequestRefreshBtn,
+#operationLogRefreshBtn,
+#qaRefreshBtn,
+.feedback-board button,
+.notification-center button {
+  border: 0 !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--hu-blue), var(--hu-cyan)) !important;
+  box-shadow: 0 10px 24px rgba(35,135,245,.18) !important;
+}
+
 .glass-card,
 .hero-strip,
 .user-dashboard-box,
-.platform-home-ux,
 .appstore-section,
 .apply-box,
 .activity-page,
@@ -870,676 +1051,374 @@ body:has(.workspace-shell:not([style*="display:none"])),
 .admin-center,
 .admin-center-head,
 .admin-spa-tabs,
+.admin-overview,
+.qa-dashboard,
+.member-management,
 .approval-box,
+.data-management-panel,
 .app-manager-card,
 .dev-tools-card,
 .runtime-view,
 .runtime-nav-card,
 .home-widget,
-.flagship-app-card,
-.home-next-card,
 .featured-store-banner,
 .user-app-card,
-.activity-item,
-.notice-item,
-.feedback-item,
-.request-item,
-.member-card,
-.log-card,
-.app-card,
-.admin-stat-card,
-.approval-card {
+.flagship-app-card,
+.home-next-card,
+.dashboard-account-details,
+.delete-request-list,
+.delete-request-detail,
+.operation-log-empty,
+.member-management-note,
+.apps-list-container,
+.feedback-list,
+.notification-list,
+.readonly-box {
+  background: rgba(255,255,255,.92) !important;
+  color: var(--hu-text) !important;
+  border: 1px solid var(--hu-border) !important;
+  box-shadow: var(--hu-shadow-soft) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.hero-strip,
+.platform-home-ux,
+.appstore-section,
+.apply-box,
+.activity-page,
+.notification-center,
+.feedback-board,
+.admin-center {
+  border-top: 2px solid transparent !important;
   background:
-    linear-gradient(135deg, var(--hu-card-clean-strong), var(--hu-card-tint)) !important;
-  border-color: var(--hu-line-clean) !important;
-  color: var(--hu-text-strong) !important;
-  box-shadow: 0 18px 46px rgba(32, 51, 89, .08) !important;
+    linear-gradient(rgba(255,255,255,.94), rgba(255,255,255,.92)) padding-box,
+    linear-gradient(90deg, var(--hu-cyan), var(--hu-blue), var(--hu-violet), var(--hu-pink)) border-box !important;
 }
 
-/* Prevent white text from disappearing on pale cards. */
-.hero-strip h2,
-.hero-strip h3,
-.hero-strip h4,
-.hero-strip p,
-.platform-home-ux h2,
-.platform-home-ux h3,
-.platform-home-ux h4,
-.platform-home-ux p,
-.appstore-section h2,
-.appstore-section h3,
-.appstore-section h4,
-.appstore-section p,
-.apply-box h2,
-.apply-box h3,
-.apply-box h4,
-.apply-box p,
-.activity-page h2,
-.activity-page h3,
-.activity-page h4,
-.activity-page p,
-.notification-center h2,
-.notification-center h3,
-.notification-center h4,
-.notification-center p,
-.feedback-board h2,
-.feedback-board h3,
-.feedback-board h4,
-.feedback-board p,
-.admin-center h2,
-.admin-center h3,
-.admin-center h4,
-.admin-center p,
-.runtime-view h2,
-.runtime-view h3,
-.runtime-view h4,
-.runtime-view p,
-.user-app-card h3,
-.user-app-card h4,
-.user-app-card p,
-.activity-item,
-.activity-item *,
-.notification-center-list *,
-.feedback-list *,
-.full-activity *,
-.home-widget *,
-.flagship-app-card *,
-.featured-store-banner * {
-  color: inherit !important;
-  text-shadow: none !important;
+.hero-strip,
+.user-dashboard-box,
+.appstore-section,
+.apply-box,
+.activity-page,
+.notification-center,
+.feedback-board,
+.admin-center,
+.admin-overview,
+.qa-dashboard,
+.member-management,
+.approval-box,
+.data-management-panel,
+.app-manager-card,
+.dev-tools-card,
+.runtime-view {
+  border-radius: 24px !important;
+  padding: 22px !important;
 }
 
-.eyebrow,
-.section-kicker,
-.store-kicker,
-.home-kicker,
-.activity-page .eyebrow,
-.notification-center .eyebrow,
-.feedback-board .eyebrow,
-.admin-center .eyebrow {
-  color: #1768d7 !important;
+.admin-spa-tabs,
+.data-admin-tabs,
+.member-management-toolbar,
+.delete-request-toolbar,
+.operation-log-toolbar,
+.store-tools {
+  background: #f7fbff !important;
+  border: 1px solid var(--hu-border) !important;
+  border-radius: 18px !important;
+  box-shadow: none !important;
 }
 
-.topbar p:not(.eyebrow),
-.hero-strip p,
-.platform-home-ux p,
-.appstore-section p,
-.apply-box p,
-.activity-page p,
-.notification-center p,
-.feedback-board p,
-.admin-center p,
-.user-app-meta,
-.user-app-run-info,
-.info-text,
-.placeholder-text {
-  color: var(--hu-text-body) !important;
+.admin-spa-tabs button,
+.data-admin-tabs button,
+.member-management-toolbar button,
+.delete-request-toolbar button,
+.operation-log-toolbar button,
+.apply-box button,
+.feedback-board button,
+.notification-center button {
+  border-radius: 12px !important;
+  font-weight: 850 !important;
 }
 
-/* Inputs must look usable, not disabled gray. */
+.admin-spa-tabs button.active,
+.data-admin-tabs button.active {
+  background: linear-gradient(135deg, var(--hu-blue), var(--hu-cyan)) !important;
+  color: #fff !important;
+}
+
+.admin-kpi-grid > div,
+.qa-kpi-grid > article,
+.data-admin-summary > article,
+.home-status-strip article,
+.hero-metrics div,
+.dashboard-profile-grid p,
+.user-kpi-grid article,
+.admin-overview .admin-kpi-grid div {
+  background: #f7fbff !important;
+  color: var(--hu-text) !important;
+  border: 1px solid var(--hu-border) !important;
+  border-radius: 18px !important;
+  box-shadow: none !important;
+}
+
+.admin-kpi-grid span,
+.qa-kpi-grid span,
+.data-admin-summary span,
+.home-status-strip span,
+.hero-metrics span,
+.user-kpi-grid span,
+.admin-card-title span,
+.delete-request-head small,
+.delete-request-meta span,
+.operation-log-row small {
+  color: var(--hu-faint) !important;
+}
+
+.admin-kpi-grid strong,
+.qa-kpi-grid strong,
+.data-admin-summary strong,
+.home-status-strip strong,
+.hero-metrics strong,
+.user-kpi-grid strong {
+  color: var(--hu-text) !important;
+}
+
+.admin-kpi-grid small,
+.qa-kpi-grid small,
+.data-admin-summary small,
+.home-status-strip small,
+.user-kpi-grid small {
+  color: var(--hu-subtext) !important;
+}
+
+.member-table-wrap,
+.table-responsive,
+.apps-list-container,
+.delete-request-toolbar,
+.delete-request-empty,
+.operation-log-empty,
+.qa-checklist,
+.admin-info-box,
+.app-manager-info,
+.app-protection-note,
+.app-protection-checklist {
+  background: #f7fbff !important;
+  color: var(--hu-text) !important;
+  border-color: var(--hu-border) !important;
+}
+
+.table,
+.member-table {
+  color: var(--hu-text) !important;
+  --bs-table-color: var(--hu-text) !important;
+  --bs-table-bg: #ffffff !important;
+  --bs-table-striped-bg: #f7fbff !important;
+  --bs-table-hover-bg: #eef6ff !important;
+  border-color: var(--hu-border) !important;
+}
+
+.table thead th,
+.member-table thead th {
+  background: #eaf3ff !important;
+  color: #25364f !important;
+  border-color: var(--hu-border-strong) !important;
+}
+
+.table td,
+.member-table td,
+.table th,
+.member-table th {
+  color: var(--hu-text) !important;
+  border-color: var(--hu-border) !important;
+}
+
+input,
+select,
+textarea,
 .store-tools input,
 .store-tools select,
-input.form-control,
-select.form-control,
-textarea.form-control,
-.admin-notice-form input,
-.admin-notice-form textarea,
-.feedback-form input,
-.feedback-form select,
-.feedback-form textarea,
-.apply-box input,
-.apply-box pre,
-#applyReason,
-#applyResult,
-#feedbackType,
-#feedbackTitle,
-#feedbackContent,
-.admin-center input,
-.admin-center select,
-.admin-center textarea {
-  background: rgba(255,255,255,.94) !important;
-  color: var(--hu-text-strong) !important;
-  border: 1px solid rgba(91,119,155,.24) !important;
+.member-management-toolbar input,
+.feedback-board input,
+.feedback-board textarea,
+.notification-center input,
+.notification-center textarea,
+.app-manager-card input,
+.app-manager-card textarea,
+.app-manager-card select,
+.delete-request-detail select,
+.delete-request-detail textarea {
+  background: #ffffff !important;
+  color: var(--hu-text) !important;
+  border: 1px solid var(--hu-border-strong) !important;
+  box-shadow: none !important;
 }
 
-.store-tools input::placeholder,
 input::placeholder,
 textarea::placeholder {
-  color: #7d8ba0 !important;
+  color: #8a98ad !important;
   opacity: 1 !important;
 }
 
-/* Hide legacy runtime development block when it is empty. */
-.runtime-nav-card:has(#dynamic-nav-menu:empty) {
-  display: none !important;
+.badge,
+.status-badge,
+.user-app-badge,
+.flagship-meta span,
+.widget-badge {
+  color: #0d5fc8 !important;
+  background: #eaf4ff !important;
+  border-color: #cfe2f8 !important;
 }
 
-/* Mobile / Fold: real folded drawer, not horizontal carousel. */
-.nav-toggle {
-  display: none;
-  appearance: none;
-  border: 0 !important;
-  border-radius: 16px !important;
-  min-height: 46px !important;
-  padding: 0 16px !important;
-  color: #fff !important;
-  font-weight: 950 !important;
-  background: linear-gradient(135deg, #3267ff, #20a7e8) !important;
-  box-shadow: 0 14px 30px rgba(50,103,255,.18) !important;
+/* Remove legacy dark/gray blocks that remained from old MasterOS styling */
+[class*="summary"] article,
+[class*="kpi"] article,
+[class*="kpi"] div,
+[class*="toolbar"],
+[class*="checklist"],
+[class*="protection"],
+[class*="empty"] {
+  color: var(--hu-text) !important;
 }
 
-@media (max-width: 1180px) {
+@media (min-width: 1200px) {
   .workspace-shell {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-    padding: 12px !important;
+    grid-template-columns: 232px minmax(0, 1060px) !important;
   }
+  .workspace-main {
+    max-width: 1060px !important;
+  }
+}
 
-  .side-nav {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 90 !important;
-    min-height: auto !important;
+@media (min-width: 1500px) {
+  .workspace-shell {
+    width: 1360px !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .workspace-shell {
     width: 100% !important;
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    gap: 10px !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-    padding: 12px !important;
-    border-radius: 22px !important;
-  }
-
-  .side-logo {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    margin: 0 !important;
-    min-width: 0 !important;
-  }
-
-  .side-logo > span {
-    width: 42px !important;
-    height: 42px !important;
-    flex: 0 0 42px !important;
-  }
-
-  .side-logo strong {
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-  }
-
-  .side-caption { display: none !important; }
-
-  .nav-toggle {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    white-space: nowrap !important;
-  }
-
-  .nav-toggle::before {
-    content: '☰';
-    margin-right: 8px;
-    font-size: 1.05em;
-  }
-
-  .side-nav a {
-    display: none !important;
-    grid-column: 1 / -1 !important;
-    width: 100% !important;
-    min-height: 48px !important;
-    margin: 0 !important;
-    padding: 13px 15px !important;
-    border-radius: 16px !important;
-    background: rgba(255,255,255,.72) !important;
-    color: var(--hu-text-body) !important;
-    border: 1px solid rgba(91,119,155,.16) !important;
-    white-space: normal !important;
-    text-align: left !important;
-    transform: none !important;
-  }
-
-  .side-nav.nav-open a {
+    padding: 72px 12px 14px !important;
     display: block !important;
   }
 
-  .side-nav a.active {
-    background: linear-gradient(135deg, rgba(50,103,255,.14), rgba(32,167,232,.13)) !important;
-    color: #0f62d6 !important;
-    border-color: rgba(50,103,255,.22) !important;
+  .mobile-nav-toggle {
+    display: inline-flex !important;
+    position: fixed !important;
+    top: 12px !important;
+    left: 12px !important;
+    z-index: 1002 !important;
+    align-items: center !important;
+    gap: 8px !important;
+    min-height: 42px !important;
+    padding: 0 14px !important;
+    border: 1px solid var(--hu-border) !important;
+    border-radius: 999px !important;
+    color: #fff !important;
+    background: linear-gradient(135deg, var(--hu-blue), var(--hu-cyan)) !important;
+    box-shadow: 0 12px 28px rgba(35,135,245,.24) !important;
+    font-weight: 950 !important;
+  }
+
+  .mobile-nav-backdrop {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1000 !important;
+    background: rgba(15, 23, 42, .32) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity .2s ease !important;
+  }
+
+  .side-nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1001 !important;
+    width: min(82vw, 320px) !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding: 76px 16px 16px !important;
+    border-radius: 0 24px 24px 0 !important;
+    transform: translateX(-105%) !important;
+    transition: transform .22s ease !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
+  }
+
+  body.hu-mobile-nav-open .side-nav {
+    transform: translateX(0) !important;
+  }
+
+  body.hu-mobile-nav-open .mobile-nav-backdrop {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .side-caption { display: block !important; margin-left: 48px !important; }
+  .side-nav a {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    margin-bottom: 8px !important;
+  }
+
+  .workspace-main {
+    max-width: 100% !important;
+    gap: 12px !important;
   }
 
   .topbar {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-}
-
-@media (max-width: 640px) {
-  .side-nav {
-    display: grid !important;
-    grid-template-columns: minmax(0,1fr) auto !important;
+    min-height: auto !important;
+    padding: 18px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 14px !important;
   }
 
-  .nav-toggle {
-    min-width: 92px !important;
-  }
-
-  .topbar,
+  .topbar h1 { font-size: clamp(1.5rem, 7vw, 2rem) !important; }
+  .hero-strip h2 { font-size: clamp(1.75rem, 10vw, 2.4rem) !important; }
   .hero-strip,
-  .platform-home-ux,
+  .user-dashboard-box,
   .appstore-section,
   .apply-box,
   .activity-page,
   .notification-center,
   .feedback-board,
-  .admin-center {
-    border-radius: 20px !important;
+  .admin-center,
+  .admin-overview,
+  .qa-dashboard,
+  .member-management,
+  .approval-box,
+  .data-management-panel,
+  .app-manager-card,
+  .dev-tools-card,
+  .runtime-view {
     padding: 18px !important;
-  }
-
-  .topbar h1,
-  .hero-strip h2,
-  .platform-home-ux h2,
-  .appstore-section h2,
-  .apply-box h2,
-  .activity-page h2,
-  .notification-center h2,
-  .feedback-board h2,
-  .admin-center h2 {
-    font-size: clamp(1.75rem, 8vw, 2.35rem) !important;
-    line-height: 1.12 !important;
-  }
-}
-
-/* STEP7-7 Global Visual Contrast Cleanup
-   Scope: global design-token cleanup and readable surfaces only.
-   Firebase/Auth/Approval/Secure Launch/Admin business logic untouched. */
-:root {
-  --hu-clean-bg: #f6fbff;
-  --hu-clean-bg-2: #f3f7ff;
-  --hu-clean-surface: rgba(255,255,255,.94);
-  --hu-clean-surface-2: rgba(238,248,255,.82);
-  --hu-clean-border: rgba(88,116,154,.20);
-  --hu-clean-border-strong: rgba(63,103,168,.28);
-  --hu-clean-text: #132238;
-  --hu-clean-body: #40526c;
-  --hu-clean-muted: #687991;
-  --hu-clean-soft-blue: rgba(50,103,255,.10);
-  --hu-clean-soft-cyan: rgba(32,167,232,.12);
-  --hu-clean-shadow: 0 18px 46px rgba(31,49,88,.08);
-}
-
-/* Page background: modern, light, consistent across desktop/mobile/fold. */
-html,
-body:has(.workspace-shell:not([style*="display:none"])),
-.platform-root:has(.workspace-shell:not([style*="display:none"])) {
-  background:
-    radial-gradient(circle at 8% 10%, rgba(56,189,248,.16), transparent 28%),
-    radial-gradient(circle at 92% 8%, rgba(99,102,241,.12), transparent 30%),
-    linear-gradient(135deg, var(--hu-clean-bg) 0%, #edf8ff 48%, var(--hu-clean-bg-2) 100%) !important;
-  color: var(--hu-clean-text) !important;
-}
-
-/* Core surfaces: remove old gray/dark panels that were left from previous versions. */
-.workspace-shell .glass-card,
-.workspace-shell .topbar,
-.workspace-shell .side-nav,
-.workspace-shell .hero-strip,
-.workspace-shell .user-dashboard-box,
-.workspace-shell .platform-home-ux,
-.workspace-shell .appstore-section,
-.workspace-shell .apply-box,
-.workspace-shell .activity-page,
-.workspace-shell .notification-center,
-.workspace-shell .feedback-board,
-.workspace-shell .admin-center,
-.workspace-shell .admin-center-head,
-.workspace-shell .admin-spa-tabs,
-.workspace-shell .admin-overview,
-.workspace-shell .qa-dashboard,
-.workspace-shell .member-management,
-.workspace-shell .approval-box,
-.workspace-shell .data-management-panel,
-.workspace-shell .operation-log-panel,
-.workspace-shell .app-manager-card,
-.workspace-shell .dev-tools-card,
-.workspace-shell .runtime-view,
-.workspace-shell .runtime-nav-card,
-.workspace-shell .home-widget,
-.workspace-shell .flagship-app-card,
-.workspace-shell .home-next-card,
-.workspace-shell .featured-store-banner,
-.workspace-shell .user-app-card,
-.workspace-shell .notice-item,
-.workspace-shell .feedback-item,
-.workspace-shell .request-item,
-.workspace-shell .activity-item,
-.workspace-shell .member-card,
-.workspace-shell .log-card,
-.workspace-shell .app-card,
-.workspace-shell .app-detail-card,
-.workspace-shell .version-manager-card,
-.workspace-shell .official-app-card,
-.workspace-shell .deployment-card,
-.workspace-shell .health-card,
-.workspace-shell .backup-card,
-.workspace-shell .developer-card,
-.workspace-shell .statistics-card,
-.workspace-shell .security-card {
-  background:
-    radial-gradient(circle at 90% 10%, rgba(32,167,232,.08), transparent 28%),
-    linear-gradient(135deg, var(--hu-clean-surface), var(--hu-clean-surface-2)) !important;
-  border: 1px solid var(--hu-clean-border) !important;
-  color: var(--hu-clean-text) !important;
-  box-shadow: var(--hu-clean-shadow) !important;
-  text-shadow: none !important;
-}
-
-/* KPI / summary cards that were still dark gray. */
-.workspace-shell .admin-kpi-grid > *,
-.workspace-shell .qa-kpi-grid > *,
-.workspace-shell .data-admin-summary > article,
-.workspace-shell .operation-log-summary > article,
-.workspace-shell .delete-request-toolbar,
-.workspace-shell .delete-request-list,
-.workspace-shell .delete-request-detail,
-.workspace-shell .apps-list-container,
-.workspace-shell .app-dashboard-card,
-.workspace-shell .service-preview,
-.workspace-shell .service-list,
-.workspace-shell .service-card-grid,
-.workspace-shell .step14-card,
-.workspace-shell .step14-row-card,
-.workspace-shell .step14-kpi-grid article,
-.workspace-shell .service-meta-grid p,
-.workspace-shell .service-note,
-.workspace-shell .health-normal,
-.workspace-shell .health-warning,
-.workspace-shell .baby-care-security-plan,
-.workspace-shell .app-register-steps li,
-.workspace-shell .baby-care-deploy-box,
-.workspace-shell .readonly-box,
-.workspace-shell .delete-request-empty,
-.workspace-shell .operation-log-empty,
-.workspace-shell .qa-checklist,
-.workspace-shell .member-management-note {
-  background:
-    linear-gradient(135deg, rgba(255,255,255,.96), rgba(235,247,255,.86)) !important;
-  border: 1px solid var(--hu-clean-border) !important;
-  color: var(--hu-clean-text) !important;
-  box-shadow: 0 12px 30px rgba(31,49,88,.06) !important;
-  text-shadow: none !important;
-}
-
-/* Force text readability globally inside workspace. */
-.workspace-shell h1,
-.workspace-shell h2,
-.workspace-shell h3,
-.workspace-shell h4,
-.workspace-shell h5,
-.workspace-shell h6,
-.workspace-shell strong,
-.workspace-shell label,
-.workspace-shell th,
-.workspace-shell summary,
-.workspace-shell .admin-card-title h2,
-.workspace-shell .admin-card-title strong,
-.workspace-shell .data-admin-summary strong,
-.workspace-shell .operation-log-summary strong,
-.workspace-shell .admin-kpi-grid strong,
-.workspace-shell .qa-kpi-grid strong,
-.workspace-shell .step14-kpi-grid strong {
-  color: var(--hu-clean-text) !important;
-  text-shadow: none !important;
-}
-
-.workspace-shell p,
-.workspace-shell span,
-.workspace-shell small,
-.workspace-shell td,
-.workspace-shell li,
-.workspace-shell div,
-.workspace-shell .dashboard-help,
-.workspace-shell .info-text,
-.workspace-shell .placeholder-text,
-.workspace-shell .admin-card-title span,
-.workspace-shell .delete-request-head small,
-.workspace-shell .data-admin-summary span,
-.workspace-shell .data-admin-summary small,
-.workspace-shell .operation-log-summary span,
-.workspace-shell .operation-log-summary small,
-.workspace-shell .admin-kpi-grid span,
-.workspace-shell .admin-kpi-grid small,
-.workspace-shell .qa-kpi-grid span,
-.workspace-shell .qa-kpi-grid small,
-.workspace-shell .service-list small,
-.workspace-shell .step14-kpi-grid span,
-.workspace-shell .user-app-meta,
-.workspace-shell .user-app-run-info {
-  color: var(--hu-clean-body) !important;
-  text-shadow: none !important;
-}
-
-.workspace-shell .eyebrow,
-.workspace-shell .section-kicker,
-.workspace-shell .home-kicker,
-.workspace-shell .store-kicker,
-.workspace-shell .brand-badge,
-.workspace-shell .app-register-guide .eyebrow {
-  color: #1267d8 !important;
-  letter-spacing: .14em !important;
-}
-
-/* Tables: remove old gray table head and washed-out body text. */
-.workspace-shell table,
-.workspace-shell .table,
-.workspace-shell .member-table {
-  color: var(--hu-clean-text) !important;
-  background: rgba(255,255,255,.86) !important;
-  border-color: var(--hu-clean-border) !important;
-}
-.workspace-shell table thead,
-.workspace-shell .member-table thead,
-.workspace-shell .table thead {
-  background: linear-gradient(135deg, rgba(224,243,255,.95), rgba(232,240,255,.95)) !important;
-  color: #18304f !important;
-}
-.workspace-shell table th,
-.workspace-shell table td,
-.workspace-shell .table th,
-.workspace-shell .table td,
-.workspace-shell .member-table th,
-.workspace-shell .member-table td {
-  color: var(--hu-clean-text) !important;
-  border-color: rgba(88,116,154,.14) !important;
-}
-.workspace-shell .table-hover > tbody > tr:hover > * {
-  background: rgba(32,167,232,.08) !important;
-  color: var(--hu-clean-text) !important;
-}
-
-/* Inputs/selects/textareas: no disabled-looking gray. */
-.workspace-shell input,
-.workspace-shell select,
-.workspace-shell textarea,
-.workspace-shell .form-control,
-.workspace-shell .store-tools input,
-.workspace-shell .store-tools select,
-.workspace-shell .operation-log-toolbar input,
-.workspace-shell .operation-log-toolbar select,
-.workspace-shell .member-management-toolbar input,
-.workspace-shell .delete-request-detail select,
-.workspace-shell .delete-request-detail textarea,
-.workspace-shell .feedback-form input,
-.workspace-shell .feedback-form select,
-.workspace-shell .feedback-form textarea,
-.workspace-shell .admin-notice-form input,
-.workspace-shell .admin-notice-form textarea,
-.workspace-shell .apply-box input,
-.workspace-shell .apply-box pre {
-  background: rgba(255,255,255,.96) !important;
-  color: var(--hu-clean-text) !important;
-  border: 1px solid var(--hu-clean-border-strong) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.7) !important;
-}
-.workspace-shell input::placeholder,
-.workspace-shell textarea::placeholder {
-  color: #78879c !important;
-  opacity: 1 !important;
-}
-.workspace-shell input:disabled,
-.workspace-shell select:disabled,
-.workspace-shell textarea:disabled,
-.workspace-shell button:disabled {
-  opacity: .58 !important;
-}
-
-/* Keep action buttons modern and readable. */
-.workspace-shell button:not(:disabled),
-.workspace-shell .primary-action,
-.workspace-shell .secondary-action,
-.workspace-shell .logout-action {
-  color: #fff !important;
-  border: 0 !important;
-  text-shadow: none !important;
-}
-.workspace-shell button:not(:disabled):not(.danger-action):not(.hold-action),
-.workspace-shell .primary-action,
-.workspace-shell .secondary-action,
-.workspace-shell .logout-action {
-  background: linear-gradient(135deg, #2f6bff, #20a7e8) !important;
-}
-.workspace-shell .danger-action,
-.workspace-shell button.danger-action {
-  background: linear-gradient(135deg, #ff5b6f, #ef4444) !important;
-}
-.workspace-shell .hold-action,
-.workspace-shell button.hold-action {
-  background: linear-gradient(135deg, #f59e0b, #f97316) !important;
-}
-
-/* Badges/chips/status labels must not become pale-on-pale. */
-.workspace-shell .badge,
-.workspace-shell .chip,
-.workspace-shell .status-badge,
-.workspace-shell .approved-badge,
-.workspace-shell .role-badge,
-.workspace-shell .app-status,
-.workspace-shell .step14-chip-row span {
-  color: #10508f !important;
-  background: rgba(219,242,255,.92) !important;
-  border: 1px solid rgba(32,167,232,.22) !important;
-}
-.workspace-shell .badge.success,
-.workspace-shell .status-approved,
-.workspace-shell .approved-badge,
-.workspace-shell .app-status.active {
-  color: #047857 !important;
-  background: rgba(209,250,229,.95) !important;
-  border-color: rgba(16,185,129,.24) !important;
-}
-
-/* Mobile/Fold navigation: folded menu, not horizontal carousel. */
-@media (max-width: 1180px) {
-  .workspace-shell {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    padding: 12px !important;
-  }
-  .workspace-shell > .side-nav {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 100 !important;
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    gap: 10px !important;
-    width: 100% !important;
-    min-height: auto !important;
-    overflow: visible !important;
-    padding: 12px !important;
     border-radius: 22px !important;
-  }
-  .workspace-shell > .side-nav .side-logo {
-    display: inline-flex !important;
-    grid-column: 1 / 2 !important;
-    margin: 0 !important;
-    min-width: 0 !important;
-  }
-  .workspace-shell > .side-nav .side-logo strong {
-    display: inline-block !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-  }
-  .workspace-shell > .side-nav .side-caption {
-    display: none !important;
-  }
-  .workspace-shell > .side-nav .nav-toggle {
-    display: inline-flex !important;
-    grid-column: 2 / 3 !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 98px !important;
-    min-height: 44px !important;
-    padding: 0 14px !important;
-    border-radius: 16px !important;
-    color: #fff !important;
-    background: linear-gradient(135deg, #2f6bff, #20a7e8) !important;
-    white-space: nowrap !important;
-  }
-  .workspace-shell > .side-nav .nav-toggle::before {
-    content: '☰' !important;
-    margin-right: 7px !important;
-  }
-  .workspace-shell > .side-nav a {
-    display: none !important;
-    grid-column: 1 / -1 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 13px 15px !important;
-    border-radius: 16px !important;
-    white-space: normal !important;
-    background: rgba(255,255,255,.86) !important;
-    color: var(--hu-clean-body) !important;
-    border: 1px solid rgba(88,116,154,.16) !important;
-  }
-  .workspace-shell > .side-nav.nav-open a {
-    display: block !important;
-  }
-  .workspace-shell > .side-nav a.active {
-    color: #0f62d6 !important;
-    background: linear-gradient(135deg, rgba(50,103,255,.13), rgba(32,167,232,.12)) !important;
-    border-color: rgba(50,103,255,.24) !important;
   }
 }
 
 @media (max-width: 640px) {
-  .workspace-shell > .side-nav {
-    grid-template-columns: minmax(0, 1fr) auto !important;
+  .workspace-shell { padding-left: 10px !important; padding-right: 10px !important; }
+  .mobile-nav-toggle span { display: inline !important; }
+  .hero-metrics,
+  .home-status-strip,
+  .user-kpi-grid,
+  .dashboard-profile-grid,
+  .user-home-grid,
+  .appstore-grid,
+  .admin-kpi-grid,
+  .qa-kpi-grid,
+  .data-admin-summary,
+  .delete-request-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-spa-tabs,
+  .data-admin-tabs {
     display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
   }
-  .workspace-shell .topbar,
-  .workspace-shell .hero-strip,
-  .workspace-shell .platform-home-ux,
-  .workspace-shell .appstore-section,
-  .workspace-shell .apply-box,
-  .workspace-shell .activity-page,
-  .workspace-shell .notification-center,
-  .workspace-shell .feedback-board,
-  .workspace-shell .admin-center,
-  .workspace-shell .admin-center-head,
-  .workspace-shell .admin-overview,
-  .workspace-shell .member-management,
-  .workspace-shell .approval-box,
-  .workspace-shell .data-management-panel,
-  .workspace-shell .operation-log-panel,
-  .workspace-shell .app-manager-card {
-    border-radius: 20px !important;
-    padding: 18px !important;
-  }
+  .admin-tools-menu { grid-column: 1 / -1 !important; }
 }
