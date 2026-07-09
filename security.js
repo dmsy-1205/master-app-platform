@@ -101,38 +101,81 @@ export async function createLaunchToken(app, launchMode = 'router') {
 export async function recordSecureExecution(app, tokenInfo) {
   const profile = tokenInfo?.profile || await getCurrentUserProfile();
   if (!profile.user || !app?.id) return;
+
   const launchedAt = new Date().toISOString();
-  const currentRunCount = Number(app.runCount || 0);
-  const updates = {};
-  updates[`apps/${app.id}/runCount`] = currentRunCount + 1;
-  updates[`apps/${app.id}/lastRunAt`] = launchedAt;
-  updates[`apps/${app.id}/lastRunBy`] = profile.user.uid;
+  const uid = profile.user.uid;
+  const appId = app.id;
   const appVersion = app.version || 'v1.0';
   const versionKey = sanitizeFirebaseKey(appVersion);
-  updates[`apps/${app.id}/versions/${versionKey}/lastRunAt`] = launchedAt;
-  updates[`apps/${app.id}/versions/${versionKey}/runCount`] = Number(app.versions?.[versionKey]?.runCount || 0) + 1;
-  updates[`users/${profile.user.uid}/lastAppLaunch`] = { appId: app.id, appName: app.name || '', launchedAt, token: tokenInfo?.token || '' };
-  if (tokenInfo?.token) updates[`launchTokens/${tokenInfo.token}/used`] = true;
-  if (tokenInfo?.token) updates[`launchTokens/${tokenInfo.token}/usedAt`] = launchedAt;
-  await update(ref(db), updates);
-  await push(ref(db, `appRunLogs/${profile.user.uid}/${app.id}`), {
-    appId: app.id,
+
+  // STEP7-4.1
+  // 앱 실행은 반드시 막히지 않아야 한다.
+  // Firebase Rules 기준으로 일반 사용자는 apps/{appId} 메타데이터를 수정할 수 없다.
+  // 따라서 사용자 소유 경로와 실행 토큰 사용 처리만 기본 기록으로 남기고,
+  // 앱 전역 통계(apps/runCount, lastRunAt 등)는 관리자 권한일 때만 best-effort로 갱신한다.
+  const userSafeUpdates = {};
+  userSafeUpdates[`users/${uid}/lastAppLaunch`] = {
+    appId,
     appName: app.name || '',
-    appVersion: app.version || 'v1.0',
-    entryUrl: app.entryUrl || '',
-    launchMode: app.launchMode || 'router',
-    token: tokenInfo?.token || '',
-    official: app.official === true || app.isOfficial === true,
-    launchedAt
-  });
-  await push(ref(db, `executionLogs/${app.id}`), {
-    userId: profile.user.uid,
-    userEmail: profile.user.email || '',
-    appId: app.id,
-    appName: app.name || '',
-    appVersion: app.version || 'v1.0',
-    launchMode: app.launchMode || 'router',
-    token: tokenInfo?.token || '',
-    launchedAt
-  });
+    launchedAt,
+    token: tokenInfo?.token || ''
+  };
+  if (tokenInfo?.token) {
+    userSafeUpdates[`launchTokens/${tokenInfo.token}/used`] = true;
+    userSafeUpdates[`launchTokens/${tokenInfo.token}/usedAt`] = launchedAt;
+  }
+
+  try {
+    await update(ref(db), userSafeUpdates);
+  } catch (error) {
+    // lastAppLaunch/usedAt 기록 실패가 앱 실행 자체를 막지 않도록 한다.
+    console.warn('[HearU2nite] 사용자 실행 상태 기록 실패:', error);
+  }
+
+  try {
+    await push(ref(db, `appRunLogs/${uid}/${appId}`), {
+      appId,
+      appName: app.name || '',
+      appVersion,
+      entryUrl: app.entryUrl || '',
+      launchMode: app.launchMode || 'router',
+      token: tokenInfo?.token || '',
+      official: app.official === true || app.isOfficial === true,
+      launchedAt
+    });
+  } catch (error) {
+    console.warn('[HearU2nite] 사용자 실행 로그 기록 실패:', error);
+  }
+
+  try {
+    await push(ref(db, `executionLogs/${appId}`), {
+      userId: uid,
+      userEmail: profile.user.email || '',
+      appId,
+      appName: app.name || '',
+      appVersion,
+      launchMode: app.launchMode || 'router',
+      token: tokenInfo?.token || '',
+      launchedAt
+    });
+  } catch (error) {
+    console.warn('[HearU2nite] 관리자용 실행 로그 기록 실패:', error);
+  }
+
+  // apps/{appId}는 Firebase Rules상 관리자 전용 쓰기 경로다.
+  // 일반 사용자가 앱을 실행할 때 이 경로를 업데이트하면 PERMISSION_DENIED로 실행이 중단된다.
+  if (profile.isAdmin) {
+    try {
+      const currentRunCount = Number(app.runCount || 0);
+      const adminOnlyUpdates = {};
+      adminOnlyUpdates[`apps/${appId}/runCount`] = currentRunCount + 1;
+      adminOnlyUpdates[`apps/${appId}/lastRunAt`] = launchedAt;
+      adminOnlyUpdates[`apps/${appId}/lastRunBy`] = uid;
+      adminOnlyUpdates[`apps/${appId}/versions/${versionKey}/lastRunAt`] = launchedAt;
+      adminOnlyUpdates[`apps/${appId}/versions/${versionKey}/runCount`] = Number(app.versions?.[versionKey]?.runCount || 0) + 1;
+      await update(ref(db), adminOnlyUpdates);
+    } catch (error) {
+      console.warn('[HearU2nite] 관리자 앱 통계 기록 실패:', error);
+    }
+  }
 }
