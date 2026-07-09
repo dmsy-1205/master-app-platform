@@ -2442,3 +2442,113 @@ body.hu-user-active [data-auth="admin"][data-workspace-route="admin"] {
     max-width: min(82vw, 318px) !important;
   }
 }
+
+
+/* =========================================================
+   STEP8-9 Mobile Drawer Route & Compact Header Fix
+   목적: 모바일 폭은 유지하고 Drawer 메뉴 클릭 라우팅과 상단 레이아웃만 정리합니다.
+   ========================================================= */
+@media (max-width: 1180px) {
+  .mobile-nav-toggle {
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+
+  .mobile-nav-backdrop {
+    z-index: 2147483000 !important;
+  }
+
+  .side-nav {
+    z-index: 2147483400 !important;
+    width: min(76vw, 310px) !important;
+    max-width: min(76vw, 310px) !important;
+    padding: 74px 16px 18px !important;
+    gap: 7px !important;
+    background: rgba(255,255,255,.985) !important;
+    pointer-events: auto !important;
+  }
+
+  .side-nav * {
+    pointer-events: auto !important;
+  }
+
+  .side-logo {
+    display: grid !important;
+    grid-template-columns: 38px 1fr !important;
+    align-items: center !important;
+    justify-content: start !important;
+    gap: 10px !important;
+    margin: 0 0 4px 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .side-logo > span,
+  .side-logo span {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+  }
+
+  .side-logo strong {
+    font-size: 1rem !important;
+    line-height: 1.05 !important;
+    white-space: nowrap !important;
+  }
+
+  .side-caption {
+    display: none !important;
+  }
+
+  .side-session-card {
+    margin: 8px 0 10px 0 !important;
+    padding: 10px 12px !important;
+    border-radius: 15px !important;
+    background: #f8fbff !important;
+  }
+
+  .side-session-label {
+    font-size: .68rem !important;
+    letter-spacing: .12em !important;
+    margin-bottom: 5px !important;
+  }
+
+  .side-session-card strong {
+    font-size: .82rem !important;
+    line-height: 1.22 !important;
+    word-break: break-all !important;
+  }
+
+  .side-session-card small {
+    margin-top: 4px !important;
+    font-size: .78rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .side-logout-action {
+    min-height: 36px !important;
+    height: 36px !important;
+    margin-top: 8px !important;
+    border-radius: 12px !important;
+    font-size: .84rem !important;
+  }
+
+  .side-nav a {
+    position: relative !important;
+    z-index: 1 !important;
+    cursor: pointer !important;
+    min-height: 42px !important;
+    padding: 0 12px !important;
+    font-size: .94rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .side-nav {
+    width: min(78vw, 300px) !important;
+    max-width: min(78vw, 300px) !important;
+  }
+}

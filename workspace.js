@@ -109,8 +109,16 @@ function handleWorkspaceClick(event) {
   const workspaceLink = event.target.closest('[data-workspace-route]');
   if (workspaceLink) {
     event.preventDefault();
-    showWorkspaceRoute(workspaceLink.dataset.workspaceRoute);
+    event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+    const route = workspaceLink.dataset.workspaceRoute;
+    showWorkspaceRoute(route);
     closeMobileNav();
+    requestAnimationFrame(() => {
+      const target = document.querySelector('.workspace-main') || document.querySelector('.workspace-shell');
+      if (target) target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
     return;
   }
 
@@ -125,6 +133,28 @@ document.addEventListener('click', handleWorkspaceClick, true);
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeMobileNav();
 });
+
+function bindDrawerRouteLinks() {
+  document.querySelectorAll('.side-nav [data-workspace-route]').forEach((link) => {
+    if (link.dataset.drawerBound === 'true') return;
+    link.dataset.drawerBound = 'true';
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+      const route = link.dataset.workspaceRoute;
+      showWorkspaceRoute(route);
+      closeMobileNav();
+      requestAnimationFrame(() => {
+        const target = document.querySelector('.workspace-main') || document.querySelector('.workspace-shell');
+        if (target) target.scrollIntoView({ block: 'start', behavior: 'auto' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      });
+    }, true);
+  });
+}
+
+bindDrawerRouteLinks();
 
 window.addEventListener('master-auth-role-changed', (event) => {
   const isAdmin = Boolean(event.detail?.isAdmin);
