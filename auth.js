@@ -22,6 +22,9 @@ const resetEmail = document.getElementById('resetEmail');
 const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 const userStatus = document.getElementById('userStatus');
 const logoutBtn = document.getElementById('logoutBtn');
+const sideLogoutBtn = document.getElementById('sideLogoutBtn');
+const sideUserEmail = document.getElementById('sideUserEmail');
+const sideUserRole = document.getElementById('sideUserRole');
 const adminDashboardSection = document.getElementById('adminDashboardSection');
 
 const publicSections = document.querySelectorAll('[data-auth="public"]');
@@ -103,6 +106,12 @@ async function resolveRoleInfo(user) {
   };
 }
 
+
+function updateSideSession(user, roleText = '권한 확인 중') {
+  if (sideUserEmail) sideUserEmail.textContent = user?.email || '로그아웃됨';
+  if (sideUserRole) sideUserRole.textContent = roleText;
+}
+
 async function applyScreenState(user) {
   if (!user) {
     setAuthShellMode(false);
@@ -110,7 +119,8 @@ async function applyScreenState(user) {
     setVisible(privateSections, false);
     setVisible(adminSections, false);
     if (adminDashboardSection) adminDashboardSection.style.display = 'none';
-    if (userStatus) userStatus.innerText = '로그아웃됨 (인증 세션 없음)';
+    if (userStatus) userStatus.innerText = '로그아웃됨';
+    updateSideSession(null, '로그인이 필요합니다.');
     publishAuthState(null, null);
     return;
   }
@@ -124,14 +134,16 @@ async function applyScreenState(user) {
     setVisible(adminSections, roleInfo.isAdmin);
     if (adminDashboardSection) adminDashboardSection.style.display = roleInfo.isAdmin ? '' : 'none';
     if (userStatus) {
-      userStatus.innerText = `로그인 상태: ${user.email} (${user.uid}) / 권한: ${roleInfo.isAdmin ? '관리자' : '일반 사용자'}`;
+      userStatus.innerText = `로그인 상태: ${user.email} / 권한: ${roleInfo.isAdmin ? '관리자' : '일반 사용자'}`;
     }
+    updateSideSession(user, roleInfo.isAdmin ? '관리자' : '일반 사용자');
     publishAuthState(user, roleInfo);
   } catch (error) {
     console.error('권한 확인 실패:', error);
     setVisible(adminSections, false);
     if (adminDashboardSection) adminDashboardSection.style.display = 'none';
-    if (userStatus) userStatus.innerText = `로그인 상태: ${user.email} / 권한 확인 실패: ${error.message}`;
+    if (userStatus) userStatus.innerText = `로그인 상태: ${user.email} / 권한 확인 실패`;
+    updateSideSession(user, '권한 확인 실패');
     publishAuthState(user, { isAdmin: false, role: 'user', source: 'error' });
   }
 }
@@ -197,6 +209,12 @@ if (logoutBtn) {
     } catch (error) {
       alert('로그아웃 실패: ' + error.message);
     }
+  });
+}
+
+if (sideLogoutBtn) {
+  sideLogoutBtn.addEventListener('click', () => {
+    if (logoutBtn) logoutBtn.click();
   });
 }
 

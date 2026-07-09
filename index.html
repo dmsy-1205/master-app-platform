@@ -116,7 +116,14 @@
       <button type="button" class="mobile-nav-toggle" aria-label="메뉴 열기" aria-expanded="false">☰ <span>메뉴</span></button>
       <div class="mobile-nav-backdrop" data-mobile-nav-close></div>
       <aside class="side-nav">
-        <div class="side-logo"><span>H</span><strong>HearU2nite</strong></div><div class="side-caption">App Access Platform</div>
+        <div class="side-logo"><span>H</span><strong>HearU2nite</strong></div>
+        <div class="side-caption">App Access Platform</div>
+        <div class="side-session-card" aria-label="로그인 정보">
+          <span class="side-session-label">Signed in</span>
+          <strong id="sideUserEmail">확인 중...</strong>
+          <small id="sideUserRole">권한 확인 중</small>
+          <button type="button" id="sideLogoutBtn" class="side-logout-action">로그아웃</button>
+        </div>
         <a href="#" data-workspace-route="dashboard">Home</a>
         <a href="#" data-workspace-route="runtime">내 앱</a>
         <a href="#" data-workspace-route="appstore">앱 둘러보기</a>
@@ -195,7 +202,6 @@
             <summary>계정 및 신청 정보 보기</summary>
             <div class="dashboard-profile-grid compact-profile">
               <p><strong>이메일</strong><br><span id="dashboardEmail">-</span></p>
-              <p><strong>UID</strong><br><span id="dashboardUid">-</span></p>
               <p><strong>신청 일시</strong><br><span id="dashboardSubmitted">-</span></p>
               <p><strong>처리 일시</strong><br><span id="dashboardReviewed">-</span></p>
             </div>

@@ -1422,3 +1422,219 @@ textarea::placeholder {
   }
   .admin-tools-menu { grid-column: 1 / -1 !important; }
 }
+
+/* STEP8-1: Navigation-owned session + stronger global text contrast */
+:root {
+  --hu-text: #132033 !important;
+  --hu-muted: #4f6078 !important;
+  --hu-subtext: #53657e !important;
+  --hu-faint: #6f7f96 !important;
+}
+
+/* The old top status card duplicated the left navigation and made the page feel empty. */
+body.auth-private-active .topbar {
+  display: none !important;
+}
+
+.side-session-card {
+  margin: 0 0 18px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(40, 128, 255, .18) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, #f8fbff, #eef7ff) !important;
+  color: var(--hu-text) !important;
+  box-shadow: 0 10px 28px rgba(31,49,88,.07) !important;
+}
+
+.side-session-label {
+  display: block !important;
+  margin-bottom: 5px !important;
+  color: #0f62d6 !important;
+  font-size: .68rem !important;
+  font-weight: 950 !important;
+  letter-spacing: .11em !important;
+  text-transform: uppercase !important;
+}
+
+.side-session-card strong {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: var(--hu-text) !important;
+  font-size: .86rem !important;
+  font-weight: 900 !important;
+}
+
+.side-session-card small {
+  display: block !important;
+  margin-top: 4px !important;
+  color: var(--hu-muted) !important;
+  font-weight: 800 !important;
+}
+
+.side-logout-action {
+  width: 100% !important;
+  margin-top: 12px !important;
+  min-height: 40px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  color: #ffffff !important;
+  font-weight: 950 !important;
+  background: linear-gradient(135deg, #3267ff, #20a7e8) !important;
+  box-shadow: 0 12px 24px rgba(35,135,245,.18) !important;
+}
+
+/* Stronger readable defaults. Prevent white/washed text from legacy rules. */
+.activity-page,
+.activity-page *,
+.notification-center,
+.notification-center *,
+.feedback-board,
+.feedback-board *,
+.appstore-section,
+.appstore-section *,
+.apply-box,
+.apply-box *,
+.runtime-view,
+.runtime-view *,
+.admin-center,
+.admin-center *,
+.member-management,
+.member-management *,
+.approval-box,
+.approval-box *,
+.data-management-panel,
+.data-management-panel *,
+.app-manager-card,
+.app-manager-card *,
+.dev-tools-card,
+.dev-tools-card * {
+  color: var(--hu-text) !important;
+  text-shadow: none !important;
+}
+
+.activity-page p,
+.activity-page small,
+.activity-page span:not(.badge):not(.status-badge),
+.activity-list small,
+.activity-list span,
+.user-app-meta,
+.user-app-run-info,
+.placeholder-text,
+.info-text,
+.help-text,
+.dashboard-help,
+.store-headline p,
+.section-title-row p,
+.feedback-board p,
+.notification-center p,
+.admin-center p,
+.member-management p,
+.approval-box p,
+.data-management-panel p,
+.app-manager-card p,
+.dev-tools-card p {
+  color: var(--hu-muted) !important;
+}
+
+.activity-list strong,
+.activity-item strong,
+.user-app-card h3,
+.flagship-copy h3,
+.home-widget h3,
+.admin-center h2,
+.member-management h2,
+.approval-box h2,
+.data-management-panel h2,
+.app-manager-card h2,
+.dev-tools-card h2,
+.notification-center h2,
+.feedback-board h2,
+.appstore-section h2,
+.apply-box h2 {
+  color: var(--hu-text) !important;
+}
+
+.activity-list > *,
+.activity-item,
+.notification-center-list > *,
+.feedback-list > *,
+.user-app-card,
+.flagship-app-card,
+.home-next-card,
+.home-widget,
+.member-card,
+.approval-card,
+.log-card,
+.app-card,
+.admin-stat-card,
+.admin-kpi-grid article,
+.data-admin-summary article,
+.qa-kpi-grid article {
+  background: linear-gradient(135deg, #ffffff, #f3f8ff) !important;
+  border: 1px solid #d7e5f7 !important;
+  color: var(--hu-text) !important;
+}
+
+/* Remove remaining old gray/dark blocks without touching action buttons. */
+.member-table-wrap,
+.table-responsive,
+.apps-list-container,
+.delete-request-toolbar,
+.delete-request-empty,
+.operation-log-empty,
+.qa-checklist,
+.admin-info-box,
+.app-manager-info,
+.app-protection-note,
+.app-protection-checklist,
+.delete-request-meta,
+.delete-request-actions,
+.admin-panel,
+.admin-card,
+.request-item,
+.notice-item,
+.feedback-item {
+  background: linear-gradient(135deg, #ffffff, #f4f9ff) !important;
+  border-color: #d7e5f7 !important;
+  color: var(--hu-text) !important;
+}
+
+/* Preserve white text only on actual primary/danger action buttons. */
+button,
+.btn,
+.logout-action,
+.side-logout-action,
+.dashboard-actions button,
+.launch-app-btn,
+#loadAppsBtn,
+#refreshMembersBtn,
+#deleteRequestRefreshBtn,
+#operationLogRefreshBtn,
+#qaRefreshBtn,
+.feedback-board button,
+.notification-center button,
+.admin-spa-tabs button.active,
+.admin-tools-menu summary:hover {
+  text-shadow: none !important;
+}
+
+button:not(.btn):not(.logout-action):not(.side-logout-action):not(.launch-app-btn):not(.gate-primary-action):not(.gate-secondary-action):not(.dashboard-actions button):not(.admin-spa-tabs button.active) {
+  color: inherit;
+}
+
+/* Hide UID-only account field if an old deployed HTML still contains it. */
+#dashboardUid,
+#dashboardUidLink,
+.dashboard-uid,
+[data-field="uid"] {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  .side-session-card {
+    margin-bottom: 16px !important;
+  }
+}

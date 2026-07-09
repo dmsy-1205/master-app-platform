@@ -531,7 +531,6 @@ async function loadUserDashboard(user) {
   if (!user) {
     setText(dashboardLoginState, '로그인 후 사용자 Dashboard를 사용할 수 있습니다.');
     setText(dashboardEmail, '-');
-    setText(dashboardUid, '-');
     setText(dashboardRole, '-');
     setText(dashboardApproval, '-');
     setText(dashboardSubmitted, '-');
@@ -559,7 +558,6 @@ async function loadUserDashboard(user) {
 
   setText(dashboardLoginState, '로그인 확인 완료');
   setText(dashboardEmail, user.email || '-');
-  setText(dashboardUid, user.uid || '-');
   setText(profileEmailText, user.email || '-');
   if (profileInitial) profileInitial.textContent = (user.email || 'U').charAt(0).toUpperCase();
   await loadFavorites();
