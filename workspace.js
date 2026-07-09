@@ -35,12 +35,22 @@ function setActiveLink(route) {
 }
 
 function closeMobileNav() {
+  if (window.HearU2niteMobileNav?.set) {
+    window.HearU2niteMobileNav.set(false);
+    return;
+  }
+  document.documentElement.classList.remove('hu-mobile-nav-open');
   document.body.classList.remove('hu-mobile-nav-open');
   document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', 'false');
 }
 
 function toggleMobileNav() {
+  if (window.HearU2niteMobileNav?.toggle) {
+    window.HearU2niteMobileNav.toggle();
+    return;
+  }
   const willOpen = !document.body.classList.contains('hu-mobile-nav-open');
+  document.documentElement.classList.toggle('hu-mobile-nav-open', willOpen);
   document.body.classList.toggle('hu-mobile-nav-open', willOpen);
   document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', String(willOpen));
 }
