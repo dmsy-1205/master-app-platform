@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="./style.css?v=step7-1-6">
   <link rel="stylesheet" href="./core/ui-kit.css?v=step7-1-6">
   <link rel="stylesheet" href="./assets/css/login-identity.css?v=step7-1-6">
-  <link rel="stylesheet" href="./assets/css/platform-shell.css?v=step7-2-1">
+  <link rel="stylesheet" href="./assets/css/platform-shell.css?v=step7-3-1">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 
   <style>
@@ -114,11 +114,11 @@
 
     <section class="workspace-shell" data-auth="private" style="display:none;">
       <aside class="side-nav">
-        <div class="side-logo"><span>H</span><strong>HearU2nite</strong></div><div class="side-caption">Multi-App Platform Console</div>
+        <div class="side-logo"><span>H</span><strong>HearU2nite</strong></div><div class="side-caption">App Access Platform</div>
         <a href="#" data-workspace-route="dashboard">Home</a>
-        <a href="#" data-workspace-route="appstore">앱 둘러보기</a>
         <a href="#" data-workspace-route="runtime">내 앱</a>
-        <a href="#" data-workspace-route="request">승인 현황</a>
+        <a href="#" data-workspace-route="appstore">앱 둘러보기</a>
+        <a href="#" data-workspace-route="request">앱 신청</a>
         <a href="#" data-workspace-route="activity">활동 기록</a>
         <a href="#" data-workspace-route="notifications">공지사항</a>
         <a href="#" data-workspace-route="feedback">고객지원</a>
@@ -129,7 +129,7 @@
         <header class="topbar glass-card">
           <div>
             <p class="eyebrow">HearU2nite Platform</p>
-            <h1>Multi-App Platform Console</h1>
+            <h1>HearU2nite Platform</h1>
             <p id="userStatus">확인 중...</p>
           </div>
           <button id="logoutBtn" class="logout-action">로그아웃</button>
@@ -137,9 +137,9 @@
 
         <section class="hero-strip glass-card" id="dashboard">
           <div>
-            <p class="eyebrow">User Portal · Approved App Access</p>
-            <h2>필요한 앱을 신청하고 승인된 서비스를 실행하세요</h2>
-            <p>HearU2nite는 여러 앱을 발견하고 신청하고 승인 상태를 확인한 뒤 안전하게 실행하는 Multi-App Platform입니다.</p>
+            <p class="eyebrow">User Portal · App Launch Flow</p>
+            <h2>Discover. Request. Launch.</h2>
+            <p>필요한 앱을 찾고, 신청하고, 승인된 서비스를 안전하게 실행하세요.</p>
           </div>
           <div class="hero-metrics">
             <div><strong id="dashboardRole">-</strong><span>권한</span></div>
@@ -148,37 +148,58 @@
           </div>
         </section>
 
-        <section class="user-dashboard-box glass-card" id="userDashboardSection">
-          <div class="dashboard-title-row">
+        <section class="user-dashboard-box glass-card platform-home-ux" id="userDashboardSection">
+          <div class="dashboard-title-row home-title-row">
             <div>
               <p class="eyebrow">Platform Home</p>
-              <h2>내 앱과 승인 현황</h2>
-              <p class="dashboard-help">승인 상태와 사용 가능한 앱을 확인하고 실행합니다.</p>
+              <h2>내 앱을 바로 실행하세요</h2>
+              <p class="dashboard-help">승인된 앱을 먼저 보여주고, 필요할 때 앱을 더 둘러보거나 신청할 수 있습니다.</p>
             </div>
             <div class="dashboard-actions">
               <button id="dashboardRefreshBtn" type="button">새로고침</button>
-              <button id="dashboardOpenFirstAppBtn" type="button" disabled>첫 번째 앱 실행</button>
+              <button id="dashboardOpenFirstAppBtn" type="button" disabled>대표 앱 실행</button>
             </div>
           </div>
-          <div class="user-kpi-grid">
+
+          <div class="home-launch-spotlight">
+            <article class="flagship-app-card">
+              <div class="flagship-icon">💗</div>
+              <div class="flagship-copy">
+                <span class="flagship-label">Flagship App</span>
+                <h3>HearMe2nite</h3>
+                <p>생활관리 앱을 빠르게 실행하고, 승인된 서비스로 안전하게 이동합니다.</p>
+                <div class="flagship-meta">
+                  <span id="userApprovalCard">승인 확인 중</span>
+                  <span id="userRecentApp">최근 실행 확인 중</span>
+                </div>
+              </div>
+              <button type="button" id="dashboardQuickLaunchBtn" disabled>앱 실행</button>
+            </article>
+            <article class="home-next-card">
+              <span>Next</span>
+              <h3>새 앱이 필요하다면</h3>
+              <p>앱 둘러보기에서 사용 가능한 앱을 확인하고 필요한 서비스를 신청하세요.</p>
+              <a href="#" data-workspace-route="appstore">앱 둘러보기</a>
+            </article>
+          </div>
+
+          <div class="home-status-strip">
             <article><span>사용 가능 앱</span><strong id="userTotalApps">0</strong><small>승인 후 실행 가능</small></article>
             <article><span>총 실행 수</span><strong id="userTotalRuns">0</strong><small>등록 앱 기준 누적</small></article>
-            <article><span>최근 실행</span><strong id="userRecentApp">-</strong><small>마지막 실행 앱</small></article>
-            <article><span>승인 상태</span><strong id="userApprovalCard">-</strong><small>계정 사용 권한</small></article>
+            <article><span>승인 흐름</span><strong>신청 → 승인 → 실행</strong><small>앱 사용 절차</small></article>
           </div>
-          <div class="dashboard-profile-grid compact-profile">
-            <p><strong>이메일</strong><br><span id="dashboardEmail">-</span></p>
-            <p><strong>UID</strong><br><span id="dashboardUid">-</span></p>
-            <p><strong>신청 일시</strong><br><span id="dashboardSubmitted">-</span></p>
-            <p><strong>처리 일시</strong><br><span id="dashboardReviewed">-</span></p>
-          </div>
-          <div class="user-home-grid">
-            <article class="home-widget">
-              <div class="widget-icon">🚀</div>
-              <h3>빠른 실행</h3>
-              <p>가장 먼저 등록된 활성 앱을 즉시 실행합니다.</p>
-              <button type="button" id="dashboardQuickLaunchBtn" disabled>대표 앱 실행</button>
-            </article>
+
+          <details class="dashboard-account-details">
+            <summary>계정 및 신청 정보 보기</summary>
+            <div class="dashboard-profile-grid compact-profile">
+              <p><strong>이메일</strong><br><span id="dashboardEmail">-</span></p>
+              <p><strong>UID</strong><br><span id="dashboardUid">-</span></p>
+              <p><strong>신청 일시</strong><br><span id="dashboardSubmitted">-</span></p>
+              <p><strong>처리 일시</strong><br><span id="dashboardReviewed">-</span></p>
+            </div>
+          </details>
+
+          <div class="user-home-grid home-support-grid">
             <article class="home-widget favorite-widget" id="favoriteDashboardWidget">
               <div class="widget-icon">⭐</div>
               <h3>즐겨찾기</h3>
@@ -194,7 +215,6 @@
               <div id="dashboardNotificationList" class="dashboard-notification-list">
                 <p class="placeholder-text">공지와 업데이트를 불러오는 중입니다.</p>
               </div>
-              <span class="widget-badge live">STEP16 Notice Sync</span>
             </article>
           </div>
         </section>
@@ -203,13 +223,13 @@
           <div class="store-headline">
             <div>
               <p class="eyebrow">App Store 2.0</p>
-              <h2>내 앱 스토어</h2>
-              <p>활성화된 서브 앱을 더 큰 카드와 실행 정보 중심으로 확인합니다.</p>
+              <h2>앱 둘러보기</h2>
+              <p>사용 가능한 앱을 확인하고 승인된 앱을 바로 실행합니다.</p>
             </div>
             <div class="store-tools"><input id="storeSearchInput" type="search" placeholder="앱 이름 설명 검색"><select id="storeCategoryFilter"><option value="all">전체 카테고리</option><option value="Official">Official</option><option value="General">General</option><option value="Finance">Finance</option><option value="AI">AI</option><option value="Productivity">Productivity</option></select><select id="storeSortFilter"><option value="name">이름순</option><option value="latest">최신순</option><option value="popular">인기순</option></select></div>
           </div>
           <div class="featured-store-banner">
-            <div><span>Featured Workspace</span><strong>승인된 앱을 바로 실행하세요</strong><small>실행 횟수와 최근 실행 시간이 자동으로 기록됩니다.</small></div>
+            <div><span>Featured App</span><strong>대표 앱 HearMe2nite를 바로 실행하세요</strong><small>승인된 앱은 실행 기록과 최근 사용 시간이 자동으로 기록됩니다.</small></div>
             <button type="button" id="storeFeaturedLaunchBtn" disabled>추천 앱 실행</button>
           </div>
           <div id="dashboardApps" class="user-app-grid appstore-grid appstore-grid-v2">
@@ -223,8 +243,8 @@
             <ul class="nav flex-column nav-pills p-2" id="dynamic-nav-menu"></ul>
           </div>
           <div id="main-runtime-view" class="glass-card runtime-view">
-            <h3>HearU2nite App Runtime</h3>
-            <p>좌측 메뉴 또는 앱 둘러보기의 실행 버튼에서 승인된 앱을 선택하세요.</p>
+            <h3>내 앱 실행 공간</h3>
+            <p>왼쪽 목록에서 승인된 앱을 선택하거나 앱 둘러보기의 실행 버튼을 사용하세요.</p>
           </div>
         </section>
 
@@ -283,8 +303,8 @@
 
         <section class="apply-box glass-card" id="request">
           <p class="eyebrow">Access Request</p>
-          <h2>회원 신청 시스템</h2>
-          <p>플랫폼 이용 권한 또는 특정 웹앱 사용을 위한 승인 신청을 진행합니다.</p>
+          <h2>앱 신청 현황</h2>
+          <p>필요한 앱 사용을 신청하고 승인 진행 상태를 확인합니다.</p>
           <input id="applyReason" type="text" placeholder="신청 사유 또는 목적을 입력하세요">
           <button id="applyBtn">신청하기</button>
           <button id="checkApplyBtn">내 신청 현황 조회</button>
