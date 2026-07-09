@@ -1981,3 +1981,330 @@ textarea::placeholder {
     padding: 18px !important;
   }
 }
+
+/* =========================================================
+   STEP8-4 Mobile Layout Restore & Design Direction Prep
+   Purpose: stop PC frame from leaking into phone / Fold views.
+   ========================================================= */
+
+/* 1) Mobile/Fold/tablet must be a real single-column app feed.
+   Some Android Chrome/Fold modes report a wide viewport, so 1180px is used
+   instead of 980px to catch desktop-site and unfolded Fold cases. */
+@media (max-width: 1180px) {
+  html,
+  body,
+  .platform-root {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  body:has(.workspace-shell:not([style*="display:none"])) {
+    background:
+      radial-gradient(circle at 14% 0%, rgba(32,167,232,.16), transparent 34%),
+      radial-gradient(circle at 92% 10%, rgba(139,92,246,.12), transparent 36%),
+      linear-gradient(135deg, #f4fbff 0%, #f8fbff 52%, #f6f1ff 100%) !important;
+  }
+
+  .workspace-shell {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 72px 14px 20px !important;
+    display: block !important;
+    grid-template-columns: none !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .workspace-main {
+    width: calc(100vw - 28px) !important;
+    max-width: calc(100vw - 28px) !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex !important;
+    position: fixed !important;
+    top: 14px !important;
+    left: 14px !important;
+    z-index: 1300 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    min-height: 44px !important;
+    padding: 0 16px !important;
+    border: 1px solid rgba(255,255,255,.55) !important;
+    border-radius: 999px !important;
+    color: #fff !important;
+    background: linear-gradient(135deg, #2f6bff 0%, #18b8df 100%) !important;
+    box-shadow: 0 12px 30px rgba(35,135,245,.24) !important;
+    font-weight: 950 !important;
+  }
+
+  .mobile-nav-backdrop {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1280 !important;
+    background: rgba(15, 23, 42, .34) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity .2s ease !important;
+  }
+
+  .side-nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1290 !important;
+    width: min(86vw, 340px) !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding: 78px 16px 18px !important;
+    border-radius: 0 26px 26px 0 !important;
+    transform: translateX(-110%) !important;
+    transition: transform .22s ease !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  body.hu-mobile-nav-open .side-nav { transform: translateX(0) !important; }
+  body.hu-mobile-nav-open .mobile-nav-backdrop { opacity: 1 !important; pointer-events: auto !important; }
+
+  .hero-strip,
+  .user-dashboard-box,
+  .platform-home-ux,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center,
+  .runtime-view,
+  .runtime-nav-card,
+  .admin-center-head,
+  .admin-overview,
+  .member-management,
+  .approval-box,
+  .data-management-panel,
+  .app-manager-card,
+  .dev-tools-card,
+  .qa-dashboard,
+  .glass-card,
+  .home-widget,
+  .user-app-card,
+  .featured-store-banner,
+  .flagship-app-card,
+  .home-next-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .hero-strip,
+  .platform-home-ux,
+  .home-launch-spotlight,
+  .home-status-strip,
+  .user-home-grid,
+  .hero-metrics,
+  .dashboard-profile-grid,
+  .user-kpi-grid,
+  .appstore-grid,
+  .store-tools,
+  .admin-kpi-grid,
+  .qa-kpi-grid,
+  .data-admin-summary,
+  .delete-request-layout,
+  .app-register-steps,
+  .easy-register-form,
+  .featured-store-banner,
+  .flagship-app-card,
+  .user-app-card,
+  .favorite-app-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .dashboard-title-row,
+  .home-title-row,
+  .section-title-row,
+  .store-headline,
+  .admin-card-title,
+  .member-management-toolbar,
+  .operation-log-toolbar,
+  .delete-request-toolbar,
+  .app-register-guide,
+  .feedback-item-head {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    align-items: start !important;
+  }
+
+  .dashboard-actions,
+  .guide-actions,
+  .store-tools,
+  .feedback-admin-actions,
+  .admin-spa-tabs,
+  .data-admin-tabs {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  input,
+  select,
+  textarea,
+  button,
+  .dashboard-actions button,
+  .guide-actions button,
+  .store-tools input,
+  .store-tools select,
+  .apply-box input,
+  .apply-box button,
+  .feedback-board input,
+  .feedback-board select,
+  .feedback-board textarea,
+  .feedback-board button,
+  .notification-center input,
+  .notification-center textarea,
+  .notification-center button,
+  .admin-center input,
+  .admin-center select,
+  .admin-center textarea,
+  .admin-center button,
+  .launch-app-btn,
+  #storeFeaturedLaunchBtn {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .dashboard-actions button,
+  .guide-actions button,
+  .apply-box button,
+  .feedback-board button,
+  .notification-center button,
+  .launch-app-btn,
+  #storeFeaturedLaunchBtn {
+    width: 100% !important;
+    min-height: 48px !important;
+  }
+
+  .hero-strip h2,
+  .dashboard-title-row h2,
+  .section-title-row h2,
+  .store-headline h2,
+  .appstore-section h2,
+  .apply-box h2,
+  .activity-page h2,
+  .notification-center h2,
+  .feedback-board h2,
+  .admin-center h2,
+  .home-widget h3,
+  .flagship-copy h3,
+  .user-app-card h3 {
+    font-size: clamp(1.45rem, 7vw, 2.05rem) !important;
+    line-height: 1.18 !important;
+    letter-spacing: -.04em !important;
+    word-break: keep-all !important;
+  }
+
+  .hero-metrics div,
+  .home-status-strip article,
+  .user-kpi-grid article {
+    min-height: auto !important;
+    padding: 16px !important;
+  }
+
+  .member-table-wrap,
+  .table-responsive,
+  .apps-list-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .workspace-shell { padding-left: 12px !important; padding-right: 12px !important; }
+  .workspace-main {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+  .hero-strip,
+  .user-dashboard-box,
+  .platform-home-ux,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center,
+  .runtime-view,
+  .admin-overview,
+  .member-management,
+  .approval-box,
+  .data-management-panel,
+  .app-manager-card,
+  .dev-tools-card,
+  .qa-dashboard {
+    border-radius: 22px !important;
+    padding: 18px !important;
+  }
+}
+
+/* 2) Non-admin and removed routes must stay gone in all layouts. */
+.side-nav a[data-workspace-route="activity"] {
+  display: none !important;
+}
+body:not(.is-admin) .side-nav a[data-auth="admin"],
+body:not(.is-admin) [data-auth="admin"][data-workspace-route="admin"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* 3) Last pass: remove visible legacy gray panels in app management / admin pages. */
+.app-manager-card .app-register-steps,
+.app-manager-card .app-register-steps > *,
+.app-manager-card .app-protection-checklist,
+.app-manager-card .app-protection-note,
+.app-manager-card .baby-care-deploy-box,
+.app-manager-card .baby-care-security-plan,
+.admin-center .admin-info-box,
+.admin-center .qa-checklist,
+.admin-center [class*="checklist"],
+.admin-center [class*="protection"] {
+  background: linear-gradient(135deg, #ffffff 0%, #f5faff 100%) !important;
+  color: #132033 !important;
+  border: 1px solid #d5e5f7 !important;
+  box-shadow: 0 10px 24px rgba(34,56,92,.06) !important;
+}
+.app-manager-card .app-register-steps *,
+.app-manager-card .app-protection-checklist *,
+.app-manager-card .app-protection-note *,
+.app-manager-card .baby-care-deploy-box *,
+.app-manager-card .baby-care-security-plan *,
+.admin-center .admin-info-box *,
+.admin-center .qa-checklist *,
+.admin-center [class*="checklist"] *,
+.admin-center [class*="protection"] * {
+  color: #132033 !important;
+  text-shadow: none !important;
+}
