@@ -108,25 +108,12 @@ document.addEventListener('click', (event) => {
 
 window.addEventListener('master-auth-role-changed', (event) => {
   const isAdmin = Boolean(event.detail?.isAdmin);
-  document.body.classList.toggle('hu-admin-active', isAdmin);
-  document.body.classList.toggle('hu-user-active', Boolean(event.detail?.isLoggedIn) && !isAdmin);
-  document.querySelectorAll('[data-workspace-route="admin"], #admin, [data-auth="admin"]').forEach((el) => {
-    if (isAdmin) {
-      el.hidden = false;
-      el.removeAttribute('aria-hidden');
-      if (el.dataset?.workspaceRoute === 'admin') el.style.display = '';
-    } else {
-      el.hidden = true;
-      el.setAttribute('aria-hidden', 'true');
-      el.style.display = 'none';
-    }
-  });
   if (!isAdmin && document.querySelector('[data-workspace-route="admin"]')?.classList.contains('active')) {
     showWorkspaceRoute('dashboard');
   }
 });
 
-window.MasterWorkspace = { showRoute: showWorkspaceRoute, showAdminRoute };
+window.MasterWorkspace = { showRoute: showWorkspaceRoute, showAdminRoute, toggleMobileNav, closeMobileNav };
 showWorkspaceRoute('dashboard');
 showAdminRoute('overview');
 

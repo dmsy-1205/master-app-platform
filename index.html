@@ -128,7 +128,6 @@
         <a href="#" data-workspace-route="runtime">내 앱</a>
         <a href="#" data-workspace-route="appstore">앱 둘러보기</a>
         <a href="#" data-workspace-route="request">앱 신청</a>
-        <a href="#" data-workspace-route="activity">활동 기록</a>
         <a href="#" data-workspace-route="notifications">공지사항</a>
         <a href="#" data-workspace-route="feedback">고객지원</a>
         <a href="#" data-workspace-route="admin" data-auth="admin" style="display:none;">Admin Center</a>
@@ -678,5 +677,41 @@
   <script type="module" src="./operation.js"></script>
   <script type="module" src="./step14.js"></script>
   <script type="module" src="./workspace.js"></script>
+  <script>
+    // STEP8-5 fallback: Samsung/Android Chrome에서 모바일 메뉴 클릭 이벤트가 누락되는 경우를 방지합니다.
+    (function () {
+      function setMobileNav(open) {
+        document.body.classList.toggle('hu-mobile-nav-open', !!open);
+        var btn = document.querySelector('.mobile-nav-toggle');
+        if (btn) btn.setAttribute('aria-expanded', String(!!open));
+      }
+      function toggleMobileNav(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+        }
+        setMobileNav(!document.body.classList.contains('hu-mobile-nav-open'));
+      }
+      function closeMobileNav(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+        }
+        setMobileNav(false);
+      }
+      window.HearU2niteMobileNav = { toggle: toggleMobileNav, close: closeMobileNav, set: setMobileNav };
+      document.addEventListener('click', function (event) {
+        if (event.target.closest('.mobile-nav-toggle')) return toggleMobileNav(event);
+        if (event.target.closest('[data-mobile-nav-close]')) return closeMobileNav(event);
+        if (event.target.closest('.side-nav [data-workspace-route]')) setMobileNav(false);
+      }, true);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') setMobileNav(false);
+      });
+    })();
+  </script>
+
 </body>
 </html>
