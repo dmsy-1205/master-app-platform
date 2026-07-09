@@ -538,3 +538,293 @@ textarea.form-control,
   .flagship-icon { width: 56px !important; height: 56px !important; }
   .home-status-strip { grid-template-columns: 1fr !important; }
 }
+
+/* STEP7-4 Visual Comfort & Legacy Gray Cleanup
+   Scope: authenticated workspace visual tone only. Functional JS/Firebase/Router untouched.
+   Goal: reduce eye fatigue, remove leftover dark/gray panels, keep PC/Mobile/Tablet readability. */
+
+:root {
+  --hu-bg: #eef5fc;
+  --hu-bg-soft: #f2f7fc;
+  --hu-surface: rgba(248,251,255,.82);
+  --hu-surface-strong: #f7fbff;
+  --hu-surface-warm: rgba(247,250,255,.92);
+  --hu-panel: rgba(239,246,255,.86);
+  --hu-panel-strong: rgba(232,242,255,.92);
+  --hu-line: rgba(111,132,166,.20);
+  --hu-line-strong: rgba(92,118,154,.30);
+  --hu-text: #172033;
+  --hu-muted: #61708a;
+  --hu-soft-muted: #7b8aa3;
+  --hu-primary: #3267ff;
+  --hu-sky: #20a7e8;
+  --hu-indigo: #6d5dfc;
+  --hu-shadow: 0 18px 48px rgba(31,49,88,.10);
+  --hu-shadow-soft: 0 10px 28px rgba(31,49,88,.07);
+}
+
+body:has(.workspace-shell:not([style*="display:none"])) {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(32,167,232,.11), transparent 30%),
+    radial-gradient(circle at 88% 18%, rgba(109,93,252,.10), transparent 34%),
+    linear-gradient(135deg, #edf6fb 0%, #f2f7fc 46%, #f2effb 100%) !important;
+}
+
+.platform-root:has(.workspace-shell:not([style*="display:none"])) {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(32,167,232,.13), transparent 30%),
+    radial-gradient(circle at 88% 18%, rgba(109,93,252,.11), transparent 32%),
+    linear-gradient(135deg, #edf6fb 0%, #f2f7fc 48%, #f2effb 100%) !important;
+}
+
+.side-nav,
+.topbar,
+.hero-strip,
+.glass-card,
+.user-dashboard-box,
+.appstore-section,
+.apply-box,
+.activity-page,
+.notification-center,
+.feedback-board,
+.admin-center,
+.admin-center-head,
+.admin-spa-tabs,
+.approval-box,
+.app-manager-card,
+.dev-tools-card,
+.runtime-view,
+.runtime-nav-card {
+  background: var(--hu-surface-warm) !important;
+  border-color: var(--hu-line) !important;
+  box-shadow: var(--hu-shadow-soft) !important;
+}
+
+.side-nav {
+  background:
+    linear-gradient(180deg, rgba(249,252,255,.94), rgba(238,247,255,.88)) !important;
+}
+
+.topbar,
+.hero-strip {
+  background:
+    radial-gradient(circle at 86% 16%, rgba(109,93,252,.10), transparent 32%),
+    linear-gradient(135deg, rgba(249,252,255,.92), rgba(235,245,255,.82)) !important;
+}
+
+.platform-home-ux,
+.appstore-section,
+.apply-box,
+.activity-page,
+.notification-center,
+.feedback-board,
+.admin-center {
+  background:
+    linear-gradient(var(--hu-surface-warm), var(--hu-surface-warm)) padding-box,
+    linear-gradient(90deg, rgba(32,199,238,.70), rgba(50,103,255,.70), rgba(139,92,246,.62), rgba(255,77,166,.48)) border-box !important;
+}
+
+.hero-metrics div,
+.user-kpi-grid article,
+.dashboard-profile-grid p,
+.home-widget,
+.featured-store-banner,
+.user-app-card,
+.flagship-app-card,
+.home-next-card,
+.home-status-strip article,
+.dashboard-account-details,
+.notification-center-list > *,
+.feedback-list > *,
+.activity-list > *,
+.delete-request-detail,
+.delete-request-list,
+.admin-center .glass-card,
+.approval-card,
+.member-card,
+.log-card,
+.app-card,
+.admin-stat-card {
+  background: linear-gradient(135deg, rgba(249,252,255,.88), rgba(238,246,255,.80)) !important;
+  border-color: var(--hu-line) !important;
+  color: var(--hu-text) !important;
+  box-shadow: var(--hu-shadow-soft) !important;
+}
+
+/* Remove the old MasterOS dark gray remnants in forms and admin/runtime panels. */
+.admin-notice-form,
+.feedback-form,
+.feedback-item,
+.notice-item,
+.activity-item,
+.request-item,
+.admin-card,
+.admin-panel,
+.delete-request-empty,
+.delete-request-meta,
+.delete-request-actions,
+.runtime-title,
+#applyResult,
+#feedbackResult,
+.info-text,
+.placeholder-text {
+  background: linear-gradient(135deg, rgba(238,246,255,.88), rgba(247,250,255,.92)) !important;
+  color: var(--hu-muted) !important;
+  border-color: var(--hu-line) !important;
+  box-shadow: none !important;
+}
+
+.runtime-title {
+  color: var(--hu-text) !important;
+  border-radius: 18px 18px 0 0 !important;
+  padding: 14px 16px !important;
+  font-weight: 950 !important;
+}
+
+.runtime-nav-card .runtime-title,
+.admin-spa-tabs button,
+.admin-tools-menu summary {
+  background: linear-gradient(135deg, rgba(50,103,255,.10), rgba(32,167,232,.08)) !important;
+  color: #244468 !important;
+  border: 1px solid rgba(50,103,255,.14) !important;
+}
+
+.admin-spa-tabs button.active,
+.admin-spa-tabs button:hover,
+.admin-tools-menu summary:hover {
+  background: linear-gradient(135deg, #3267ff, #20a7e8) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 12px 24px rgba(50,103,255,.18) !important;
+}
+
+.store-tools input,
+.store-tools select,
+input.form-control,
+select.form-control,
+textarea.form-control,
+.admin-notice-form input,
+.admin-notice-form textarea,
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea,
+.apply-box input,
+.apply-box pre,
+#applyReason,
+#applyResult,
+#feedbackType,
+#feedbackTitle,
+#feedbackContent,
+.admin-center input,
+.admin-center select,
+.admin-center textarea {
+  background: rgba(246,250,255,.92) !important;
+  color: var(--hu-text) !important;
+  border: 1px solid var(--hu-line-strong) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.75) !important;
+}
+
+.store-tools input::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #8b98ac !important;
+  opacity: 1 !important;
+}
+
+/* Old dark result bars become readable soft status bars. */
+pre,
+#applyResult,
+.feedback-board .info-text,
+.notification-center .info-text {
+  background: rgba(232,242,255,.78) !important;
+  color: #3c506d !important;
+  border: 1px solid rgba(92,118,154,.22) !important;
+  border-radius: 14px !important;
+  padding: 14px !important;
+}
+
+/* Notice / support lists: keep hierarchy without heavy gray blocks. */
+.notification-center-list > div,
+.feedback-list > div,
+.full-activity > div {
+  background: rgba(249,252,255,.88) !important;
+  color: var(--hu-text) !important;
+  border: 1px solid rgba(114,135,170,.18) !important;
+  border-radius: 16px !important;
+}
+
+.feedback-list button,
+.notification-center-list button,
+.admin-center button,
+.feedback-board button,
+.notification-center button,
+.apply-box button,
+.activity-page button {
+  border-radius: 14px !important;
+  border: 0 !important;
+  box-shadow: 0 10px 22px rgba(50,103,255,.14) !important;
+}
+
+/* Comfortable light density for computer/tablet. */
+@media (min-width: 981px) {
+  .workspace-shell { padding: 22px !important; gap: 22px !important; }
+  .topbar { min-height: 132px !important; }
+  .hero-strip { min-height: 132px !important; }
+  .platform-home-ux,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center { padding: 24px !important; }
+}
+
+/* Tablet and Fold open: reduce glare and keep cards breathable. */
+@media (min-width: 721px) and (max-width: 1180px) {
+  .workspace-shell { padding: 16px !important; }
+  .topbar,
+  .hero-strip,
+  .platform-home-ux,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center { border-radius: 24px !important; }
+  .store-tools { gap: 8px !important; }
+}
+
+/* Mobile/Fold cover: softer background, less brightness, no heavy gray panels. */
+@media (max-width: 720px) {
+  body:has(.workspace-shell:not([style*="display:none"])) {
+    background: linear-gradient(135deg, #edf6fb 0%, #f4f7fb 52%, #f2effb 100%) !important;
+  }
+  .workspace-shell { padding: 10px !important; gap: 12px !important; }
+  .side-nav,
+  .topbar,
+  .hero-strip,
+  .platform-home-ux,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center { border-radius: 20px !important; }
+  .platform-home-ux,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center { padding: 16px !important; }
+  .admin-notice-form,
+  .feedback-form { padding: 14px !important; border-radius: 18px !important; }
+  .feedback-form input,
+  .feedback-form select,
+  .feedback-form textarea,
+  .admin-notice-form input,
+  .admin-notice-form textarea,
+  .apply-box input,
+  .apply-box pre { font-size: .95rem !important; }
+}
