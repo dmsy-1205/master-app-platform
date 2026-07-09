@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="./style.css?v=step7-1-6">
   <link rel="stylesheet" href="./core/ui-kit.css?v=step7-1-6">
   <link rel="stylesheet" href="./assets/css/login-identity.css?v=step7-1-6">
-  <link rel="stylesheet" href="./assets/css/platform-shell.css?v=step8-7-stability-cleanup">
+  <link rel="stylesheet" href="./assets/css/platform-shell.css?v=step8-twitter-frame-renewal">
   <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAMAAAD839oXAAAAMFBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmS99AAAAtRSTlMA//////////8A//////////////////////////////////////////////////////8A///////wAAAAAElFTkSuQmCC">
 
   <style>
@@ -148,6 +148,11 @@
             <p class="eyebrow">User Portal · App Launch Flow</p>
             <h2>Discover. Request. Launch.</h2>
             <p>필요한 앱을 찾고, 신청하고, 승인된 서비스를 안전하게 실행하세요.</p>
+          </div>
+          <div class="hero-metrics">
+            <div><strong id="dashboardRole">-</strong><span>권한</span></div>
+            <div><strong id="dashboardApproval">-</strong><span>승인</span></div>
+            <div><strong id="dashboardLoginState">-</strong><span>세션</span></div>
           </div>
         </section>
 
@@ -671,8 +676,81 @@
   <script type="module" src="./feedback.js"></script>
   <script type="module" src="./operation.js"></script>
   <script type="module" src="./step14.js"></script>
-  <script type="module" src="./workspace.js?v=step8-8-mobile-drawer-final"></script>
-  
+  <script type="module" src="./workspace.js"></script>
+  <script>
+    // STEP8-5 fallback: Samsung/Android Chrome에서 모바일 메뉴 클릭 이벤트가 누락되는 경우를 방지합니다.
+    (function () {
+      function setMobileNav(open) {
+        document.body.classList.toggle('hu-mobile-nav-open', !!open);
+        var btn = document.querySelector('.mobile-nav-toggle');
+        if (btn) btn.setAttribute('aria-expanded', String(!!open));
+      }
+      function toggleMobileNav(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+        }
+        setMobileNav(!document.body.classList.contains('hu-mobile-nav-open'));
+      }
+      function closeMobileNav(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+        }
+        setMobileNav(false);
+      }
+      window.HearU2niteMobileNav = { toggle: toggleMobileNav, close: closeMobileNav, set: setMobileNav };
+      function fallbackShowRoute(route) {
+        if (window.MasterWorkspace && typeof window.MasterWorkspace.showRoute === 'function') {
+          window.MasterWorkspace.showRoute(route);
+          return;
+        }
+        var routeMap = {
+          dashboard: ['.hero-strip', '#userDashboardSection'],
+          runtime: ['#runtime'],
+          appstore: ['.appstore-section'],
+          request: ['#request'],
+          notifications: ['#notifications'],
+          feedback: ['#feedback'],
+          admin: ['#admin']
+        };
+        var selected = routeMap[route] ? route : 'dashboard';
+        Object.keys(routeMap).forEach(function (key) {
+          routeMap[key].forEach(function (selector) {
+            document.querySelectorAll(selector).forEach(function (el) {
+              el.classList.add('workspace-hidden');
+            });
+          });
+        });
+        routeMap[selected].forEach(function (selector) {
+          document.querySelectorAll(selector).forEach(function (el) {
+            el.classList.remove('workspace-hidden');
+          });
+        });
+        document.querySelectorAll('[data-workspace-route]').forEach(function (link) {
+          link.classList.toggle('active', link.dataset.workspaceRoute === selected);
+        });
+      }
+      document.addEventListener('click', function (event) {
+        var routeLink = event.target.closest('.side-nav [data-workspace-route]');
+        if (routeLink) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+          fallbackShowRoute(routeLink.dataset.workspaceRoute);
+          setMobileNav(false);
+          return;
+        }
+        if (event.target.closest('.mobile-nav-toggle')) return toggleMobileNav(event);
+        if (event.target.closest('[data-mobile-nav-close]')) return closeMobileNav(event);
+      }, true);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') setMobileNav(false);
+      });
+    })();
+  </script>
 
 </body>
 </html>

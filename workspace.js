@@ -34,29 +34,16 @@ function setActiveLink(route) {
   });
 }
 
-function syncMobileNavButton(open) {
-  const btn = document.querySelector('.mobile-nav-toggle');
-  if (!btn) return;
-  btn.setAttribute('aria-expanded', String(Boolean(open)));
-  btn.innerHTML = open ? '× <span>닫기</span>' : '☰ <span>메뉴</span>';
-}
-
-function setMobileNav(open) {
-  const willOpen = Boolean(open);
-  document.documentElement.classList.toggle('hu-mobile-nav-open', willOpen);
-  document.body.classList.toggle('hu-mobile-nav-open', willOpen);
-  syncMobileNavButton(willOpen);
-}
-
 function closeMobileNav() {
-  setMobileNav(false);
+  document.body.classList.remove('hu-mobile-nav-open');
+  document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', 'false');
 }
 
 function toggleMobileNav() {
-  setMobileNav(!document.body.classList.contains('hu-mobile-nav-open'));
+  const willOpen = !document.body.classList.contains('hu-mobile-nav-open');
+  document.body.classList.toggle('hu-mobile-nav-open', willOpen);
+  document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', String(willOpen));
 }
-
-window.HearU2niteMobileNav = { set: setMobileNav, close: closeMobileNav, toggle: toggleMobileNav };
 
 function showWorkspaceRoute(route = 'dashboard') {
   const selected = workspaceRoutes[route] ? route : 'dashboard';
@@ -90,35 +77,44 @@ function showAdminRoute(route = 'overview') {
   activePanel?.scrollIntoView({ block: 'start', behavior: 'smooth' });
 }
 
-function handleWorkspaceClick(event) {
+
+function handleWorkspaceRouteClick(event, link) {
+  if (!link) return false;
+  event.preventDefault();
+  event.stopPropagation();
+  const route = link.dataset.workspaceRoute;
+  showWorkspaceRoute(route);
+  closeMobileNav();
+  return true;
+}
+
+function bindMobileDrawerRouteLinks() {
+  document.querySelectorAll('.side-nav [data-workspace-route]').forEach((link) => {
+    if (link.dataset.drawerRouteBound === 'true') return;
+    link.dataset.drawerRouteBound = 'true';
+    link.setAttribute('role', 'button');
+    link.addEventListener('click', (event) => handleWorkspaceRouteClick(event, link), { capture: true });
+    link.addEventListener('touchend', (event) => handleWorkspaceRouteClick(event, link), { capture: true, passive: false });
+  });
+}
+
+document.addEventListener('click', (event) => {
   const navToggle = event.target.closest('.mobile-nav-toggle');
   if (navToggle) {
     event.preventDefault();
-    event.stopPropagation();
     toggleMobileNav();
     return;
   }
 
   if (event.target.closest('[data-mobile-nav-close]')) {
     event.preventDefault();
-    event.stopPropagation();
     closeMobileNav();
     return;
   }
 
   const workspaceLink = event.target.closest('[data-workspace-route]');
   if (workspaceLink) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
-    const route = workspaceLink.dataset.workspaceRoute;
-    showWorkspaceRoute(route);
-    closeMobileNav();
-    requestAnimationFrame(() => {
-      const target = document.querySelector('.workspace-main') || document.querySelector('.workspace-shell');
-      if (target) target.scrollIntoView({ block: 'start', behavior: 'auto' });
-      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    });
+    handleWorkspaceRouteClick(event, workspaceLink);
     return;
   }
 
@@ -127,34 +123,7 @@ function handleWorkspaceClick(event) {
     event.preventDefault();
     showAdminRoute(adminButton.dataset.adminRoute);
   }
-}
-
-document.addEventListener('click', handleWorkspaceClick, true);
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeMobileNav();
 });
-
-function bindDrawerRouteLinks() {
-  document.querySelectorAll('.side-nav [data-workspace-route]').forEach((link) => {
-    if (link.dataset.drawerBound === 'true') return;
-    link.dataset.drawerBound = 'true';
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
-      const route = link.dataset.workspaceRoute;
-      showWorkspaceRoute(route);
-      closeMobileNav();
-      requestAnimationFrame(() => {
-        const target = document.querySelector('.workspace-main') || document.querySelector('.workspace-shell');
-        if (target) target.scrollIntoView({ block: 'start', behavior: 'auto' });
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-      });
-    }, true);
-  });
-}
-
-bindDrawerRouteLinks();
 
 window.addEventListener('master-auth-role-changed', (event) => {
   const isAdmin = Boolean(event.detail?.isAdmin);
@@ -164,6 +133,7 @@ window.addEventListener('master-auth-role-changed', (event) => {
 });
 
 window.MasterWorkspace = { showRoute: showWorkspaceRoute, showAdminRoute, toggleMobileNav, closeMobileNav };
+bindMobileDrawerRouteLinks();
 showWorkspaceRoute('dashboard');
 showAdminRoute('overview');
 
