@@ -828,3 +828,329 @@ pre,
   .apply-box input,
   .apply-box pre { font-size: .95rem !important; }
 }
+
+
+/* STEP7-6 Visual System & Mobile Navigation Recovery
+   Scope: Cross-device navigation, legacy gray cleanup, readable card text only.
+   Firebase/Auth/Router/App launch logic untouched. */
+:root {
+  --hu-bg-clean: #f7fbff;
+  --hu-bg-clean-2: #f3f7ff;
+  --hu-card-clean: rgba(255,255,255,.90);
+  --hu-card-clean-strong: rgba(255,255,255,.96);
+  --hu-card-tint: rgba(239,248,255,.72);
+  --hu-line-clean: rgba(90,119,160,.18);
+  --hu-text-strong: #142033;
+  --hu-text-body: #43536b;
+  --hu-text-muted: #6c7a90;
+}
+
+/* Trend-clean background: remove old gray/washed panels. */
+body:has(.workspace-shell:not([style*="display:none"])),
+.platform-root:has(.workspace-shell:not([style*="display:none"])) {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(56,189,248,.14), transparent 28%),
+    radial-gradient(circle at 92% 12%, rgba(129,140,248,.12), transparent 30%),
+    linear-gradient(135deg, var(--hu-bg-clean) 0%, #eef8ff 48%, var(--hu-bg-clean-2) 100%) !important;
+  color: var(--hu-text-strong) !important;
+}
+
+/* Universal readable surface cleanup. */
+.side-nav,
+.topbar,
+.glass-card,
+.hero-strip,
+.user-dashboard-box,
+.platform-home-ux,
+.appstore-section,
+.apply-box,
+.activity-page,
+.notification-center,
+.feedback-board,
+.admin-center,
+.admin-center-head,
+.admin-spa-tabs,
+.approval-box,
+.app-manager-card,
+.dev-tools-card,
+.runtime-view,
+.runtime-nav-card,
+.home-widget,
+.flagship-app-card,
+.home-next-card,
+.featured-store-banner,
+.user-app-card,
+.activity-item,
+.notice-item,
+.feedback-item,
+.request-item,
+.member-card,
+.log-card,
+.app-card,
+.admin-stat-card,
+.approval-card {
+  background:
+    linear-gradient(135deg, var(--hu-card-clean-strong), var(--hu-card-tint)) !important;
+  border-color: var(--hu-line-clean) !important;
+  color: var(--hu-text-strong) !important;
+  box-shadow: 0 18px 46px rgba(32, 51, 89, .08) !important;
+}
+
+/* Prevent white text from disappearing on pale cards. */
+.hero-strip h2,
+.hero-strip h3,
+.hero-strip h4,
+.hero-strip p,
+.platform-home-ux h2,
+.platform-home-ux h3,
+.platform-home-ux h4,
+.platform-home-ux p,
+.appstore-section h2,
+.appstore-section h3,
+.appstore-section h4,
+.appstore-section p,
+.apply-box h2,
+.apply-box h3,
+.apply-box h4,
+.apply-box p,
+.activity-page h2,
+.activity-page h3,
+.activity-page h4,
+.activity-page p,
+.notification-center h2,
+.notification-center h3,
+.notification-center h4,
+.notification-center p,
+.feedback-board h2,
+.feedback-board h3,
+.feedback-board h4,
+.feedback-board p,
+.admin-center h2,
+.admin-center h3,
+.admin-center h4,
+.admin-center p,
+.runtime-view h2,
+.runtime-view h3,
+.runtime-view h4,
+.runtime-view p,
+.user-app-card h3,
+.user-app-card h4,
+.user-app-card p,
+.activity-item,
+.activity-item *,
+.notification-center-list *,
+.feedback-list *,
+.full-activity *,
+.home-widget *,
+.flagship-app-card *,
+.featured-store-banner * {
+  color: inherit !important;
+  text-shadow: none !important;
+}
+
+.eyebrow,
+.section-kicker,
+.store-kicker,
+.home-kicker,
+.activity-page .eyebrow,
+.notification-center .eyebrow,
+.feedback-board .eyebrow,
+.admin-center .eyebrow {
+  color: #1768d7 !important;
+}
+
+.topbar p:not(.eyebrow),
+.hero-strip p,
+.platform-home-ux p,
+.appstore-section p,
+.apply-box p,
+.activity-page p,
+.notification-center p,
+.feedback-board p,
+.admin-center p,
+.user-app-meta,
+.user-app-run-info,
+.info-text,
+.placeholder-text {
+  color: var(--hu-text-body) !important;
+}
+
+/* Inputs must look usable, not disabled gray. */
+.store-tools input,
+.store-tools select,
+input.form-control,
+select.form-control,
+textarea.form-control,
+.admin-notice-form input,
+.admin-notice-form textarea,
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea,
+.apply-box input,
+.apply-box pre,
+#applyReason,
+#applyResult,
+#feedbackType,
+#feedbackTitle,
+#feedbackContent,
+.admin-center input,
+.admin-center select,
+.admin-center textarea {
+  background: rgba(255,255,255,.94) !important;
+  color: var(--hu-text-strong) !important;
+  border: 1px solid rgba(91,119,155,.24) !important;
+}
+
+.store-tools input::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #7d8ba0 !important;
+  opacity: 1 !important;
+}
+
+/* Hide legacy runtime development block when it is empty. */
+.runtime-nav-card:has(#dynamic-nav-menu:empty) {
+  display: none !important;
+}
+
+/* Mobile / Fold: real folded drawer, not horizontal carousel. */
+.nav-toggle {
+  display: none;
+  appearance: none;
+  border: 0 !important;
+  border-radius: 16px !important;
+  min-height: 46px !important;
+  padding: 0 16px !important;
+  color: #fff !important;
+  font-weight: 950 !important;
+  background: linear-gradient(135deg, #3267ff, #20a7e8) !important;
+  box-shadow: 0 14px 30px rgba(50,103,255,.18) !important;
+}
+
+@media (max-width: 1180px) {
+  .workspace-shell {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+
+  .side-nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 90 !important;
+    min-height: auto !important;
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    padding: 12px !important;
+    border-radius: 22px !important;
+  }
+
+  .side-logo {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .side-logo > span {
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+  }
+
+  .side-logo strong {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .side-caption { display: none !important; }
+
+  .nav-toggle {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+  }
+
+  .nav-toggle::before {
+    content: '☰';
+    margin-right: 8px;
+    font-size: 1.05em;
+  }
+
+  .side-nav a {
+    display: none !important;
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 13px 15px !important;
+    border-radius: 16px !important;
+    background: rgba(255,255,255,.72) !important;
+    color: var(--hu-text-body) !important;
+    border: 1px solid rgba(91,119,155,.16) !important;
+    white-space: normal !important;
+    text-align: left !important;
+    transform: none !important;
+  }
+
+  .side-nav.nav-open a {
+    display: block !important;
+  }
+
+  .side-nav a.active {
+    background: linear-gradient(135deg, rgba(50,103,255,.14), rgba(32,167,232,.13)) !important;
+    color: #0f62d6 !important;
+    border-color: rgba(50,103,255,.22) !important;
+  }
+
+  .topbar {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .side-nav {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+  }
+
+  .nav-toggle {
+    min-width: 92px !important;
+  }
+
+  .topbar,
+  .hero-strip,
+  .platform-home-ux,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center {
+    border-radius: 20px !important;
+    padding: 18px !important;
+  }
+
+  .topbar h1,
+  .hero-strip h2,
+  .platform-home-ux h2,
+  .appstore-section h2,
+  .apply-box h2,
+  .activity-page h2,
+  .notification-center h2,
+  .feedback-board h2,
+  .admin-center h2 {
+    font-size: clamp(1.75rem, 8vw, 2.35rem) !important;
+    line-height: 1.12 !important;
+  }
+}

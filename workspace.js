@@ -40,7 +40,8 @@ function updateMobileNavLabel(route) {
   const toggle = document.querySelector('.nav-toggle');
   if (!toggle) return;
   const label = activeLink?.textContent?.trim() || '메뉴';
-  toggle.textContent = `메뉴 · ${label}`;
+  toggle.textContent = '메뉴';
+  toggle.setAttribute('aria-label', `메뉴 열기 · 현재 위치 ${label}`);
 }
 
 function closeMobileNav() {
