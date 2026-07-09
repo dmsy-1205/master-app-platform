@@ -67,10 +67,13 @@ function setAuthShellMode(isLoggedIn) {
 }
 
 function publishAuthState(user, roleInfo) {
+  const isAdmin = Boolean(roleInfo?.isAdmin);
+  document.body.classList.toggle('hu-admin-active', isAdmin);
+  document.body.classList.toggle('hu-user-active', Boolean(user) && !isAdmin);
   window.MasterAuthState = {
     user,
     isLoggedIn: Boolean(user),
-    isAdmin: Boolean(roleInfo?.isAdmin),
+    isAdmin,
     role: roleInfo?.role || 'guest',
     adminSource: roleInfo?.source || 'none'
   };
@@ -134,7 +137,7 @@ async function applyScreenState(user) {
     setVisible(adminSections, roleInfo.isAdmin);
     if (adminDashboardSection) adminDashboardSection.style.display = roleInfo.isAdmin ? '' : 'none';
     if (userStatus) {
-      userStatus.innerText = `로그인 상태: ${user.email} / 권한: ${roleInfo.isAdmin ? '관리자' : '일반 사용자'}`;
+      userStatus.innerText = `${user.email} · ${roleInfo.isAdmin ? '관리자' : '일반 사용자'}`;
     }
     updateSideSession(user, roleInfo.isAdmin ? '관리자' : '일반 사용자');
     publishAuthState(user, roleInfo);
@@ -142,7 +145,7 @@ async function applyScreenState(user) {
     console.error('권한 확인 실패:', error);
     setVisible(adminSections, false);
     if (adminDashboardSection) adminDashboardSection.style.display = 'none';
-    if (userStatus) userStatus.innerText = `로그인 상태: ${user.email} / 권한 확인 실패`;
+    if (userStatus) userStatus.innerText = `${user.email} · 권한 확인 실패`;
     updateSideSession(user, '권한 확인 실패');
     publishAuthState(user, { isAdmin: false, role: 'user', source: 'error' });
   }
