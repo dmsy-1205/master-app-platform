@@ -32,6 +32,23 @@ function setActiveLink(route) {
   document.querySelectorAll('[data-workspace-route]').forEach((link) => {
     link.classList.toggle('active', link.dataset.workspaceRoute === route);
   });
+  updateMobileNavLabel(route);
+}
+
+function updateMobileNavLabel(route) {
+  const activeLink = document.querySelector(`[data-workspace-route="${route}"]`);
+  const toggle = document.querySelector('.nav-toggle');
+  if (!toggle) return;
+  const label = activeLink?.textContent?.trim() || '메뉴';
+  toggle.textContent = `메뉴 · ${label}`;
+}
+
+function closeMobileNav() {
+  const nav = document.querySelector('.side-nav');
+  const toggle = document.querySelector('.nav-toggle');
+  if (!nav || !toggle) return;
+  nav.classList.remove('nav-open');
+  toggle.setAttribute('aria-expanded', 'false');
 }
 
 function showWorkspaceRoute(route = 'dashboard') {
@@ -67,10 +84,21 @@ function showAdminRoute(route = 'overview') {
 }
 
 document.addEventListener('click', (event) => {
+  const navToggle = event.target.closest('.nav-toggle');
+  if (navToggle) {
+    event.preventDefault();
+    const nav = document.querySelector('.side-nav');
+    if (!nav) return;
+    const isOpen = nav.classList.toggle('nav-open');
+    navToggle.setAttribute('aria-expanded', String(isOpen));
+    return;
+  }
+
   const workspaceLink = event.target.closest('[data-workspace-route]');
   if (workspaceLink) {
     event.preventDefault();
     showWorkspaceRoute(workspaceLink.dataset.workspaceRoute);
+    closeMobileNav();
     return;
   }
 
