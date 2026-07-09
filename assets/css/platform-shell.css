@@ -2309,3 +2309,136 @@ body.hu-user-active [data-auth="admin"][data-workspace-route="admin"] {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+
+/* =========================================================
+   STEP8-8 Mobile Drawer Interaction & Compact Session Fix
+   Final override: keeps STEP8-7 width, fixes drawer close button and mobile drawer layout.
+   ========================================================= */
+@media (max-width: 1180px) {
+  .mobile-nav-toggle {
+    display: inline-flex !important;
+    position: fixed !important;
+    top: 14px !important;
+    left: max(14px, env(safe-area-inset-left)) !important;
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
+    transform: translateZ(0) !important;
+    min-width: 96px !important;
+    min-height: 44px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #2f6bff 0%, #17b8df 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 14px 34px rgba(35, 135, 245, .28) !important;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+
+  body.hu-mobile-nav-open .mobile-nav-toggle,
+  html.hu-mobile-nav-open .mobile-nav-toggle {
+    background: linear-gradient(135deg, #1e7fe8 0%, #12afd5 100%) !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .mobile-nav-backdrop {
+    z-index: 2147483200 !important;
+    background: rgba(15, 23, 42, .28) !important;
+  }
+
+  .side-nav {
+    z-index: 2147483300 !important;
+    width: min(78vw, 330px) !important;
+    max-width: min(78vw, 330px) !important;
+    padding: 82px 18px 22px !important;
+    gap: 9px !important;
+    background: rgba(255, 255, 255, .985) !important;
+    border-radius: 0 24px 24px 0 !important;
+    box-shadow: 18px 0 48px rgba(15, 23, 42, .18) !important;
+  }
+
+  .side-logo {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    margin: 0 0 8px 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .side-logo span {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    border-radius: 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.15rem !important;
+  }
+
+  .side-logo strong {
+    display: block !important;
+    font-size: 1.12rem !important;
+    line-height: 1.1 !important;
+    color: #142033 !important;
+    white-space: nowrap !important;
+  }
+
+  .side-caption {
+    margin: 0 0 14px 58px !important;
+    font-size: .76rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: .12em !important;
+    color: #52637a !important;
+  }
+
+  .side-session-card {
+    margin: 0 0 12px 0 !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    background: #f8fbff !important;
+  }
+
+  .side-session-card strong {
+    display: block !important;
+    font-size: .92rem !important;
+    line-height: 1.25 !important;
+    word-break: break-all !important;
+    color: #142033 !important;
+  }
+
+  .side-session-card small {
+    display: block !important;
+    margin-top: 5px !important;
+    color: #31445f !important;
+    font-weight: 850 !important;
+  }
+
+  .side-logout-action {
+    width: 100% !important;
+    min-height: 42px !important;
+    margin-top: 10px !important;
+    border-radius: 14px !important;
+    font-size: .95rem !important;
+  }
+
+  .side-nav a {
+    min-height: 43px !important;
+    font-size: .96rem !important;
+    font-weight: 850 !important;
+    padding: 0 12px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .side-nav {
+    width: min(82vw, 318px) !important;
+    max-width: min(82vw, 318px) !important;
+  }
+}

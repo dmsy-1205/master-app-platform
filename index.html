@@ -671,56 +671,8 @@
   <script type="module" src="./feedback.js"></script>
   <script type="module" src="./operation.js"></script>
   <script type="module" src="./step14.js"></script>
-  <script type="module" src="./workspace.js?v=step8-7-stability-cleanup"></script>
-  <script>
-    // STEP8-7: 모바일 메뉴는 이 스크립트 한 곳에서만 제어합니다.
-    (function () {
-      var lastToggleAt = 0;
-
-      function setMobileNav(open) {
-        document.documentElement.classList.toggle('hu-mobile-nav-open', !!open);
-        document.body.classList.toggle('hu-mobile-nav-open', !!open);
-        var btn = document.querySelector('.mobile-nav-toggle');
-        if (btn) btn.setAttribute('aria-expanded', String(!!open));
-      }
-
-      function shouldIgnoreDoubleTap() {
-        var now = Date.now();
-        if (now - lastToggleAt < 260) return true;
-        lastToggleAt = now;
-        return false;
-      }
-
-      function toggleMobileNav(event) {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        if (shouldIgnoreDoubleTap()) return;
-        setMobileNav(!document.body.classList.contains('hu-mobile-nav-open'));
-      }
-
-      function closeMobileNav(event) {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        setMobileNav(false);
-      }
-
-      window.HearU2niteMobileNav = { toggle: toggleMobileNav, close: closeMobileNav, set: setMobileNav };
-
-      document.addEventListener('click', function (event) {
-        if (event.target.closest('.mobile-nav-toggle')) return toggleMobileNav(event);
-        if (event.target.closest('[data-mobile-nav-close]')) return closeMobileNav(event);
-        if (event.target.closest('.side-nav [data-workspace-route]')) setMobileNav(false);
-      }, true);
-
-      document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') setMobileNav(false);
-      });
-    })();
-  </script>
+  <script type="module" src="./workspace.js?v=step8-8-mobile-drawer-final"></script>
+  
 
 </body>
 </html>

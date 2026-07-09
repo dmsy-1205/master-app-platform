@@ -34,26 +34,29 @@ function setActiveLink(route) {
   });
 }
 
+function syncMobileNavButton(open) {
+  const btn = document.querySelector('.mobile-nav-toggle');
+  if (!btn) return;
+  btn.setAttribute('aria-expanded', String(Boolean(open)));
+  btn.innerHTML = open ? '× <span>닫기</span>' : '☰ <span>메뉴</span>';
+}
+
+function setMobileNav(open) {
+  const willOpen = Boolean(open);
+  document.documentElement.classList.toggle('hu-mobile-nav-open', willOpen);
+  document.body.classList.toggle('hu-mobile-nav-open', willOpen);
+  syncMobileNavButton(willOpen);
+}
+
 function closeMobileNav() {
-  if (window.HearU2niteMobileNav?.set) {
-    window.HearU2niteMobileNav.set(false);
-    return;
-  }
-  document.documentElement.classList.remove('hu-mobile-nav-open');
-  document.body.classList.remove('hu-mobile-nav-open');
-  document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', 'false');
+  setMobileNav(false);
 }
 
 function toggleMobileNav() {
-  if (window.HearU2niteMobileNav?.toggle) {
-    window.HearU2niteMobileNav.toggle();
-    return;
-  }
-  const willOpen = !document.body.classList.contains('hu-mobile-nav-open');
-  document.documentElement.classList.toggle('hu-mobile-nav-open', willOpen);
-  document.body.classList.toggle('hu-mobile-nav-open', willOpen);
-  document.querySelector('.mobile-nav-toggle')?.setAttribute('aria-expanded', String(willOpen));
+  setMobileNav(!document.body.classList.contains('hu-mobile-nav-open'));
 }
+
+window.HearU2niteMobileNav = { set: setMobileNav, close: closeMobileNav, toggle: toggleMobileNav };
 
 function showWorkspaceRoute(route = 'dashboard') {
   const selected = workspaceRoutes[route] ? route : 'dashboard';
@@ -87,16 +90,18 @@ function showAdminRoute(route = 'overview') {
   activePanel?.scrollIntoView({ block: 'start', behavior: 'smooth' });
 }
 
-document.addEventListener('click', (event) => {
+function handleWorkspaceClick(event) {
   const navToggle = event.target.closest('.mobile-nav-toggle');
   if (navToggle) {
     event.preventDefault();
+    event.stopPropagation();
     toggleMobileNav();
     return;
   }
 
   if (event.target.closest('[data-mobile-nav-close]')) {
     event.preventDefault();
+    event.stopPropagation();
     closeMobileNav();
     return;
   }
@@ -114,6 +119,11 @@ document.addEventListener('click', (event) => {
     event.preventDefault();
     showAdminRoute(adminButton.dataset.adminRoute);
   }
+}
+
+document.addEventListener('click', handleWorkspaceClick, true);
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeMobileNav();
 });
 
 window.addEventListener('master-auth-role-changed', (event) => {
