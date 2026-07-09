@@ -1638,3 +1638,346 @@ button:not(.btn):not(.logout-action):not(.side-logout-action):not(.launch-app-bt
     margin-bottom: 16px !important;
   }
 }
+
+
+/* =========================================================
+   STEP8-3 Final Platform Layout Stabilization
+   Goal: finish HearU2nite quickly with a real app-platform frame.
+   Scope: navigation visibility, mobile/fold frame, contrast cleanup.
+   ========================================================= */
+
+/* Admin Center must not be visible for non-admin users even when older
+   side-nav link rules use display:flex!important. */
+[data-auth="admin"][hidden],
+[data-auth="admin"][aria-hidden="true"],
+[data-auth="admin"][style*="display: none"],
+.side-nav a[data-auth="admin"][hidden],
+.side-nav a[data-auth="admin"][aria-hidden="true"],
+.side-nav a[data-auth="admin"][style*="display: none"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Activity Log is no longer a primary navigation item. Keep existing data/log
+   functions intact, but remove it from the user-facing navigation flow. */
+.side-nav a[data-workspace-route="activity"] {
+  display: none !important;
+}
+
+/* Keep the old duplicate top login card removed. Session lives in side nav. */
+body.auth-private-active .topbar,
+body.auth-private-active #userStatus {
+  display: none !important;
+}
+
+/* Final light visual system: no legacy dark gray boxes. */
+.app-register-guide,
+.app-register-steps,
+.app-register-steps li,
+.baby-care-deploy-box,
+.baby-care-security-plan,
+.qa-checklist,
+.app-protection-note,
+.app-protection-checklist,
+.admin-info-box,
+.app-manager-info,
+.operation-log-empty,
+.delete-request-empty,
+.delete-request-toolbar,
+.member-table-wrap,
+.table-responsive,
+.apps-list-container,
+[class*="checklist"],
+[class*="protection"] {
+  background: linear-gradient(135deg, #ffffff 0%, #f4f9ff 100%) !important;
+  border: 1px solid #d7e5f7 !important;
+  color: #132033 !important;
+  box-shadow: 0 10px 26px rgba(34,56,92,.06) !important;
+}
+.app-register-guide h3,
+.app-register-guide p,
+.app-register-steps li,
+.baby-care-deploy-box strong,
+.baby-care-deploy-box span,
+.baby-care-security-plan strong,
+.baby-care-security-plan li,
+.qa-checklist *,
+.app-protection-note *,
+.app-protection-checklist *,
+.admin-info-box *,
+.app-manager-info * {
+  color: #132033 !important;
+  text-shadow: none !important;
+}
+.baby-care-deploy-box code,
+.app-register-steps code {
+  color: #075fc8 !important;
+  background: #eaf4ff !important;
+  border-radius: 8px !important;
+  padding: 2px 6px !important;
+}
+.store-tools input,
+#storeSearchInput,
+.appstore-section input,
+.appstore-section select,
+.apply-box input,
+.apply-box select,
+.apply-box textarea,
+.feedback-board input,
+.feedback-board select,
+.feedback-board textarea,
+.notification-center input,
+.notification-center textarea,
+.admin-center input,
+.admin-center select,
+.admin-center textarea {
+  background: #ffffff !important;
+  color: #132033 !important;
+  border-color: #cfe0f7 !important;
+  opacity: 1 !important;
+}
+.store-tools input::placeholder,
+#storeSearchInput::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #7a8799 !important;
+  opacity: 1 !important;
+}
+
+/* Buttons inside primary platform pages should remain readable. */
+.apply-box button,
+.feedback-board button,
+.notification-center button,
+.activity-page button,
+.appstore-section button,
+.dashboard-actions button,
+#dashboardRefreshBtn,
+#dashboardOpenFirstAppBtn,
+#dashboardQuickLaunchBtn,
+#storeFeaturedLaunchBtn,
+.launch-app-btn {
+  color: #ffffff !important;
+  font-weight: 950 !important;
+}
+
+/* PC/tablet app frame: compact like X/Twitter, not full-screen wide. */
+@media (min-width: 981px) {
+  .workspace-shell {
+    width: min(100%, 1280px) !important;
+    grid-template-columns: 232px minmax(0, 980px) !important;
+    gap: 18px !important;
+  }
+  .workspace-main {
+    max-width: 980px !important;
+  }
+}
+
+/* Mobile, Fold cover/open, and touch devices use a single centered X-style feed.
+   This prevents the current left-narrow-column + empty-right-space break. */
+@media (max-width: 980px), (pointer: coarse) {
+  html,
+  body,
+  .platform-root {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  .workspace-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 74px 14px 18px !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  .workspace-main {
+    width: min(100%, 680px) !important;
+    max-width: min(100%, 680px) !important;
+    margin: 0 auto !important;
+    display: grid !important;
+    gap: 14px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .hero-strip,
+  .user-dashboard-box,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center,
+  .runtime-view,
+  .runtime-nav-card,
+  .admin-overview,
+  .qa-dashboard,
+  .member-management,
+  .approval-box,
+  .data-management-panel,
+  .app-manager-card,
+  .dev-tools-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .hero-strip,
+  .home-launch-spotlight,
+  .home-status-strip,
+  .user-home-grid,
+  .store-tools,
+  .appstore-grid,
+  .dashboard-profile-grid,
+  .admin-kpi-grid,
+  .qa-kpi-grid,
+  .data-admin-summary,
+  .delete-request-layout,
+  .app-register-steps,
+  .easy-register-form {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+  .dashboard-title-row,
+  .home-title-row,
+  .section-title-row,
+  .store-headline,
+  .admin-card-title,
+  .operation-log-toolbar,
+  .feedback-item-head,
+  .app-register-guide {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    align-items: start !important;
+  }
+  .dashboard-actions,
+  .guide-actions,
+  .store-tools,
+  .operation-log-toolbar,
+  .feedback-admin-actions {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .dashboard-actions button,
+  .guide-actions button,
+  .store-tools input,
+  .store-tools select,
+  .apply-box input,
+  .apply-box button,
+  .feedback-board input,
+  .feedback-board select,
+  .feedback-board textarea,
+  .feedback-board button,
+  .notification-center input,
+  .notification-center textarea,
+  .notification-center button,
+  .admin-center input,
+  .admin-center select,
+  .admin-center textarea,
+  .admin-center button {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .flagship-app-card,
+  .user-app-card,
+  .featured-store-banner,
+  .favorite-app-row,
+  .notification-center-list > *,
+  .feedback-list > *,
+  .activity-list > * {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .flagship-app-card button,
+  .user-app-card button,
+  .featured-store-banner button,
+  .favorite-app-row button {
+    width: 100% !important;
+    justify-self: stretch !important;
+  }
+  .hero-strip h2,
+  .dashboard-title-row h2,
+  .section-title-row h2,
+  .store-headline h2,
+  .appstore-section h2,
+  .apply-box h2,
+  .activity-page h2,
+  .notification-center h2,
+  .feedback-board h2,
+  .admin-center h2 {
+    font-size: clamp(1.55rem, 8vw, 2.25rem) !important;
+    line-height: 1.16 !important;
+    word-break: keep-all !important;
+  }
+  .hero-strip p,
+  .dashboard-help,
+  .section-title-row p,
+  .store-headline p,
+  .apply-box p,
+  .activity-page p,
+  .notification-center p,
+  .feedback-board p {
+    font-size: clamp(.98rem, 4.2vw, 1.08rem) !important;
+    line-height: 1.62 !important;
+  }
+  .mobile-nav-toggle {
+    display: inline-flex !important;
+    position: fixed !important;
+    top: 14px !important;
+    left: 14px !important;
+    z-index: 1200 !important;
+  }
+  .side-nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1190 !important;
+    width: min(82vw, 330px) !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding: 78px 16px 18px !important;
+    border-radius: 0 26px 26px 0 !important;
+    transform: translateX(-105%) !important;
+    transition: transform .22s ease !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
+  }
+  body.hu-mobile-nav-open .side-nav { transform: translateX(0) !important; }
+  body.hu-mobile-nav-open .mobile-nav-backdrop {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .workspace-shell {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .workspace-main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .hero-strip,
+  .user-dashboard-box,
+  .appstore-section,
+  .apply-box,
+  .activity-page,
+  .notification-center,
+  .feedback-board,
+  .admin-center,
+  .runtime-view {
+    border-radius: 22px !important;
+    padding: 18px !important;
+  }
+}
