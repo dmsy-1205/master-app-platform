@@ -2064,3 +2064,70 @@ body:not(.is-admin) [data-auth="admin"][data-workspace-route="admin"] {
     pointer-events: auto !important;
   }
 }
+
+
+/* STEP8-11: single-source mobile navigation + compact drawer header */
+.hero-metrics { display: none !important; }
+
+@media (max-width: 980px) {
+  .side-nav {
+    width: min(82vw, 304px) !important;
+    padding: 66px 14px 16px !important;
+  }
+
+  .side-logo {
+    display: grid !important;
+    grid-template-columns: 36px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 0 0 2px !important;
+  }
+
+  .side-logo > span {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  .side-logo strong {
+    font-size: 1rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .side-caption {
+    margin: 0 0 10px 46px !important;
+    font-size: .56rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .side-session-card {
+    margin: 0 0 10px !important;
+    padding: 9px 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .side-session-card strong {
+    display: block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: .76rem !important;
+  }
+
+  .side-session-card small { font-size: .7rem !important; }
+  .side-logout-action {
+    min-height: 32px !important;
+    margin-top: 7px !important;
+    font-size: .76rem !important;
+  }
+
+  .side-nav a {
+    position: relative !important;
+    z-index: 2 !important;
+    pointer-events: auto !important;
+  }
+
+  .mobile-nav-backdrop { z-index: 1380 !important; }
+  .side-nav { z-index: 1390 !important; }
+  .mobile-nav-toggle { z-index: 1405 !important; }
+}
